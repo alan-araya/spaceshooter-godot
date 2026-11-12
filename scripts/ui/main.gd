@@ -8,6 +8,7 @@ extends Node
 ##   --seed=N   semente fixa da missão (screenshots e medições repetíveis)
 ##   --test [--probe] [--timeline=m3]   testes headless
 ##   --shot=arquivo.png --shot-after=SEG --quit-after-shot   screenshot
+##   --shot-all=PASTA [--shot-after=SEG]   uma janela só: joga cada missão SEG segundos e salva mN.png
 ##   --stress   mede um frame renderizado com 180 insetos
 ##   --loopback   jogo local desenhado por um mundo-réplica alimentado por snapshots (fase 0)
 ##   --net-host [--net-start-when=N]   hospeda e começa sozinho quando houver N jogadores
@@ -77,6 +78,9 @@ func _ready() -> void:
 		return
 	if args.has("net-host"):
 		_host()
+		return
+	if args.has("shot-all"):
+		_shot_all(args["shot-all"])
 		return
 	if args.has("net-join"):
 		_join(args["net-join"])
@@ -766,6 +770,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			show_menu()
 		elif screen == Screen.NET_MENU:
 			show_menu()
+
+
+## Screenshot de todas as missões numa execução só (comparar antes/depois sem abrir seis janelas).
+func _shot_all(dir: String) -> void:
+	var wait := float(args.get("shot-after", "8"))
+	for i in Missions.count():
+		Game.mission_index = i
+		start_mission()
+		await get_tree().create_timer(wait).timeout
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("%s/m%d.png" % [dir, i + 1])
+	print("SCREENSHOTS salvos em ", dir)
+	get_tree().quit()
 
 
 func _save_shot(path: String) -> void:

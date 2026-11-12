@@ -34,6 +34,7 @@ func run(m: Node) -> void:
 	_test_snapshot_roundtrip()
 	_test_loopback_replica()
 	_test_visuals()
+	_test_effects_keep_sim()
 	if main.args.has("probe"):
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
@@ -462,6 +463,35 @@ func _sim_hash(w: World) -> String:
 	for s in w.soldiers:
 		acc += s.position.x * 0.9 + s.position.y * 1.1 + s.hp
 	return "%d|%d|%d|%d|%.2f|%.2f" % [w.frame, w.troops, w.stats.kills, w.bugs.size(), acc, w.commanders[0].position.x]
+
+
+## Partículas e decalques não podem gastar world.rng: um mundo que apresenta e um fantasma
+## (só simula, como o do host em --loopback) têm de chegar ao mesmo estado.
+## Também confere o respingo do tiro: poucas gotas na aranha, mais na matriarca.
+func _test_effects_keep_sim() -> void:
+	var i := _idx("m3")
+	var shown := _new_world(i, 1, "normal", 19)
+	var ghost := World.new()
+	add_child(ghost)
+	ghost.present = false
+	ghost.setup(i, "normal", 1, 19)
+	_run(shown, 25.0)
+	_run(ghost, 25.0)
+	check(shown.stats.kills > 0, "efeitos: o bot não matou nada em 25 s")
+	check(_sim_hash(shown) == _sim_hash(ghost), "efeitos: apresentar mudou a simulação (%s x %s)" % [_sim_hash(shown), _sim_hash(ghost)])
+	var fx := shown.fx
+	fx.drops.clear()
+	fx.hit(Vector2(200, 200), 0.0, 1.0)
+	var small := fx.drops.size()
+	fx.hit(Vector2(200, 200), 0.0, 2.0)
+	var big := fx.drops.size() - small
+	check(small >= 2 and small <= 4, "efeitos: respingo de aranha deveria ter 2 a 4 gotas (%d)" % small)
+	check(big > small, "efeitos: a matriarca deveria espirrar mais gosma (%d x %d)" % [big, small])
+	for k in 240:
+		fx.tick(1.0 / 60.0)
+	check(fx.drops.is_empty() and fx.pops.is_empty(), "efeitos: gotas não sumiram depois de 4 s")
+	shown.queue_free()
+	ghost.queue_free()
 
 
 ## A parte visual (luz, sombra, relevo) só lê o estado: com ela ligada, a simulação tem de dar

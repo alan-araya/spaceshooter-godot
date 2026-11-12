@@ -53,6 +53,7 @@ func setup(w: World) -> void:
 	sun.name = "Sun"
 	sun.color = amb.sun
 	sun.energy = amb.sun_energy
+	sun.enabled = float(amb.sun_energy) > 0.0
 	sun.height = amb.sun_height
 	var dir: Vector2 = amb.sun_dir
 	sun.rotation = dir.angle() - PI / 2.0 # a luz viaja no +Y local do nó
@@ -295,13 +296,13 @@ func _update_follow() -> void:
 			break
 		if gr.acid:
 			var k: float = gr.t / gr.T
-			_put(follow[n], gr.b, ACID, 80.0, 0.35 + 0.5 * k, 24.0)
+			_put(follow[n], gr.b, ACID, 80.0, 0.2 + 0.3 * k, 24.0)
 			n += 1
 	for hz in world.hazards:
 		if n >= cap:
 			break
 		var kk: float = clampf(hz.t / Bal.MOTHER.pool_time, 0.0, 1.0)
-		_put(follow[n], hz.p, ACID, float(hz.r) * 2.4, 0.7 * kk * gl, 22.0)
+		_put(follow[n], hz.p, ACID, float(hz.r) * 2.4, 0.45 * kk * gl, 22.0)
 		n += 1
 	if world.crystal != null and n < cap:
 		_put(follow[n], world.crystal.p, Color(1.0, 0.25, 0.35), 96.0, 0.9 * gl, 30.0)

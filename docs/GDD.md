@@ -312,7 +312,8 @@ e não entra nos snapshots. O teste `_test_visuals` confere que ligar a parte vi
 | Peça | Arquivo | O que faz |
 |---|---|---|
 | Palco | `scripts/world/stage.gd` | O mundo é desenhado num `SubViewport` fixo de 1280×640 e composto na tela por `shaders/composite.gdshader` (ampliação nítida, brilho, cor, vinheta). O HUD fica fora, na resolução da janela |
-| Clima | `scripts/world/ambience.gd` | Predefinições por hora do dia (`day`, `dusk`): luz ambiente, sol, sombras, postes, saturação do chão e cor final. A missão escolhe com `ambience = "..."` |
+| Clima | `scripts/world/ambience.gd` | Predefinições por hora do dia: luz ambiente, sol, sombras, postes, saturação do chão e cor final. A missão escolhe com `ambience = "..."`. A campanha é um dia: 1 amanhecer (`dawn`) · 2 meio-dia (`noon`) · 3 tarde (`afternoon`) · 4 tempestade de areia (`storm`) · 5 entardecer (`dusk`) · 6 interior escuro (`hive`) |
+| Gosma | `Fx.hit`, `Fx.goo` | Tiro que acerta um inseto solta um estalo e poucas gotas no sentido do tiro (2 no filhote, 3 na aranha, 7 e maiores na matriarca); as gotas saltam, caem e deixam um respingo que some. De propósito discreto, para não poluir com dezenas de aranhas levando tiro. Luz própria, sem halo |
 | Luz | `scripts/world/lighting.gd` | `CanvasModulate` (ambiente) + `DirectionalLight2D` (sol) + luzes pontuais: fixas (gerador, postes nos cantos dos muros, portões, ácido, ninhos, relés), seguidoras (plasma, chamas, pickups, poças) e clarões (tiros, explosões), que nascem das chamadas de `Fx` |
 | Relevo | `tools/build_normals.py`, `Art.lit()` | Mapa de relevo (normal map) por sprite, gerado da silhueta e do brilho; o do terreno sai do brilho da textura em tempo de carga. Desenhos sem relevo usam `Art.flat_material()` para receber a mesma luz que o chão |
 | Sombra | `scripts/world/shadows.gd` | Silhuetas inclinadas das unidades e prismas dos muros/rochas na direção do sol, num `CanvasGroup` (sombras sobrepostas não escurecem em dobro). O chão sai em duas imagens (base e platôs) e as sombras ficam entre elas |
@@ -328,9 +329,10 @@ próximos do mesmo tipo se fundem num só.
 **Custo medido** (RTX 4060 de notebook, Fortaleza Bastião, sem V-Sync): ~3,6 ms por quadro no alto contra ~2,7 ms
 antes da reforma. O renderizador continua o Compatibility (não foi preciso trocar para ter brilho).
 
-**Etapas**: 0 base técnica e 1 missão-piloto (Fortaleza Bastião ao entardecer) — feitas · 2 clima e luz em todas as
-missões · 3 terreno e estruturas com volume (Blender) · 4 atmosfera (poeira, névoa, calor) · 5 impacto (onda de
-choque, fumaça iluminada). Comparação em `docs/shots/before` e `docs/shots/after`.
+**Etapas**: 0 base técnica, 1 missão-piloto (Fortaleza Bastião ao entardecer) e 2 clima e luz em todas as
+missões — feitas · 3 terreno e estruturas com volume (Blender) · 4 atmosfera (poeira, névoa, calor) · 5 impacto
+(onda de choque, fumaça iluminada). Comparação em `docs/shots/before` e `docs/shots/after`
+(`-- --shot-all=PASTA` tira as seis numa janela só).
 
 ---
 

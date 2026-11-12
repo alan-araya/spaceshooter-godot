@@ -10,6 +10,8 @@ uniform float contrast = 1.0;
 uniform vec3 shadow_tint = vec3(1.0);
 uniform vec3 light_tint = vec3(1.0);
 uniform float vignette = 0.0;
+uniform vec3 haze_color = vec3(0.0);
+uniform float haze = 0.0;
 
 void fragment() {
 	// "sharp bilinear": cada pixel da cena fica nítido, só a borda entre dois pixels é suavizada
@@ -23,6 +25,7 @@ void fragment() {
 
 	col += texture(bloom_tex, UV).rgb * bloom;
 
+	col = mix(col, haze_color, haze); // poeira/névoa: puxa tudo para uma cor
 	float l = dot(col, vec3(0.299, 0.587, 0.114));
 	col = mix(vec3(l), col, saturation);
 	col = (col - 0.5) * contrast + 0.5;

@@ -28,7 +28,7 @@ extends RefCounted
 
 const LIST := [
 	{
-		id = "m1", name = "Queda Quente", theme = "desert",
+		id = "m1", name = "Queda Quente", theme = "desert", ambience = "dawn",
 		briefing = [
 			"Comandante, seu módulo de pouso vai cair no meio de um combate.",
 			"Um pelotão já está segurando a linha nas Planícies de Varga.",
@@ -62,7 +62,7 @@ const LIST := [
 		],
 	},
 	{
-		id = "m2", name = "Sinal Perdido", theme = "canyon",
+		id = "m2", name = "Sinal Perdido", theme = "canyon", ambience = "noon",
 		briefing = [
 			"Os relés de comunicação do Cânion Rubro pararam de responder.",
 			"Sem eles, não há reforço orbital no setor.",
@@ -96,7 +96,7 @@ const LIST := [
 		],
 	},
 	{
-		id = "m3", name = "Posto Avançado Eco", theme = "desert",
+		id = "m3", name = "Posto Avançado Eco", theme = "desert", ambience = "afternoon",
 		briefing = [
 			"O Posto Eco guarda o gerador que mantém o escudo do vale ligado.",
 			"Agora com dois anéis: sacos de areia por fora, muralha por dentro.",
@@ -130,7 +130,7 @@ const LIST := [
 		],
 	},
 	{
-		id = "m4", name = "Linha de Trincheiras", theme = "desert",
+		id = "m4", name = "Linha de Trincheiras", theme = "desert", ambience = "storm",
 		briefing = [
 			"A colmeia do norte está empurrando um exército contra a Linha Vega.",
 			"Duas trincheiras com metralhadoras de ponto protegem o bunker do gerador.",
@@ -200,7 +200,7 @@ const LIST := [
 		],
 	},
 	{
-		id = "m6", name = "Coração da Colmeia", theme = "hive",
+		id = "m6", name = "Coração da Colmeia", theme = "hive", ambience = "hive",
 		briefing = [
 			"A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma",
 			"está dentro do Coração da Colmeia, no fundo da instalação.",
@@ -246,6 +246,9 @@ static func get_mission(i: int) -> Dictionary:
 ## Valida dimensões e caracteres. Retorna lista de erros (vazia = ok).
 static func validate(m: Dictionary) -> Array:
 	var errors := []
+	var amb: String = m.get("ambience", "day")
+	if not Ambience.PRESETS.has(amb):
+		errors.append("%s: ambience desconhecido '%s'" % [m.id, amb])
 	var allowed := ".,:_fx#^~=+CsbMNHFSGET123456"
 	var map: Array = m.map
 	if map.size() != Bal.ROWS:

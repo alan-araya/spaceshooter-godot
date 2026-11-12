@@ -156,7 +156,9 @@ func _hit_enemies(pr: Dictionary) -> bool:
 			_release(pr)
 		world.damage_enemy(b, pr.dmg)
 		if kind != "flame":
-			world.fx.goo(p, 2)
+			# respingo de gosma no sentido do tiro; maior na matriarca, menor no filhote
+			var dir: Vector2 = pr.v
+			world.fx.hit(p, dir.angle(), 2.0 if b.kind == "mother" else (0.7 if b.kind == "larva" else 1.0))
 		elif world.rng.randf() < 0.15:
 			world.fx.burn(b.position)
 		if pr.hit != null:
@@ -176,7 +178,8 @@ func _hit_enemies(pr: Dictionary) -> bool:
 		var rn: float = n.r + hit_r
 		if n.position.distance_squared_to(p) < rn * rn:
 			world.damage_enemy(n, pr.dmg)
-			world.fx.goo(p, 2)
+			var dir_n: Vector2 = pr.v
+			world.fx.hit(p, dir_n.angle(), 1.3)
 			if pr.hit != null:
 				pr.hit[n.uid] = true
 			if kind == "flame":

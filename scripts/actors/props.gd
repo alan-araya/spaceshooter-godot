@@ -244,7 +244,7 @@ func _draw_wall() -> void:
 		draw_line(Vector2(8, top.position.y + 4), Vector2(0, top.position.y + 18), crack, 1.5)
 		draw_line(Vector2(-10, front.end.y - 3), Vector2(-3, front.position.y + 3), crack, 1.5)
 	if flash > 0.0:
-		draw_rect(Rect2(top.position, Vector2(ts, ts + WALL_H)), Color(1, 1, 1, 0.5))
+		draw_rect(Rect2(top.position, Vector2(ts, ts + WALL_H)), Color(1.0, 0.95, 0.85, 0.3))
 
 
 func _draw_generator() -> void:

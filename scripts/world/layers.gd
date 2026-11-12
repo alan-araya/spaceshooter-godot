@@ -53,7 +53,8 @@ func add_decal(kind: String, p: Vector2, size: float) -> void:
 	world.record("decal", [kind, p, size])
 	if not world.present:
 		return
-	_push({ kind = kind, p = p, size = size, seed = world.rng.randi(), col = col })
+	# semente do desenho tirada da posição: igual no host e no cliente, e sem gastar world.rng
+	_push({ kind = kind, p = p, size = size, seed = hash(Vector3(p.x, p.y, size)), col = col })
 
 
 ## Carcaça: frame da folha de sprites desenhado girado no chão (ex.: aracnídeo esmagado).

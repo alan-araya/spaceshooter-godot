@@ -119,6 +119,9 @@ func apply(grade: Dictionary, quality_level: int) -> void:
 	mat.set_shader_parameter("shadow_tint", Vector3(st.r, st.g, st.b))
 	mat.set_shader_parameter("light_tint", Vector3(lt.r, lt.g, lt.b))
 	mat.set_shader_parameter("vignette", float(grade.get("vignette", 0.0)) if quality >= 1 else 0.0)
+	var hz: Color = grade.get("haze_color", Color.BLACK)
+	mat.set_shader_parameter("haze_color", Vector3(hz.r, hz.g, hz.b))
+	mat.set_shader_parameter("haze", float(grade.get("haze", 0.0)))
 	_update_glow(visible)
 
 
