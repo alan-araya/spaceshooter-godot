@@ -40,6 +40,8 @@ var retarget_cd := 0.0
 var target = null
 
 var sprite: Sprite2D
+var gun: Sprite2D # metralhadora de ponto: a arma gira sobre a base
+var glow_sprite: Sprite2D # partes que emitem luz (gerador, relé)
 
 
 func setup_flower(w: World, x: Vector2, bloom: float) -> void:
@@ -81,20 +83,30 @@ func setup_wall(w: World, x: Vector2, i: int, gate: bool) -> void:
 func setup_generator(w: World, x: Vector2) -> void:
 	world = w
 	kind = "generator"
-	material = Art.flat_material()
 	position = x
 	r = 24.0
 	max_hp = Bal.STRUCTURES.generator_hp
 	hp = max_hp
+	sprite = Sprite2D.new()
+	add_child(sprite)
+	Art.apply(sprite, "generator")
+	glow_sprite = Art.emissive("generator")
+	add_child(glow_sprite)
 
 
 func setup_turret(w: World, x: Vector2) -> void:
 	world = w
 	kind = "turret"
-	material = Art.flat_material()
 	position = x
 	r = Bal.TURRET.radius
 	aim = -PI / 2.0
+	sprite = Sprite2D.new()
+	add_child(sprite)
+	Art.apply(sprite, "turret_base")
+	gun = Sprite2D.new()
+	gun.position = Vector2(0, -9)
+	add_child(gun)
+	Art.apply(gun, "turret_gun")
 
 
 func setup_switch(w: World, x: Vector2) -> void:
@@ -103,6 +115,11 @@ func setup_switch(w: World, x: Vector2) -> void:
 	material = Art.flat_material()
 	position = x
 	r = 14.0
+	sprite = Sprite2D.new()
+	add_child(sprite)
+	Art.apply(sprite, "relay")
+	glow_sprite = Art.emissive("relay")
+	add_child(glow_sprite)
 
 
 func tick(dt: float) -> void:
@@ -166,7 +183,18 @@ func sync_visual() -> void:
 			if st != _state:
 				_state = st
 				queue_redraw()
-		_:
+		"generator":
+			var pulse := 0.75 + 0.25 * sin(t * 4.0)
+			glow_sprite.visible = not dead
+			glow_sprite.modulate = Color(pulse, pulse, pulse)
+			if dead:
+				sprite.self_modulate = Color(0.42, 0.42, 0.46)
+			else:
+				sprite.self_modulate = Color(1.9, 0.9, 0.85) if flash > 0.0 else Color.WHITE
+		"turret":
+			gun.rotation = aim
+		"switch":
+			glow_sprite.modulate = Color(0.45, 1.0, 0.4) if active else Color(1.0, 0.35, 0.28)
 			queue_redraw()
 
 
@@ -174,12 +202,8 @@ func _draw() -> void:
 	match kind:
 		"wall", "gate":
 			_draw_wall()
-		"generator":
-			_draw_generator()
 		"switch":
 			_draw_switch()
-		"turret":
-			_draw_turret()
 
 
 func _wall_at(cx: int, cy: int) -> bool:
@@ -247,42 +271,7 @@ func _draw_wall() -> void:
 		draw_rect(Rect2(top.position, Vector2(ts, ts + WALL_H)), Color(1.0, 0.95, 0.85, 0.3))
 
 
-func _draw_generator() -> void:
-	var glow := 0.6 + 0.4 * sin(t * 4.0)
-	draw_rect(Rect2(-26, -10, 52, 24), Color("3d434c"))
-	draw_rect(Rect2(-26, -26, 52, 18), Color("5b636e"))
-	draw_rect(Rect2(-26, -26, 52, 40), Color(0, 0, 0, 0.7), false, 1.0)
-	draw_circle(Vector2(0, -17), 8.0, Color(0.3, 0.9, 1.0, glow))
-	draw_circle(Vector2(0, -17), 4.0, Color(0.9, 1.0, 1.0))
-	for i in 3:
-		draw_rect(Rect2(-22 + i * 16, -4, 10, 12), Color("2a2f36"))
-		draw_rect(Rect2(-20 + i * 16, -2, 6, 3), Color(0.3, 1.0, 0.5, glow))
-	if flash > 0.0:
-		draw_rect(Rect2(-26, -26, 52, 40), Color(1, 0.3, 0.3, 0.5))
-
-
-func _draw_turret() -> void:
-	# anel de sacos de areia + metralhadora girando sobre um pedestal
-	for i in 10:
-		var a := TAU * i / 10.0
-		var p := Vector2(cos(a) * 15.0, sin(a) * 10.0 + 2.0)
-		draw_rect(Rect2(p - Vector2(5, 3), Vector2(10, 7)), Color("a8916f"))
-		draw_rect(Rect2(p - Vector2(5, 3), Vector2(10, 7)), Color(0, 0, 0, 0.45), false, 1.0)
-	draw_circle(Vector2(0, -4), 7.0, Color("3a3f47"))
-	var d := Vector2(cos(aim), sin(aim))
-	var base := Vector2(0, -10)
-	draw_line(base, base + d * 22.0, Color("1f2226"), 5.0)
-	draw_line(base, base + d * 22.0, Color("5b636e"), 2.0)
-	draw_circle(base, 5.0, Color("4a505b"))
-	var col := Color("7dff6b") if operator != null else Color("ff6b4a")
-	draw_circle(base + Vector2(0, -1), 2.0, col)
-
-
+## O relé é sprite; aqui só o arco de progresso enquanto o comandante religa.
 func _draw_switch() -> void:
-	draw_circle(Vector2.ZERO, 14.0, Color("3a3f47"))
-	draw_circle(Vector2.ZERO, 11.0, Color("59616c"))
-	var c := Color("7dff6b") if active else Color("ff6b4a")
-	draw_rect(Rect2(-2, -30, 4, 26), Color("8a929c"))
-	draw_circle(Vector2(0, -32), 5.0, c)
 	if not active and progress > 0.0:
 		draw_arc(Vector2.ZERO, 18.0, -PI / 2.0, -PI / 2.0 + TAU * progress, 24, Color("7dff6b"), 3.0)

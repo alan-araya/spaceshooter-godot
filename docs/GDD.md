@@ -318,6 +318,8 @@ e não entra nos snapshots. O teste `_test_visuals` confere que ligar a parte vi
 | Relevo | `tools/build_normals.py`, `Art.lit()` | Mapa de relevo (normal map) por sprite, gerado da silhueta e do brilho; o do terreno sai do brilho da textura em tempo de carga. Desenhos sem relevo usam `Art.flat_material()` para receber a mesma luz que o chão |
 | Sombra | `scripts/world/shadows.gd` | Silhuetas inclinadas das unidades e prismas dos muros/rochas na direção do sol, num `CanvasGroup` (sombras sobrepostas não escurecem em dobro). O chão sai em duas imagens (base e platôs) e as sombras ficam entre elas |
 | Muros | `tools/build_structures.py`, `Prop._draw_wall` | Topo (deslocado 18 px) + face frontal, texturas procedurais com relevo, amostradas pela posição no mundo |
+| Estruturas 3D | `tools/build_props.py`, `tools/blender/props_scene.py` | Gerador, metralhadora de ponto (base + arma que gira) e relé modelados por código no Blender e renderizados na mesma projeção dos muros, em três passes: cor, normais e máscara de luz própria. Viram `<nome>.png`, `<nome>_n.png` e `<nome>_e.png` (somado por cima, sem sofrer com a escuridão) |
+| Dunas | `GroundBuilder.add_dunes` | Ondulação larga somada ao relevo fino da areia: faixas suaves de luz e sombra com o sol baixo |
 | Brilho | `Stage` | Itens emissivos (tiros, partículas de fogo, lâmpadas, ácido) usam material sem luz e a camada de visibilidade 2; um segundo viewport desenha só eles em meia resolução, dois passes de desfoque e a composição somam o halo |
 
 **Qualidade** (menu → GRÁFICOS, ou `--gfx=`): `alto` = tudo; `médio` = menos clarões e luzes seguidoras;
@@ -329,8 +331,8 @@ próximos do mesmo tipo se fundem num só.
 **Custo medido** (RTX 4060 de notebook, Fortaleza Bastião, sem V-Sync): ~3,6 ms por quadro no alto contra ~2,7 ms
 antes da reforma. O renderizador continua o Compatibility (não foi preciso trocar para ter brilho).
 
-**Etapas**: 0 base técnica, 1 missão-piloto (Fortaleza Bastião ao entardecer) e 2 clima e luz em todas as
-missões — feitas · 3 terreno e estruturas com volume (Blender) · 4 atmosfera (poeira, névoa, calor) · 5 impacto
+**Etapas**: 0 base técnica, 1 missão-piloto (Fortaleza Bastião ao entardecer), 2 clima e luz em todas as
+missões e 3 estruturas em 3D (Blender) e relevo de dunas — feitas · 4 atmosfera (poeira, névoa, calor) · 5 impacto
 (onda de choque, fumaça iluminada). Comparação em `docs/shots/before` e `docs/shots/after`
 (`-- --shot-all=PASTA` tira as seis numa janela só).
 

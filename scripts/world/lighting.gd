@@ -97,11 +97,11 @@ func build_fixed() -> void:
 		return
 	var g = world.generator
 	if g != null:
-		_fixed(g, g.position + Vector2(0, 6), CYAN, 200.0, 1.0, 70.0, "generator", 30.0, g.position + Vector2(0, -17))
+		_fixed(g, g.position + Vector2(0, 8), CYAN, 200.0, 1.0, 70.0, "generator", 22.0, g.position + Vector2(0, -25))
 	for tu in world.turrets:
-		_fixed(tu, tu.position + Vector2(0, 2), Color(1.0, 0.4, 0.3), 46.0, 0.6, 16.0, "turret", 9.0, tu.position + Vector2(0, -11))
+		_fixed(tu, tu.position + Vector2(0, 2), Color(1.0, 0.4, 0.3), 46.0, 0.6, 16.0, "turret", 7.0, tu.position + Vector2(0, -16))
 	for sw in world.switches:
-		_fixed(sw, sw.position, Color(1.0, 0.4, 0.3), 80.0, 0.8, 30.0, "switch", 14.0, sw.position + Vector2(0, -32))
+		_fixed(sw, sw.position + Vector2(3, 4), Color(1.0, 0.4, 0.3), 80.0, 0.8, 30.0, "switch", 12.0, sw.position + Vector2(3, -32))
 	for n in world.nests:
 		var big: bool = n.kind == "heart"
 		_fixed(n, n.position + Vector2(0, 8), NEST, 230.0 if big else 130.0, 0.85, 46.0, "nest", 0.0, n.position)

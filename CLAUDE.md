@@ -16,6 +16,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 - Visual: `-- --gfx=alto|medio|baixo`, `-- --seed=N` (screenshot repetível), `-- --shot-all=PASTA --shot-after=8`
   (as seis missões numa janela só). Relevo dos sprites:
   `python -I tools/build_normals.py` (rode depois de mudar um sprite). Muros: `python -I tools/build_structures.py`.
+  Estruturas 3D (gerador, metralhadora, relé): `python -I tools/build_props.py` (roda o Blender sem janela;
+  caminho na variável BLENDER). Depois de gerar PNG novo: `godot --headless --path . --import`.
   FPS: `godot --path . --disable-vsync --print-fps -- --mission=5 --autostart --seed=11 --quit-after=40 > fps.txt 2>&1`
   (sempre para arquivo: pelo pipe o número sai errado).
 - Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title]`.

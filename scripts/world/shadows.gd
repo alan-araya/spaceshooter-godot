@@ -78,12 +78,13 @@ func _draw_statics() -> void:
 				_contact(r, cy)
 	var gen = world.generator
 	if gen != null and not gen.dead:
-		_prism(Rect2(gen.position + Vector2(-26, -8), Vector2(52, 22)), 30.0)
+		_prism(Rect2(gen.position + Vector2(-26, -12), Vector2(52, 24)), 17.0)
+		_prism(Rect2(gen.position + Vector2(-7, -7), Vector2(14, 14)), 27.0)
 	for tu in world.turrets:
-		_prism(Rect2(tu.position + Vector2(-15, -6), Vector2(30, 16)), 9.0)
+		_prism(Rect2(tu.position + Vector2(-14, -12), Vector2(28, 24)), 6.0)
 	for sw in world.switches:
-		_prism(Rect2(sw.position + Vector2(-3, -3), Vector2(6, 6)), 32.0)
-		_prism(Rect2(sw.position + Vector2(-12, -8), Vector2(24, 16)), 3.0)
+		_prism(Rect2(sw.position + Vector2(1, -1), Vector2(4, 4)), 30.0)
+		_prism(Rect2(sw.position + Vector2(-10, -7), Vector2(10, 8)), 9.0)
 
 
 ## 0 = nada, 1 = rocha, 2 = muro/portão de pé.

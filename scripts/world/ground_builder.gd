@@ -142,6 +142,34 @@ static func normal_map(img: Image, strength: float, faces: Array) -> Image:
 	return n
 
 
+## Ondulação larga da areia (dunas baixas, esticadas pelo vento) somada ao relevo fino: aparece
+## como faixas suaves de luz e sombra quando o sol está baixo. Não mexe em piso metálico, ácido
+## nem rocha. Feita em 1/4 da resolução (o laço por pixel em GDScript é lento) e ampliada.
+static func add_dunes(n_img: Image, grid: Grid, seed_v: int) -> void:
+	var q := 4
+	var w := n_img.get_width() / q
+	var h := n_img.get_height() / q
+	var noise := FastNoiseLite.new()
+	noise.seed = seed_v
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	noise.frequency = 0.035
+	noise.fractal_octaves = 2
+	var hm := noise.get_image(w / 3, h, false, false, true)
+	hm.resize(w, h, Image.INTERPOLATE_CUBIC) # estica 3× na horizontal
+	hm.bump_map_to_normal_map(6.0)
+	if hm.get_format() != Image.FORMAT_RGBA8:
+		hm.convert(Image.FORMAT_RGBA8)
+	for y in h:
+		var cy := mini(y * q / T, grid.rows - 1)
+		for x in w:
+			var i := grid.idx(mini(x * q / T, grid.cols - 1), cy)
+			var c := hm.get_pixel(x, y)
+			c.a = 0.5 if (grid.kind[i] == Grid.GROUND and grid.deco[i] != 95) else 0.0
+			hm.set_pixel(x, y, c)
+	hm.resize(n_img.get_width(), n_img.get_height(), Image.INTERPOLATE_BILINEAR)
+	n_img.blend_rect(hm, Rect2i(0, 0, hm.get_width(), hm.get_height()), Vector2i.ZERO)
+
+
 ## Faixa preta que some na direção `dir` (para a oclusão na base das rochas).
 static func _fade(w: int, h: int, dir: Vector2i, alpha: float) -> Image:
 	var i := Image.create(w, h, false, Image.FORMAT_RGBA8)

@@ -205,7 +205,7 @@ func _draw_overlay() -> void:
 			_bar(rb.position + Vector2(0, -30), 34.0, rb.hp / rb.max_hp, Color("9fe8ff"))
 	var g = world.generator
 	if g != null and not g.dead:
-		_bar(g.position + Vector2(0, -38), 60.0, g.hp / g.max_hp, Color("7dff6b"))
+		_bar(g.position + Vector2(0, -48), 60.0, g.hp / g.max_hp, Color("7dff6b"))
 	# avisos de emboscada
 	for a in world.ambushes:
 		if not a.done:

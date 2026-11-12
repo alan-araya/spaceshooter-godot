@@ -15,6 +15,11 @@ const DEFS := {
 	buggy = { h = 1, v = 1, size = Vector2i(64, 40), offset = Vector2.ZERO },
 	dropship = { h = 1, v = 1, size = Vector2i(112, 72), offset = Vector2.ZERO },
 	robot = { h = 2, v = 1, size = Vector2i(48, 48), offset = Vector2.ZERO },
+	# estruturas modeladas no Blender (tools/build_props.py); offset = centro do quadro em relação ao pé da peça
+	generator = { h = 1, v = 1, size = Vector2i(64, 60), offset = Vector2(0, -14) },
+	turret_base = { h = 1, v = 1, size = Vector2i(44, 44), offset = Vector2(0, -4) },
+	turret_gun = { h = 1, v = 1, size = Vector2i(48, 20), offset = Vector2.ZERO },
+	relay = { h = 1, v = 1, size = Vector2i(40, 60), offset = Vector2(0, -16) },
 }
 
 ## Texturas de terreno (sem grade de frames).
@@ -143,6 +148,16 @@ func unshaded(additive: bool = false) -> CanvasItemMaterial:
 		_unshaded = CanvasItemMaterial.new()
 		_unshaded.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	return _unshaded
+
+
+## Sprite das partes que emitem luz (`<nome>_e.png`): somado por cima, sem sofrer com a escuridão.
+func emissive(key: String) -> Sprite2D:
+	var d: Dictionary = DEFS[key]
+	var s := Sprite2D.new()
+	s.texture = tex(key + "_e")
+	s.offset = d.offset
+	s.material = unshaded(true)
+	return s
 
 
 func apply(s: Sprite2D, key: String) -> void:

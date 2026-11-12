@@ -217,7 +217,10 @@ func _build_ground(seed_v: int) -> void:
 		if sat != 1.0:
 			base.adjust_bcs(1.0, 1.0, sat)
 			top.adjust_bcs(1.0, 1.0, sat)
-		base_n = ImageTexture.create_from_image(GroundBuilder.normal_map(base, 3.0, []))
+		var base_relief := GroundBuilder.normal_map(base, 3.6, [])
+		if mission.theme != "hive":
+			GroundBuilder.add_dunes(base_relief, grid, seed_v)
+		base_n = ImageTexture.create_from_image(base_relief)
 		top_n = ImageTexture.create_from_image(GroundBuilder.normal_map(top, 3.0, gb.faces))
 	_chunks(ground, Art.lit_pair(ImageTexture.create_from_image(base), base_n), base, false)
 	_chunks(rocks, Art.lit_pair(ImageTexture.create_from_image(top), top_n), top, true)

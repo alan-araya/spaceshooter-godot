@@ -96,7 +96,8 @@ scripts/net/   CmdInput (comandos), Snapshot (estado binário), Replica (cliente
 scripts/ui/    Main (telas, lobby, laço host/cliente), Hud, UiKit (tema)
 assets/sprites/ sprites finais (gerados pelo pipeline)
 art_src/       imagens-fonte geradas por IA (ignoradas pelo Godot)
-tools/         process_art.py (fonte → sprites), build_normals.py (mapas de relevo), build_structures.py (muros)
+tools/         process_art.py (fonte → sprites), build_normals.py (mapas de relevo), build_structures.py (muros),
+               build_props.py + blender/props_scene.py (gerador, metralhadora e relé modelados no Blender)
 tests/         testes headless
 ```
 
