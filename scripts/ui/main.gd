@@ -4,6 +4,8 @@ extends Node
 ## Simulação em passo fixo de 60 Hz (_physics_process).
 ## Argumentos de depuração (depois de "--"):
 ##   --mission=N --players=N --difficulty=facil|normal|dificil --autostart --unlockall
+##   --gfx=alto|medio|baixo   qualidade gráfica só nesta execução
+##   --seed=N   semente fixa da missão (screenshots e medições repetíveis)
 ##   --test [--probe] [--timeline=m3]   testes headless
 ##   --shot=arquivo.png --shot-after=SEG --quit-after-shot   screenshot
 ##   --stress   mede um frame renderizado com 180 insetos
@@ -19,7 +21,8 @@ const STEP := 1.0 / 60.0
 var screen := Screen.MENU
 var world: World
 var replica: Replica
-var game_root: Node2D
+var stage: Stage # palco: mundo num SubViewport + pós-processamento
+var game_root: Node2D # raiz do mundo, dentro do palco
 var hud: Hud
 var hud_layer: CanvasLayer
 var ui_layer: CanvasLayer
@@ -38,10 +41,9 @@ var _log_t := 0.0
 
 func _ready() -> void:
 	_parse_args()
-	game_root = Node2D.new()
-	game_root.name = "GameRoot"
-	game_root.position = Vector2(0, Bal.HUD_TOP)
-	add_child(game_root)
+	stage = Stage.new()
+	add_child(stage)
+	game_root = stage.content
 	hud_layer = CanvasLayer.new()
 	hud_layer.layer = 5
 	add_child(hud_layer)
@@ -60,6 +62,8 @@ func _ready() -> void:
 		Game.players = clampi(int(args.players), 1, 4)
 	if args.has("difficulty") and Bal.DIFFICULTY.has(args.difficulty):
 		Game.difficulty = args.difficulty
+	if args.has("gfx") and Game.GFX_KEYS.has(args.gfx):
+		Game.gfx = Game.GFX_KEYS[args.gfx]
 	if args.has("shot"):
 		_shot_timer = float(args.get("shot-after", "4"))
 	if args.has("quit-after"):
@@ -214,6 +218,12 @@ func show_menu() -> void:
 		show_menu()
 		_focus_index(3)
 	box.add_child(UiKit.button("DIFICULDADE: %s" % dl.to_upper(), cycle_diff))
+	var cycle_gfx := func() -> void:
+		Game.gfx = (Game.gfx + 2) % 3 # alto → médio → baixo → alto
+		Game.save()
+		show_menu()
+		_focus_index(4)
+	box.add_child(UiKit.button("GRÁFICOS: %s" % Game.GFX_LABELS[Game.gfx], cycle_gfx))
 	box.add_child(UiKit.button("CONTROLES", show_controls))
 	box.add_child(UiKit.button("SAIR", func(): get_tree().quit()))
 	var foot := UiKit.label("Méritos: %d   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais." % Game.merit_total, 13, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER)
@@ -434,7 +444,7 @@ func start_mission(seed_v: int = -1, players: int = -1) -> void:
 	_end_world()
 	Sfx.play("ui_ok")
 	if seed_v < 0:
-		seed_v = randi()
+		seed_v = int(args.seed) if args.has("seed") else randi()
 	if players < 0:
 		players = Game.players
 	InputSetup.reset()
@@ -443,6 +453,8 @@ func start_mission(seed_v: int = -1, players: int = -1) -> void:
 	game_root.add_child(world)
 	world.setup(Game.mission_index, Game.difficulty, players, seed_v)
 	world.shake_requested.connect(func(a: float): shake = maxf(shake, a))
+	stage.apply(world.amb.grade, Game.gfx)
+	stage.set_active(true)
 	if Net.is_client():
 		replica = Replica.new(world)
 	elif Net.is_host():
@@ -491,6 +503,7 @@ func _start_stress() -> void:
 
 
 func _end_world() -> void:
+	stage.set_active(false)
 	if world != null:
 		world.queue_free()
 		world = null
@@ -707,9 +720,9 @@ func _process(delta: float) -> void:
 		replica.render(delta)
 	if shake > 0.0:
 		shake = maxf(0.0, shake - delta * 30.0)
-		game_root.position = Vector2(0, Bal.HUD_TOP) + Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake
+		stage.set_shake(Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake)
 	else:
-		game_root.position = Vector2(0, Bal.HUD_TOP)
+		stage.set_shake(Vector2.ZERO)
 	if _shot_timer >= 0.0:
 		_shot_timer -= delta
 		if _shot_timer < 0.0:

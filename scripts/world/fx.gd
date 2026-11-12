@@ -1,20 +1,28 @@
 class_name Fx
 extends Node2D
-## Partículas em lote. Duas camadas: normal (gosma, poeira, fumaça) e brilho aditivo (fogo, flashes).
+## Partículas em lote. Duas camadas: matéria (gosma, poeira, fumaça — recebe luz) e brilho
+## aditivo (fogo, flashes — luz própria, entra no buffer de brilho). Os efeitos que emitem luz
+## também acendem um clarão em world.lights.
 
 const MAX := 1500
 
 var world: World
 var parts: Array = [] # Dictionary: p, v, life, max, col, size, drag, glow, grav, shrink
+var lit_layer: Node2D
 var glow_layer: Node2D
 
 
 func _ready() -> void:
+	visibility_layer = Stage.LAYER_BOTH
+	lit_layer = Node2D.new()
+	lit_layer.name = "Lit"
+	lit_layer.material = Art.flat_material()
+	add_child(lit_layer)
+	lit_layer.draw.connect(_draw_lit)
 	glow_layer = Node2D.new()
 	glow_layer.name = "Glow"
-	var mat := CanvasItemMaterial.new()
-	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	glow_layer.material = mat
+	glow_layer.visibility_layer = Stage.LAYER_BOTH
+	glow_layer.material = Art.unshaded(true)
 	add_child(glow_layer)
 	glow_layer.draw.connect(_draw_glow)
 
@@ -67,6 +75,7 @@ func spark(p: Vector2, n: int) -> void:
 		return
 	for i in n:
 		_add(p, _rv(60.0, 200.0), world.rng.randf_range(0.08, 0.2), Color(1.0, 0.85, 0.4), 2.0, 6.0, true)
+	world.lights.flash(p, Lighting.WARM, 44.0, 0.55, 0.09, "sp")
 
 
 func muzzle(p: Vector2, angle: float) -> void:
@@ -74,6 +83,7 @@ func muzzle(p: Vector2, angle: float) -> void:
 		return
 	var d := Vector2(cos(angle), sin(angle))
 	_add(p + d * 3.0, d * 40.0, 0.05, Color(1.0, 0.9, 0.5), 5.0, 0.0, true)
+	world.lights.flash(p + d * 10.0, Lighting.WARM, 84.0, 0.95, 0.07, "mz")
 
 
 func smoke(p: Vector2) -> void:
@@ -86,6 +96,7 @@ func burn(p: Vector2) -> void:
 	if _rec("burn", [p]):
 		return
 	_add(p + _rv(0.0, 6.0), Vector2(0, -40), 0.35, Color(1.0, 0.55, 0.15), 4.0, 1.0, true)
+	world.lights.flash(p, Color(1.0, 0.55, 0.2), 76.0, 0.75, 0.2, "bn")
 
 
 func petals(p: Vector2) -> void:
@@ -101,6 +112,7 @@ func sparkle(p: Vector2, col: Color) -> void:
 		return
 	for i in 16:
 		_add(p, _rv(40.0, 140.0), world.rng.randf_range(0.3, 0.7), col, 2.5, 3.0, true)
+	world.lights.flash(p, col, 120.0, 1.0, 0.4, "", 1)
 
 
 func plasma_pop(p: Vector2) -> void:
@@ -108,12 +120,14 @@ func plasma_pop(p: Vector2) -> void:
 		return
 	for i in 10:
 		_add(p, _rv(40.0, 160.0), world.rng.randf_range(0.15, 0.35), Color(0.4, 0.95, 1.0), 3.0, 4.0, true)
+	world.lights.flash(p, Lighting.CYAN, 140.0, 1.3, 0.24, "pp", 1)
 
 
 func explosion(p: Vector2, scale_k: float) -> void:
 	if _rec("explosion", [p, scale_k]):
 		return
 	_add(p, Vector2.ZERO, 0.18, Color(1.0, 0.95, 0.7), 26.0 * scale_k, 0.0, true)
+	world.lights.flash(p, Color(1.0, 0.62, 0.25), 240.0 * scale_k, 1.9, 0.5, "", 2)
 	for i in int(22 * scale_k):
 		var c := Color(1.0, world.rng.randf_range(0.4, 0.8), 0.15)
 		_add(p, _rv(40.0, 220.0) * scale_k, world.rng.randf_range(0.2, 0.5), c, world.rng.randf_range(3.0, 6.0) * scale_k, 4.0, true)
@@ -132,11 +146,11 @@ func tick(dt: float) -> void:
 		q.v *= maxf(0.0, 1.0 - q.drag * dt)
 		keep.append(q)
 	parts = keep
-	queue_redraw()
+	lit_layer.queue_redraw()
 	glow_layer.queue_redraw()
 
 
-func _draw() -> void:
+func _draw_lit() -> void:
 	for q in parts:
 		if q.glow:
 			continue
@@ -144,7 +158,7 @@ func _draw() -> void:
 		var c: Color = q.col
 		c.a *= minf(1.0, k * 2.0)
 		var s: float = q.size * (0.5 + 0.5 * k)
-		draw_rect(Rect2(q.p - Vector2(s, s) * 0.5, Vector2(s, s)), c)
+		lit_layer.draw_rect(Rect2(q.p - Vector2(s, s) * 0.5, Vector2(s, s)), c)
 
 
 func _draw_glow() -> void:

@@ -13,6 +13,10 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 - Mapas das defesas em camadas: `python -I tools/build_maps.py` (imprime os mapas para colar em missions.gd).
 - Rede com 2 instâncias: host `-- --net-host --mission=3 --net-start-when=2 --net-log --quit-after=30` (pode ser
   `--headless`) e cliente `-- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24`. `-- --loopback` = réplica sem rede.
+- Visual: `-- --gfx=alto|medio|baixo`, `-- --seed=N` (screenshot repetível). Relevo dos sprites:
+  `python -I tools/build_normals.py` (rode depois de mudar um sprite). Muros: `python -I tools/build_structures.py`.
+  FPS: `godot --path . --disable-vsync --print-fps -- --mission=5 --autostart --seed=11 --quit-after=40 > fps.txt 2>&1`
+  (sempre para arquivo: pelo pipe o número sai errado).
 - Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title]`.
 
 ## Regras do projeto
@@ -31,5 +35,10 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 10. Rede: a simulação só produz efeitos via `world.sfx()`, `world.fx.*`, `world.decal_layer.*`, `world.toast()`,
    `world.shake()` (gravam eventos para os clientes). Entidade nova com estado visível = campo novo em
    `Snapshot.encode/decode` + `Replica._create/_apply_ent`, senão o cliente não vê. O teste de loopback pega isso.
+11. Visual (GDD §10): luz, sombra e pós só LEEM o estado — nunca escrevem na simulação nem usam `world.rng`
+   (o teste `_test_visuals` compara a simulação com e sem visual). Emissivo = `Art.unshaded()` +
+   `visibility_layer = Stage.LAYER_BOTH` no nó e nos pais. Desenho sem mapa de relevo = `Art.flat_material()`,
+   senão fica mais claro que o chão. Máximo de 16 luzes por item: clarão novo passa por `world.lights.flash()`.
+   Clima de missão só em `scripts/world/ambience.gd`.
 9. Geração de imagem no Codex: rode as chamadas em SEQUÊNCIA (em paralelo o WSL quebra). Fundo magenta; o
    `process_art.py` remove só o magenta ligado às bordas (sprites têm rosa/roxo por dentro).

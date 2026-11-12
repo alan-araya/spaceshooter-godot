@@ -3,6 +3,12 @@ extends Node2D
 ## Objetos de cenário e de missão que não são unidades com IA:
 ## flor, pickup, muro/portão, gerador, relé. Desenhados por sprite (Art) ou procedural (_draw).
 
+## Altura do muro em px na tela (o topo é desenhado deslocado para cima; a face frontal tem essa altura).
+const WALL_H := 18.0
+## Regiões do atlas assets/sprites/walls.png (tools/build_structures.py).
+const SRC_GATE_TOP := Rect2(128, 24, 32, 32)
+const SRC_GATE_FRONT := Rect2(160, 24, 32, 18)
+
 var world: World
 var uid := 0
 var kind := ""
@@ -17,6 +23,8 @@ var pick := ""
 var life := -1.0
 # muro
 var cell := -1
+var lamp := false # poste de luz neste trecho (Lighting escolhe os cantos)
+var _state := -1 # o muro só se redesenha quando isto muda
 # gerador
 var hp := 1.0
 var max_hp := 1.0
@@ -59,6 +67,7 @@ func setup_pickup(w: World, x: Vector2, which: String, lifetime: float) -> void:
 	sprite = Sprite2D.new()
 	add_child(sprite)
 	Art.apply(sprite, "pickups")
+	sprite.material = Art.unshaded() # ícone sempre legível, mesmo no escuro
 	sprite.frame = PICK_FRAME.get(which, 0)
 
 
@@ -72,6 +81,7 @@ func setup_wall(w: World, x: Vector2, i: int, gate: bool) -> void:
 func setup_generator(w: World, x: Vector2) -> void:
 	world = w
 	kind = "generator"
+	material = Art.flat_material()
 	position = x
 	r = 24.0
 	max_hp = Bal.STRUCTURES.generator_hp
@@ -81,6 +91,7 @@ func setup_generator(w: World, x: Vector2) -> void:
 func setup_turret(w: World, x: Vector2) -> void:
 	world = w
 	kind = "turret"
+	material = Art.flat_material()
 	position = x
 	r = Bal.TURRET.radius
 	aim = -PI / 2.0
@@ -89,6 +100,7 @@ func setup_turret(w: World, x: Vector2) -> void:
 func setup_switch(w: World, x: Vector2) -> void:
 	world = w
 	kind = "switch"
+	material = Art.flat_material()
 	position = x
 	r = 14.0
 
@@ -145,6 +157,15 @@ func sync_visual() -> void:
 		"pickup":
 			sprite.position.y = -8.0 + sin(t * 4.0) * 3.0
 			visible = life < 0.0 or life > 4.0 or int(life * 8.0) % 2 == 0
+		"wall", "gate":
+			var g := world.grid
+			var st := world.walls_version * 8 + (4 if flash > 0.0 else 0)
+			if g.max_hp[cell] > 0.0:
+				var k: float = g.hp[cell] / g.max_hp[cell]
+				st += 2 if k < 0.4 else (1 if k < 0.7 else 0)
+			if st != _state:
+				_state = st
+				queue_redraw()
 		_:
 			queue_redraw()
 
@@ -161,41 +182,69 @@ func _draw() -> void:
 			_draw_turret()
 
 
+func _wall_at(cx: int, cy: int) -> bool:
+	var g := world.grid
+	return g.in_bounds(cx, cy) and world.walls.has(g.idx(cx, cy))
+
+
+## Muro/portão com volume: topo (deslocado WALL_H para cima) + face frontal, com mapa de relevo.
+## O topo é amostrado pela posição no mundo, então as lajes continuam de um trecho para o outro.
+## A face só aparece quando não há muro logo abaixo (senão o topo do vizinho a cobre).
 func _draw_wall() -> void:
 	var g := world.grid
+	var cx := cell % g.cols
+	var cy := cell / g.cols
 	var hpk := 1.0
 	if g.max_hp[cell] > 0.0:
 		hpk = g.hp[cell] / g.max_hp[cell]
 	var ts := float(Bal.TILE)
-	var top := Rect2(-ts * 0.5, -ts * 0.5 - 14.0, ts, ts * 0.5)
-	var front := Rect2(-ts * 0.5, -ts * 0.5 - 14.0 + ts * 0.5, ts, ts * 0.5 + 14.0)
-	if kind == "gate":
-		draw_rect(front, Color("4a4f57"))
-		draw_rect(top, Color("6f7782"))
-		for i in 4:
-			var x := -ts * 0.5 + 4.0 + i * 8.0
-			draw_line(Vector2(x, front.position.y + 2.0), Vector2(x, front.end.y - 2.0), Color("2c3036"), 2.0)
-		draw_rect(Rect2(-ts * 0.5, front.position.y + 4.0, ts, 3.0), Color("e0b040"))
-	else:
-		draw_rect(front, Color("7d6a52"))
-		draw_rect(top, Color("a8916f"))
-		# sacos de areia / blocos
-		for row in 3:
-			var y := front.position.y + 2.0 + row * 9.0
-			var off := 0.0 if row % 2 == 0 else 5.0
-			var x := -ts * 0.5 - off
-			while x < ts * 0.5:
-				draw_rect(Rect2(maxf(x, -ts * 0.5) + 1.0, y, minf(10.0, ts * 0.5 - x) - 2.0, 7.0), Color("917b5c"))
-				x += 10.0
-	draw_rect(Rect2(top.position, Vector2(ts, front.end.y - top.position.y)), Color(0, 0, 0, 0.6), false, 1.0)
+	var hs := ts * 0.5
+	var tex := Art.lit("walls")
+	var gate := kind == "gate"
+	var top := Rect2(-hs, -hs - WALL_H, ts, ts)
+	var front := Rect2(-hs, hs - WALL_H, ts, WALL_H)
+	var n := _wall_at(cx, cy - 1)
+	var s := _wall_at(cx, cy + 1)
+	var w := _wall_at(cx - 1, cy)
+	var e := _wall_at(cx + 1, cy)
+	var ink := Color(0.09, 0.07, 0.07, 0.9)
+	if not s:
+		var fsrc: Rect2 = SRC_GATE_FRONT if gate else Rect2(128.0 + float((cx * 32) % 128), 0.0, 32.0, WALL_H)
+		draw_texture_rect_region(tex, front, fsrc)
+		if not w:
+			draw_rect(Rect2(front.position.x, front.position.y, 1.0, WALL_H), ink)
+		if not e:
+			draw_rect(Rect2(front.end.x - 1.0, front.position.y, 1.0, WALL_H), ink)
+	var tsrc: Rect2 = SRC_GATE_TOP if gate else Rect2(float((cx * 32) % 128), float((cy * 32) % 128), 32.0, 32.0)
+	draw_texture_rect_region(tex, top, tsrc)
+	# contorno e parapeito onde o topo termina
+	var rim := Color(1.0, 0.95, 0.84, 0.30)
+	var dip := Color(0, 0, 0, 0.26)
+	if not n:
+		draw_rect(Rect2(top.position.x, top.position.y, ts, 1.0), ink)
+		draw_rect(Rect2(top.position.x, top.position.y + 1.0, ts, 2.0), rim)
+		draw_rect(Rect2(top.position.x, top.position.y + 3.0, ts, 1.0), dip)
+	if not w:
+		draw_rect(Rect2(top.position.x, top.position.y, 1.0, ts), ink)
+		draw_rect(Rect2(top.position.x + 1.0, top.position.y + 1.0, 2.0, ts - 1.0), rim)
+		draw_rect(Rect2(top.position.x + 3.0, top.position.y + 1.0, 1.0, ts - 1.0), dip)
+	if not e:
+		draw_rect(Rect2(top.end.x - 1.0, top.position.y, 1.0, ts), ink)
+		draw_rect(Rect2(top.end.x - 3.0, top.position.y + 1.0, 2.0, ts - 1.0), Color(0, 0, 0, 0.30))
+	if lamp:
+		# poste: o brilho da lâmpada é desenhado pelo Lighting
+		draw_rect(Rect2(-1.0, -WALL_H - 14.0, 2.0, 14.0), Color("23262b"))
+		draw_rect(Rect2(-4.0, -WALL_H - 17.0, 8.0, 3.0), Color("2f333a"))
+		draw_rect(Rect2(-3.0, -WALL_H - 14.0, 6.0, 1.0), Color("ffe7b0"))
 	# rachaduras conforme o dano
+	var crack := Color(0, 0, 0, 0.75)
 	if hpk < 0.7:
-		draw_line(Vector2(-6, front.position.y + 3), Vector2(2, front.position.y + 12), Color(0, 0, 0, 0.7), 1.5)
+		draw_line(Vector2(-6, top.position.y + 8), Vector2(2, top.position.y + 20), crack, 1.5)
 	if hpk < 0.4:
-		draw_line(Vector2(8, top.position.y + 4), Vector2(0, front.position.y + 8), Color(0, 0, 0, 0.7), 1.5)
-		draw_line(Vector2(-10, front.end.y - 4), Vector2(-2, front.position.y + 6), Color(0, 0, 0, 0.7), 1.5)
+		draw_line(Vector2(8, top.position.y + 4), Vector2(0, top.position.y + 18), crack, 1.5)
+		draw_line(Vector2(-10, front.end.y - 3), Vector2(-3, front.position.y + 3), crack, 1.5)
 	if flash > 0.0:
-		draw_rect(Rect2(top.position, Vector2(ts, front.end.y - top.position.y)), Color(1, 1, 1, 0.5))
+		draw_rect(Rect2(top.position, Vector2(ts, ts + WALL_H)), Color(1, 1, 1, 0.5))
 
 
 func _draw_generator() -> void:

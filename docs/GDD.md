@@ -302,7 +302,39 @@ reconexão, medidor de ping, compressão por diferença) · 3 (internet: lobbies
 
 ---
 
-## 10. Estado atual (2026-11-11) e próximos passos
+## 10. Visual: luz, sombra e pós-processamento
+
+Referência de técnica: jogos 2D de pixel art com luz dinâmica (ambiente frio por hora do dia, luzes quentes locais,
+sombras longas, brilho). Só a técnica — a arte continua original (§1). Tudo aqui é aparência: lê o estado da
+simulação e os eventos de efeito, nunca escreve neles e não usa `world.rng`; por isso vale igual no host e no cliente
+e não entra nos snapshots. O teste `_test_visuals` confere que ligar a parte visual não muda a simulação.
+
+| Peça | Arquivo | O que faz |
+|---|---|---|
+| Palco | `scripts/world/stage.gd` | O mundo é desenhado num `SubViewport` fixo de 1280×640 e composto na tela por `shaders/composite.gdshader` (ampliação nítida, brilho, cor, vinheta). O HUD fica fora, na resolução da janela |
+| Clima | `scripts/world/ambience.gd` | Predefinições por hora do dia (`day`, `dusk`): luz ambiente, sol, sombras, postes, saturação do chão e cor final. A missão escolhe com `ambience = "..."` |
+| Luz | `scripts/world/lighting.gd` | `CanvasModulate` (ambiente) + `DirectionalLight2D` (sol) + luzes pontuais: fixas (gerador, postes nos cantos dos muros, portões, ácido, ninhos, relés), seguidoras (plasma, chamas, pickups, poças) e clarões (tiros, explosões), que nascem das chamadas de `Fx` |
+| Relevo | `tools/build_normals.py`, `Art.lit()` | Mapa de relevo (normal map) por sprite, gerado da silhueta e do brilho; o do terreno sai do brilho da textura em tempo de carga. Desenhos sem relevo usam `Art.flat_material()` para receber a mesma luz que o chão |
+| Sombra | `scripts/world/shadows.gd` | Silhuetas inclinadas das unidades e prismas dos muros/rochas na direção do sol, num `CanvasGroup` (sombras sobrepostas não escurecem em dobro). O chão sai em duas imagens (base e platôs) e as sombras ficam entre elas |
+| Muros | `tools/build_structures.py`, `Prop._draw_wall` | Topo (deslocado 18 px) + face frontal, texturas procedurais com relevo, amostradas pela posição no mundo |
+| Brilho | `Stage` | Itens emissivos (tiros, partículas de fogo, lâmpadas, ácido) usam material sem luz e a camada de visibilidade 2; um segundo viewport desenha só eles em meia resolução, dois passes de desfoque e a composição somam o halo |
+
+**Qualidade** (menu → GRÁFICOS, ou `--gfx=`): `alto` = tudo; `médio` = menos clarões e luzes seguidoras;
+`baixo` = sem luzes dinâmicas, sem brilho e sombras simples (para aparelhos fracos).
+
+**Limite do motor**: 16 luzes por item desenhado. Por isso o chão é cortado em blocos de 128 px e os clarões
+próximos do mesmo tipo se fundem num só.
+
+**Custo medido** (RTX 4060 de notebook, Fortaleza Bastião, sem V-Sync): ~3,6 ms por quadro no alto contra ~2,7 ms
+antes da reforma. O renderizador continua o Compatibility (não foi preciso trocar para ter brilho).
+
+**Etapas**: 0 base técnica e 1 missão-piloto (Fortaleza Bastião ao entardecer) — feitas · 2 clima e luz em todas as
+missões · 3 terreno e estruturas com volume (Blender) · 4 atmosfera (poeira, névoa, calor) · 5 impacto (onda de
+choque, fumaça iluminada). Comparação em `docs/shots/before` e `docs/shots/after`.
+
+---
+
+## 11. Estado atual (2026-11-12) e próximos passos
 
 **Feito**: 5 missões do MVP portadas (limpar, ninhos, relés, defesa do posto, coração + cristal); co-op local até 4
 (teclado WASD, setas, 2 controles); 4 ordens; IA melhorada (§4.3); flor → matriarca, filhotes, emboscadas, bandos nos
@@ -321,5 +353,5 @@ Pendente da revisão: desacoplar o visual (estado → adaptador 2D/3D) — entra
 3. Canhões fixos ocupáveis e cota de abates na defesa; terminais que abrem portas.
 4. Animação de tiro do soldado e de morte (folhas novas no Codex), sombra de nave, partículas de areia.
 5. Fonte pixel com acentos (ex.: Silkscreen, OFL) e vozes/efeitos gravados.
-6. Fase 2: luz 2D (`PointLight2D` nos tiros e explosões), normal maps nos sprites, parallax; depois unidades 3D num
-   `SubViewport` mantendo o mesmo `tick`/`sync_visual`.
+6. Reforma visual (§10): etapas 2 a 5; depois parallax e unidades 3D num `SubViewport` mantendo o mesmo
+   `tick`/`sync_visual`.

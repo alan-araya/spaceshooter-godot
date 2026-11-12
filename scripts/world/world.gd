@@ -87,9 +87,23 @@ var present := true
 var replica := false
 var replica_objective := ""
 
-var ground: Sprite2D
+## false nos mundos que só simulam (fantasma, testes sem janela): nada de luz, sombra ou relevo.
+var visuals := true
+## Testes: liga a parte visual mesmo sem janela, para exercitar o código de luz e sombra.
+static var headless_visuals := false
+var amb: Dictionary # clima visual da missão (Ambience)
+var walls_version := 0 # muda quando um muro cai (muros vizinhos e sombras se redesenham)
+var unit_tint := Color.WHITE # humanos um pouco mais claros que o cenário nos climas escuros
+
+const CHUNK := 128 # o chão é cortado em blocos: o motor aceita 16 luzes por item desenhado
+
+var ground: Node2D
+var acid_glow: Node2D
 var decal_layer: WorldLayer
 var shadow_layer: WorldLayer
+var shadows: Shadows
+var rocks: Node2D
+var lights: Lighting
 var entities: Node2D
 var projectiles: Projectiles
 var fx: Fx
@@ -122,9 +136,15 @@ func setup(mission_index: int, difficulty: String, players: int, seed_v: int = 1
 	ff_flower = FlowField.new(grid, Grid.MODE_BUG)
 	ff_enemy = FlowField.new(grid, Grid.MODE_HUMAN)
 
+	amb = Ambience.of(mission)
+	visuals = present and (headless_visuals or DisplayServer.get_name() != "headless")
+	if visuals and Game.gfx >= 1:
+		var ub: float = amb.get("unit_boost", 1.0)
+		unit_tint = Color(ub, ub, ub)
 	_make_layers()
 	_load_map(players)
-	ground.texture = GroundBuilder.build(grid, mission.theme, nest_cells, seed_v)
+	_build_ground(seed_v)
+	lights.build_fixed()
 	total_nests = 0
 	for n in nests:
 		if n.kind == "nest":
@@ -133,10 +153,14 @@ func setup(mission_index: int, difficulty: String, players: int, seed_v: int = 1
 
 
 func _make_layers() -> void:
-	ground = Sprite2D.new()
+	# contêiner: precisa do bit de brilho para os filhos emissivos entrarem no buffer (ver Stage)
+	visibility_layer = Stage.LAYER_BOTH
+	ground = Node2D.new()
 	ground.name = "Ground"
-	ground.centered = false
 	add_child(ground)
+	acid_glow = Node2D.new()
+	acid_glow.name = "AcidGlow"
+	add_child(acid_glow)
 	decal_layer = WorldLayer.new()
 	decal_layer.name = "Decals"
 	decal_layer.world = self
@@ -147,6 +171,14 @@ func _make_layers() -> void:
 	shadow_layer.world = self
 	shadow_layer.mode = WorldLayer.Mode.SHADOWS
 	add_child(shadow_layer)
+	if visuals and Game.gfx >= 1:
+		shadows = Shadows.new()
+		shadows.name = "SunShadows"
+		shadows.setup(self)
+		add_child(shadows)
+	rocks = Node2D.new()
+	rocks.name = "Rocks"
+	add_child(rocks)
 	entities = Node2D.new()
 	entities.name = "Entities"
 	entities.y_sort_enabled = true
@@ -162,11 +194,61 @@ func _make_layers() -> void:
 	air = Node2D.new()
 	air.name = "Air"
 	add_child(air)
+	lights = Lighting.new()
+	lights.name = "Lights"
+	lights.setup(self)
+	add_child(lights)
 	overlay = WorldLayer.new()
 	overlay.name = "Overlay"
 	overlay.world = self
 	overlay.mode = WorldLayer.Mode.OVERLAY
 	add_child(overlay)
+
+
+## Chão (base) e platôs (topo) em blocos, com mapa de relevo, mais o brilho próprio do ácido.
+func _build_ground(seed_v: int) -> void:
+	var gb: Dictionary = GroundBuilder.build(grid, mission.theme, nest_cells, seed_v)
+	var base: Image = gb.base
+	var top: Image = gb.top
+	var base_n: Texture2D = null
+	var top_n: Texture2D = null
+	if visuals:
+		var sat: float = amb.get("ground_sat", 1.0)
+		if sat != 1.0:
+			base.adjust_bcs(1.0, 1.0, sat)
+			top.adjust_bcs(1.0, 1.0, sat)
+		base_n = ImageTexture.create_from_image(GroundBuilder.normal_map(base, 3.0, []))
+		top_n = ImageTexture.create_from_image(GroundBuilder.normal_map(top, 3.0, gb.faces))
+	_chunks(ground, Art.lit_pair(ImageTexture.create_from_image(base), base_n), base, false)
+	_chunks(rocks, Art.lit_pair(ImageTexture.create_from_image(top), top_n), top, true)
+	if visuals and Game.gfx >= 1 and not acid_cells.is_empty():
+		var m := ShaderMaterial.new()
+		m.shader = load("res://shaders/acid.gdshader")
+		m.set_shader_parameter("strength", float(amb.glow) * 0.42)
+		acid_glow.material = m
+		acid_glow.visibility_layer = Stage.LAYER_BOTH
+		acid_glow.draw.connect(_draw_acid_glow)
+
+
+func _chunks(parent: Node2D, tex: Texture2D, img: Image, skip_empty: bool) -> void:
+	for y in range(0, img.get_height(), CHUNK):
+		for x in range(0, img.get_width(), CHUNK):
+			var r := Rect2i(x, y, mini(CHUNK, img.get_width() - x), mini(CHUNK, img.get_height() - y))
+			if skip_empty and img.get_region(r).is_invisible():
+				continue
+			var s := Sprite2D.new()
+			s.centered = false
+			s.position = Vector2(x, y)
+			s.texture = tex
+			s.region_enabled = true
+			s.region_rect = Rect2(r)
+			parent.add_child(s)
+
+
+func _draw_acid_glow() -> void:
+	var half := Vector2(Bal.TILE, Bal.TILE) * 0.5
+	for c in acid_cells:
+		acid_glow.draw_rect(Rect2(c - half, half * 2.0), Color.WHITE)
 
 
 func _load_map(players: int) -> void:
@@ -734,6 +816,7 @@ func bite_tile(b: Bug, tile_idx: int) -> void:
 		if walls.has(tile_idx):
 			walls[tile_idx].queue_free()
 			walls.erase(tile_idx)
+			walls_version += 1
 		if time - wall_toast_at > 4.0:
 			wall_toast_at = time
 			toast("PORTÃO ROMPIDO!" if k == Grid.GATE else "MURO ROMPIDO!", Color("ff6b6b"))
@@ -1075,6 +1158,7 @@ func update(dt: float) -> void:
 	_update_switches_and_crystal(dt)
 	_prof("support")
 	fx.tick(dt)
+	lights.update(dt)
 	_prof("fx")
 	_compact()
 	_prof("compact")
@@ -1492,6 +1576,8 @@ func _sync_visuals() -> void:
 		v.sync_visual()
 	decal_layer.tick()
 	shadow_layer.tick()
+	if shadows != null:
+		shadows.tick()
 	overlay.tick()
 
 

@@ -21,6 +21,7 @@ extends RefCounted
 ## settings.hordes = { start, interval, size_min, size_max, edges = "nsew", mother_chance }: hordas pelas bordas
 ##   (depois de 60 s, mother_chance é a chance de uma matriarca vir junto).
 ##   Em defesas (survive/hold) vêm até o fim; nas outras, enquanto houver ninhos.
+## ambience: clima visual (hora do dia), chave de Ambience.PRESETS; padrão "day". Não muda a simulação.
 ## settings.nest_rate: multiplicador da taxa dos ninhos da missão.
 ## settings.troops_bonus: tropas extras na contagem inicial. settings.hordes.growth: crescimento por minuto
 ##   (padrão Bal.HORDES.growth_per_min).
@@ -164,7 +165,7 @@ const LIST := [
 		],
 	},
 	{
-		id = "m5", name = "Fortaleza Bastião", theme = "desert",
+		id = "m5", name = "Fortaleza Bastião", theme = "desert", ambience = "dusk",
 		briefing = [
 			"O Bastião é a última fortaleza do vale: muralha, pátio, muralha interna e a torre.",
 			"Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.",

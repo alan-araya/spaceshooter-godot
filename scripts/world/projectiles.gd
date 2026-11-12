@@ -8,6 +8,12 @@ var grenades: Array = [] # Dictionary: a, b, t, T, bomb
 var _near: Array = []
 
 
+func _ready() -> void:
+	# tiros, plasma e chamas têm luz própria: não escurecem e entram no buffer de brilho
+	visibility_layer = Stage.LAYER_BOTH
+	material = Art.unshaded()
+
+
 func fire(weapon_key: String, from: Vector2, angle: float, target: Unit = null) -> void:
 	var wp: Dictionary = Bal.WEAPONS[weapon_key]
 	var spd: float = wp.speed

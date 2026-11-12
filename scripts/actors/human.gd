@@ -99,6 +99,7 @@ func fire_weapon(angle: float, weapon_key: String, spread: float, target: Unit =
 
 ## Atualiza o Sprite2D do soldado (folha 5 direções × 4 passos).
 func sync_soldier_visual() -> void:
+	modulate = world.unit_tint
 	var d := Unit.dir8(face)
 	var col := DIR_TO_COL[d]
 	var row := 1

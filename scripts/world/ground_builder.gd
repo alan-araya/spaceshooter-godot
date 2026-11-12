@@ -4,16 +4,20 @@ extends RefCounted
 ## areia em mosaico, platôs com topo + paredão voltado para baixo, ácido, piso metálico,
 ## trilhas, solo fértil e "território alienígena" (trepadeiras roxas) em volta dos ninhos.
 ## Usa as texturas do Art (PNG ou placeholder procedural).
+## Sai em duas imagens: `base` (chão, ácido, manchas) e `top` (platôs de rocha, transparente no
+## resto). As sombras projetadas ficam ENTRE as duas, para não caírem em cima das rochas.
 
 const T := 32
 
 
-static func build(grid: Grid, theme: String, nest_cells: Array, seed_v: int) -> ImageTexture:
+static func build(grid: Grid, theme: String, nest_cells: Array, seed_v: int) -> Dictionary:
 	var rnd := RandomNumberGenerator.new()
 	rnd.seed = seed_v
 	var W := grid.cols * T
 	var H := grid.rows * T
 	var img := Image.create(W, H, false, Image.FORMAT_RGBA8)
+	var top := Image.create(W, H, false, Image.FORMAT_RGBA8) # platôs (camada de cima)
+	var faces: Array = [] # Rect2i dos paredões em `top` (recebem relevo de face vertical)
 	var sand := Art.image("ground_sand")
 	var rock := Art.image("rock_top")
 	var cliff := Art.image("cliff")
@@ -29,6 +33,13 @@ static func build(grid: Grid, theme: String, nest_cells: Array, seed_v: int) -> 
 		_tile_fill(img, sand, Rect2i(0, 0, W, H))
 		if theme == "swamp":
 			img.blend_rect(_solid(W, H, Color(0.25, 0.35, 0.1, 0.12)), Rect2i(0, 0, W, H), Vector2i.ZERO)
+
+	# 1b) variação larga de tom: quebra o aspecto de "tapete" da areia
+	if theme != "hive":
+		var shade_d := _patch(sand, rnd, Color(0.80, 0.74, 0.70), 0.30, 150)
+		var shade_l := _patch(sand, rnd, Color(1.12, 1.08, 1.0), 0.28, 130)
+		for n in 18:
+			_blend_centered(img, shade_d if n % 2 == 0 else shade_l, Vector2i(rnd.randi_range(0, W), rnd.randi_range(0, H)))
 
 	var dark := _patch(sand, rnd, Color(0.82, 0.7, 0.55), 0.45, 56)
 	var trail := _patch(sand, rnd, Color(1.25, 1.18, 1.05), 0.6, 48)
@@ -55,6 +66,16 @@ static func build(grid: Grid, theme: String, nest_cells: Array, seed_v: int) -> 
 				102: # 'f'
 					_blend_centered(img, fertile, pos + Vector2i(T / 2, T / 2))
 
+	# 2b) pedrinhas soltas no chão de terra
+	if theme != "hive":
+		for n in 150:
+			var px := rnd.randi_range(0, grid.cols - 1)
+			var py := rnd.randi_range(0, grid.rows - 1)
+			var pi := grid.idx(px, py)
+			if grid.kind[pi] != Grid.GROUND or grid.deco[pi] == 95: # 95 = piso metálico
+				continue
+			_boulder(img, Vector2(px * T + rnd.randi_range(3, T - 3), py * T + rnd.randi_range(3, T - 3)), rnd.randf_range(1.0, 2.4))
+
 	# 3) território alienígena em volta dos ninhos (trepadeiras roxas e casulos)
 	var blob := Art.image("creep_blob")
 	for nc in nest_cells:
@@ -74,7 +95,26 @@ static func build(grid: Grid, theme: String, nest_cells: Array, seed_v: int) -> 
 				_acid_cell(img, grid, cx, cy, rnd)
 			elif k == Grid.ROCK:
 				var alien := grid.deco_at(cx, cy) == 94 # '^'
-				_rock_cell(img, grid, cx, cy, rock, cliff, alien, theme == "hive", rnd)
+				_rock_cell(top, grid, cx, cy, rock, cliff, alien, theme == "hive", rnd, faces)
+
+	# 4b) oclusão: o chão escurece junto à base das rochas
+	var ao_below := _fade(T, 14, Vector2i(0, 1), 0.46)
+	var ao_above := _fade(T, 5, Vector2i(0, -1), 0.24)
+	var ao_right := _fade(5, T, Vector2i(1, 0), 0.24)
+	var ao_left := _fade(5, T, Vector2i(-1, 0), 0.24)
+	for cy in grid.rows:
+		for cx in grid.cols:
+			if grid.kind[grid.idx(cx, cy)] == Grid.ROCK:
+				continue
+			var p0 := Vector2i(cx * T, cy * T)
+			if _rock_at(grid, cx, cy - 1): # paredão logo acima: sombra de contato
+				img.blend_rect(ao_below, Rect2i(0, 0, T, 14), p0 + Vector2i(0, 4))
+			if _rock_at(grid, cx, cy + 1):
+				img.blend_rect(ao_above, Rect2i(0, 0, T, 5), p0 + Vector2i(0, T - 5))
+			if _rock_at(grid, cx - 1, cy):
+				img.blend_rect(ao_right, Rect2i(0, 0, 5, T), p0)
+			if _rock_at(grid, cx + 1, cy):
+				img.blend_rect(ao_left, Rect2i(0, 0, 5, T), p0 + Vector2i(T - 5, 0))
 
 	# 5) pedregulhos na base dos paredões
 	if theme != "hive":
@@ -84,7 +124,44 @@ static func build(grid: Grid, theme: String, nest_cells: Array, seed_v: int) -> 
 					var bx := cx * T + rnd.randi_range(4, T - 4)
 					var by := (cy + 1) * T + rnd.randi_range(7, 12)
 					_boulder(img, Vector2(bx, by), rnd.randf_range(3.0, 6.0))
-	return ImageTexture.create_from_image(img)
+	return { base = img, top = top, faces = faces }
+
+
+## Mapa de relevo a partir do brilho da imagem (claro = alto). `faces` = retângulos que são
+## paredes verticais voltadas para a câmera: ganham a normal "para baixo na tela".
+static func normal_map(img: Image, strength: float, faces: Array) -> Image:
+	var n: Image = img.duplicate()
+	n.convert(Image.FORMAT_L8)
+	n.bump_map_to_normal_map(strength)
+	if n.get_format() != Image.FORMAT_RGBA8:
+		n.convert(Image.FORMAT_RGBA8)
+	var face := Color(0.5, 0.5 - 0.5 * 0.85, 0.5 + 0.5 * 0.53, 0.8)
+	for r in faces:
+		var rect: Rect2i = r
+		n.blend_rect(_solid(rect.size.x, rect.size.y, face), Rect2i(Vector2i.ZERO, rect.size), rect.position)
+	return n
+
+
+## Faixa preta que some na direção `dir` (para a oclusão na base das rochas).
+static func _fade(w: int, h: int, dir: Vector2i, alpha: float) -> Image:
+	var i := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	for y in h:
+		for x in w:
+			var k := 0.0
+			if dir.y > 0:
+				k = 1.0 - float(y) / h
+			elif dir.y < 0:
+				k = float(y + 1) / h
+			elif dir.x > 0:
+				k = 1.0 - float(x) / w
+			else:
+				k = float(x + 1) / w
+			i.set_pixel(x, y, Color(0, 0, 0, alpha * k * k))
+	return i
+
+
+static func _rock_at(grid: Grid, cx: int, cy: int) -> bool:
+	return grid.in_bounds(cx, cy) and grid.kind[grid.idx(cx, cy)] == Grid.ROCK
 
 
 static func _tile_fill(img: Image, src: Image, area: Rect2i) -> void:
@@ -150,10 +227,11 @@ static func _patch(tex: Image, rnd: RandomNumberGenerator, tint: Color, strength
 
 
 static func _fertile_patch(tex: Image, rnd: RandomNumberGenerator) -> Image:
-	var i := _patch(tex, rnd, Color(0.6, 0.45, 0.25), 0.75, 52)
+	# mancha larga e suave: as vizinhas se fundem num canteiro só (antes formavam um xadrez)
+	var i := _patch(tex, rnd, Color(0.62, 0.5, 0.3), 0.5, 80)
 	for n in 14:
-		var x := rnd.randi_range(12, 40)
-		var y := rnd.randi_range(12, 40)
+		var x := rnd.randi_range(26, 54)
+		var y := rnd.randi_range(26, 54)
 		i.set_pixel(x, y, Color(0.38, 0.6, 0.18, 1.0))
 		i.set_pixel(x, y - 1, Color(0.5, 0.75, 0.25, 1.0))
 		if rnd.randf() < 0.4:
@@ -243,7 +321,7 @@ static func _is_kind(grid: Grid, cx: int, cy: int, k: int) -> bool:
 	return grid.kind[grid.idx(cx, cy)] == k
 
 
-static func _rock_cell(img: Image, grid: Grid, cx: int, cy: int, rock: Image, cliff: Image, alien: bool, hive: bool, rnd: RandomNumberGenerator) -> void:
+static func _rock_cell(img: Image, grid: Grid, cx: int, cy: int, rock: Image, cliff: Image, alien: bool, hive: bool, rnd: RandomNumberGenerator, faces: Array) -> void:
 	var x0 := cx * T
 	var y0 := cy * T
 	if hive:
@@ -251,6 +329,7 @@ static func _rock_cell(img: Image, grid: Grid, cx: int, cy: int, rock: Image, cl
 		img.fill_rect(Rect2i(x0, y0, T, T), Color("15161a"))
 		if not _is_kind(grid, cx, cy + 1, Grid.ROCK):
 			img.fill_rect(Rect2i(x0, y0 + T - 10, T, 10), Color("3a3e46"))
+			faces.append(Rect2i(x0, y0 + T - 10, T, 10))
 			img.fill_rect(Rect2i(x0, y0 + T - 10, T, 2), Color("8a929c"))
 		if not _is_kind(grid, cx, cy - 1, Grid.ROCK):
 			img.fill_rect(Rect2i(x0, y0, T, 2), Color("8a929c"))
@@ -291,6 +370,7 @@ static func _rock_cell(img: Image, grid: Grid, cx: int, cy: int, rock: Image, cl
 		if dst.y + total > img.get_height():
 			src.size.y = img.get_height() - dst.y
 		img.blit_rect(cliff, src, dst)
+		faces.append(Rect2i(dst, src.size))
 		img.blend_rect(_solid(T, total, Color(0.25, 0.08, 0.02, 0.22)), Rect2i(0, 0, T, src.size.y), dst)
 		if alien:
 			img.blend_rect(_solid(T, total, Color(0.4, 0.1, 0.5, 0.35)), Rect2i(0, 0, T, src.size.y), dst)

@@ -33,6 +33,7 @@ func run(m: Node) -> void:
 	_test_cmd_input_roundtrip()
 	_test_snapshot_roundtrip()
 	_test_loopback_replica()
+	_test_visuals()
 	if main.args.has("probe"):
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
@@ -452,6 +453,55 @@ func _test_snapshot_roundtrip() -> void:
 			continue
 	check(ok_pos, "snapshot: posição com erro > 0,5 px")
 	w.queue_free()
+
+
+func _sim_hash(w: World) -> String:
+	var acc := 0.0
+	for b in w.bugs:
+		acc += b.position.x * 1.3 + b.position.y * 0.7 + b.hp
+	for s in w.soldiers:
+		acc += s.position.x * 0.9 + s.position.y * 1.1 + s.hp
+	return "%d|%d|%d|%d|%.2f|%.2f" % [w.frame, w.troops, w.stats.kills, w.bugs.size(), acc, w.commanders[0].position.x]
+
+
+## A parte visual (luz, sombra, relevo) só lê o estado: com ela ligada, a simulação tem de dar
+## exatamente o mesmo resultado. Também confere os limites do conjunto de luzes.
+func _test_visuals() -> void:
+	var i := _idx("m5")
+	var plain := _new_world(i, 1, "normal", 31)
+	World.headless_visuals = true
+	var lit := _new_world(i, 1, "normal", 31)
+	World.headless_visuals = false
+	check(not plain.lights.active and plain.shadows == null, "visual: mundo sem janela não deveria criar luzes")
+	check(lit.lights.active and lit.shadows != null, "visual: luzes e sombras não foram criadas")
+	check(lit.lights.fixed.size() >= 10, "visual: poucas luzes fixas na fortaleza (%d)" % lit.lights.fixed.size())
+	_run(plain, 30.0)
+	_run(lit, 30.0)
+	check(_sim_hash(plain) == _sim_hash(lit), "visual: ligar luz e sombra mudou a simulação (%s x %s)" % [_sim_hash(plain), _sim_hash(lit)])
+	var L := lit.lights
+	L.update(2.0) # apaga os clarões que sobraram do combate
+	check(L.flashes.is_empty(), "visual: clarões não apagaram")
+	for k in 3:
+		L.flash(Vector2(300, 300), Color.WHITE, 60.0, 1.0, 5.0, "t")
+	check(L.flashes.size() == 1, "visual: clarões próximos do mesmo tipo deveriam se fundir (%d)" % L.flashes.size())
+	for k in 60:
+		L.flash(Vector2(40 + k * 20, 500), Color.WHITE, 60.0, 1.0, 5.0)
+	check(L.flashes.size() <= Lighting.MAX_FLASH, "visual: clarões passaram do limite (%d)" % L.flashes.size())
+	var lamp = null
+	for f in L.fixed:
+		if f.kind == "lamp":
+			lamp = f
+			break
+	check(lamp != null, "visual: fortaleza sem postes")
+	if lamp != null:
+		var wl: Prop = lamp.owner
+		lit.walls.erase(wl.cell)
+		wl.queue_free()
+		lit.walls_version += 1
+		L.update(1.0 / 60.0)
+		check(not lamp.l.enabled, "visual: o poste continuou aceso depois de o muro cair")
+	plain.queue_free()
+	lit.queue_free()
 
 
 ## Mundo-fantasma simula e grava; mundo-réplica só recebe snapshots + eventos (como um cliente).

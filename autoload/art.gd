@@ -61,9 +61,93 @@ func has_file(key: String) -> bool:
 	return ResourceLoader.exists("res://assets/sprites/%s.png" % key)
 
 
+# =============================================================================
+# Luz: texturas com mapa de relevo e materiais compartilhados
+# =============================================================================
+
+var _lit := {}
+var _flat_n: Texture2D
+var _light_tex: Texture2D
+var _flat_mat: ShaderMaterial
+var _unshaded: CanvasItemMaterial
+var _unshaded_add: CanvasItemMaterial
+
+
+## Textura para sprites iluminados: cor + mapa de relevo (`<nome>_n.png`, gerado por tools/build_normals.py).
+## Sem o arquivo, usa relevo plano — o sprite recebe a mesma luz que o chão.
+func lit(key: String) -> CanvasTexture:
+	if _lit.has(key):
+		return _lit[key]
+	var ct := CanvasTexture.new()
+	ct.diffuse_texture = tex(key)
+	var path := "res://assets/sprites/%s_n.png" % key
+	if ResourceLoader.exists(path):
+		ct.normal_texture = load(path)
+	else:
+		ct.normal_texture = flat_normal()
+	ct.specular_color = Color.BLACK # fosco; quem brilha (ácido, gosma) define o próprio
+	_lit[key] = ct
+	return ct
+
+
+## Junta cor + relevo gerados em tempo de execução (terreno).
+func lit_pair(diffuse: Texture2D, normal: Texture2D) -> CanvasTexture:
+	var ct := CanvasTexture.new()
+	ct.diffuse_texture = diffuse
+	ct.normal_texture = normal if normal != null else flat_normal()
+	ct.specular_color = Color.BLACK
+	return ct
+
+
+func flat_normal() -> Texture2D:
+	if _flat_n == null:
+		var i := Image.create(2, 2, false, Image.FORMAT_RGBA8)
+		i.fill(Color(0.5, 0.5, 1.0))
+		_flat_n = ImageTexture.create_from_image(i)
+	return _flat_n
+
+
+## Disco de luz com platô no centro e borda macia: (1 - d²)².
+func light_texture() -> Texture2D:
+	if _light_tex == null:
+		var n := 128
+		var i := Image.create(n, n, false, Image.FORMAT_RGBA8)
+		for y in n:
+			for x in n:
+				var dx := (x + 0.5) / n * 2.0 - 1.0
+				var dy := (y + 0.5) / n * 2.0 - 1.0
+				var k := maxf(0.0, 1.0 - (dx * dx + dy * dy))
+				k *= k
+				i.set_pixel(x, y, Color(k, k, k, 1.0))
+		_light_tex = ImageTexture.create_from_image(i)
+	return _light_tex
+
+
+## Material para desenhos sem mapa de relevo (formas, decalques, partículas).
+func flat_material() -> ShaderMaterial:
+	if _flat_mat == null:
+		_flat_mat = ShaderMaterial.new()
+		_flat_mat.shader = load("res://shaders/flat_lit.gdshader")
+	return _flat_mat
+
+
+## Material que ignora luz e escuridão (marcadores, projéteis, brilhos).
+func unshaded(additive: bool = false) -> CanvasItemMaterial:
+	if additive:
+		if _unshaded_add == null:
+			_unshaded_add = CanvasItemMaterial.new()
+			_unshaded_add.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+			_unshaded_add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		return _unshaded_add
+	if _unshaded == null:
+		_unshaded = CanvasItemMaterial.new()
+		_unshaded.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	return _unshaded
+
+
 func apply(s: Sprite2D, key: String) -> void:
 	var d: Dictionary = DEFS[key]
-	s.texture = tex(key)
+	s.texture = lit(key)
 	s.hframes = d.h
 	s.vframes = d.v
 	s.offset = d.offset

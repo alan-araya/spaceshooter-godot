@@ -14,6 +14,18 @@ const CHUNK := 48
 var chunks: Array = []
 
 
+func _ready() -> void:
+	match mode:
+		Mode.DECALS:
+			material = Art.flat_material() # recebem a mesma luz que o chão
+		Mode.SHADOWS:
+			# bolhas e poças de ácido: brilho próprio (não escurecem; entram no buffer de brilho)
+			material = Art.unshaded()
+			visibility_layer = Stage.LAYER_BOTH
+		Mode.OVERLAY:
+			material = Art.unshaded() # marcadores e barras sempre legíveis
+
+
 class DecalChunk extends Node2D:
 	var items: Array = []
 
@@ -55,6 +67,7 @@ func add_corpse(sheet: String, frame: int, p: Vector2, rot: float) -> void:
 func _push(d: Dictionary) -> void:
 	if chunks.is_empty() or chunks[-1].items.size() >= CHUNK:
 		var ch := DecalChunk.new()
+		ch.use_parent_material = true
 		add_child(ch)
 		chunks.append(ch)
 	var cur: DecalChunk = chunks[-1]
@@ -148,6 +161,8 @@ func _draw_shadows() -> void:
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		var bp := hp2 + Vector2(sin(tt * 3.0 + hp2.x) * pr * 0.5, cos(tt * 2.3 + hp2.y) * pr * 0.3)
 		draw_arc(bp, 3.0 + fmod(tt * 4.0, 3.0), 0.0, TAU, 8, Color(0.85, 1.0, 0.5, 0.6 * k), 1.0)
+	if world.shadows != null:
+		return # sombras projetadas pelo sol (Shadows) no lugar das bolinhas
 	var sc := Color(0, 0, 0, 0.28)
 	for u in world.shadow_casters():
 		if not is_instance_valid(u) or u.dead or not u.visible:

@@ -23,6 +23,7 @@ godot --path . -- --mission=4 --autostart --players=2 --difficulty=dificil
 
 - `--mission=N` vai direto ao briefing da missão N; com `--autostart` pula o briefing.
 - `--unlockall` libera todas as missões na seleção.
+- `--gfx=alto|medio|baixo` escolhe a qualidade gráfica só nesta execução; `--seed=N` fixa a semente da missão.
 - `--shot=arquivo.png --shot-after=5 --quit-after-shot` salva um screenshot e sai.
 - F9 (build de depuração): destrói todos os ninhos.
 
@@ -69,19 +70,33 @@ godot --path . -- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24
 Sem rede, `-- --loopback --mission=3 --autostart` joga localmente desenhando tudo pelo mesmo caminho
 do cliente (snapshots + eventos), útil para achar o que não está sendo replicado.
 
+## Gráficos
+
+Luz dinâmica 2D com mapas de relevo, sombras projetadas pelo sol, brilho e correção de cor; cada missão tem
+um clima (hora do dia). O nível de qualidade fica no menu principal (**GRÁFICOS: ALTO / MÉDIO / BAIXO**).
+Detalhes em [docs/GDD.md](docs/GDD.md) §10; comparação antes/depois em `docs/shots/`.
+
+Para medir FPS, grave a saída num arquivo (pelo pipe do terminal o número sai distorcido):
+
+```bash
+godot --path . --disable-vsync --print-fps -- --mission=5 --autostart --seed=11 --quit-after=40 > fps.txt 2>&1
+```
+
 ## Estrutura
 
 ```
 autoload/      Game (progresso), InputSetup (ações por jogador), Art (sprites por contrato), Sfx (som sintetizado), Net (ENet/lobby/RPCs)
 scripts/core/  Bal — TODOS os números de jogabilidade
 scripts/sim/   Grid, FlowField, SpatialHash, Missions (dados)
-scripts/world/ World (loop), GroundBuilder (terreno 3/4), Projectiles, Fx, camadas
+scripts/world/ World (loop), GroundBuilder (terreno 3/4), Projectiles, Fx, camadas,
+               Stage (palco + pós), Lighting (luzes), Shadows (sombras), Ambience (clima por missão)
+shaders/       composição final, desfoque do brilho, ácido, silhueta de sombra, relevo plano
 scripts/actors/ Commander, Soldier, Robot, Bug, Nest, Prop, Vehicle
 scripts/net/   CmdInput (comandos), Snapshot (estado binário), Replica (cliente: interpolação + eventos)
 scripts/ui/    Main (telas, lobby, laço host/cliente), Hud, UiKit (tema)
 assets/sprites/ sprites finais (gerados pelo pipeline)
 art_src/       imagens-fonte geradas por IA (ignoradas pelo Godot)
-tools/         process_art.py (fonte → sprites)
+tools/         process_art.py (fonte → sprites), build_normals.py (mapas de relevo), build_structures.py (muros)
 tests/         testes headless
 ```
 
@@ -92,6 +107,12 @@ As imagens-fonte foram geradas com o Codex (gpt-image) a partir dos prompts do G
 
 ```bash
 python -I tools/process_art.py
+```
+
+Depois de trocar um sprite, regere o mapa de relevo dele (`<nome>_n.png`) e reimporte:
+
+```bash
+python -I tools/build_normals.py
 ```
 
 Trocar qualquer sprite = substituir o PNG em `assets/sprites/` mantendo a grade de frames do contrato.

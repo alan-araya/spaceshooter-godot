@@ -183,6 +183,7 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 			w.grid.deco[cell] = 120
 			w.walls[cell].queue_free()
 			w.walls.erase(cell)
+			w.walls_version += 1
 		else:
 			w.grid.hp[cell] = s0.walls[cell] * w.grid.max_hp[cell]
 	w.hazards = s0.hazards
@@ -204,6 +205,7 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 
 	w._sync_visuals()
 	w.fx.tick(dt)
+	w.lights.update(dt)
 
 
 func _create(e: Dictionary):
