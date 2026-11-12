@@ -171,6 +171,7 @@ func sync_visual() -> void:
 			var s := 0.6 + 0.4 * clampf(1.0 - grow / Bal.FLOWER.bloom_time, 0.0, 1.0)
 			sprite.scale = Vector2(s, s)
 			sprite.position.y = -6.0
+			sprite.skew = sin(t * 2.1 + position.x * 0.05) * 0.14 # balança com o vento
 		"pickup":
 			sprite.position.y = -8.0 + sin(t * 4.0) * 3.0
 			visible = life < 0.0 or life > 4.0 or int(life * 8.0) % 2 == 0

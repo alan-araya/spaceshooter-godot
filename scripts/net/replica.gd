@@ -206,6 +206,7 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 	w._sync_visuals()
 	w.fx.tick(dt)
 	w.lights.update(dt)
+	w.atmo.update(dt)
 
 
 func _create(e: Dictionary):

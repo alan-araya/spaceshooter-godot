@@ -89,8 +89,9 @@ autoload/      Game (progresso), InputSetup (ações por jogador), Art (sprites 
 scripts/core/  Bal — TODOS os números de jogabilidade
 scripts/sim/   Grid, FlowField, SpatialHash, Missions (dados)
 scripts/world/ World (loop), GroundBuilder (terreno 3/4), Projectiles, Fx, camadas,
-               Stage (palco + pós), Lighting (luzes), Shadows (sombras), Ambience (clima por missão)
-shaders/       composição final, desfoque do brilho, ácido, silhueta de sombra, relevo plano
+               Stage (palco + pós), Lighting (luzes), Shadows (sombras), Ambience (clima por missão),
+               Atmosphere (nuvens, névoa, partículas no ar)
+shaders/       composição final, desfoque do brilho, ácido, silhueta de sombra, relevo plano, nuvens, névoa
 scripts/actors/ Commander, Soldier, Robot, Bug, Nest, Prop, Vehicle
 scripts/net/   CmdInput (comandos), Snapshot (estado binário), Replica (cliente: interpolação + eventos)
 scripts/ui/    Main (telas, lobby, laço host/cliente), Hud, UiKit (tema)

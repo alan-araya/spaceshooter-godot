@@ -10,7 +10,9 @@ extends RefCounted
 ## glow         energia das luzes "vivas" (gerador, ácido, ninhos, pickups)
 ## ground_sat   saturação do chão (1 = arte original; menos = tons mais naturais sob luz colorida)
 ## unit_boost   quanto os humanos ficam mais claros que o cenário (legibilidade no escuro; padrão 1)
-## grade        pós-processamento do palco (Stage.apply)
+## grade        pós-processamento do palco (Stage.apply); heat = ar quente tremulando
+## atmo         ar da missão (Atmosphere): clouds = sombras de nuvens, fog/fog_color = poeira ou névoa,
+##              wind = px/s, motes/mote_color/mote_glow = partículas soltas, streaks = rajadas de areia
 
 const PRESETS := {
 	# padrão para missões sem `ambience`
@@ -20,6 +22,7 @@ const PRESETS := {
 		ground_sat = 0.88,
 		grade = { bloom = 0.55, saturation = 0.92, contrast = 1.05, shadow_tint = Color(0.95, 0.98, 1.08),
 			light_tint = Color(1.04, 1.0, 0.94), vignette = 0.22 },
+		atmo = { clouds = 0.16, wind = Vector2(10, 4), motes = 20, mote_color = Color(1.0, 0.95, 0.8, 0.45) },
 	},
 	# amanhecer: sol baixo e rosado vindo da direita, sombras longas para a esquerda, postes ainda acesos
 	dawn = {
@@ -28,6 +31,8 @@ const PRESETS := {
 		ground_sat = 0.78, unit_boost = 1.1,
 		grade = { bloom = 0.8, saturation = 0.98, contrast = 1.04, shadow_tint = Color(0.94, 0.96, 1.10),
 			light_tint = Color(1.06, 1.0, 0.95), vignette = 0.32 },
+		atmo = { fog = 0.20, fog_color = Color(0.90, 0.82, 0.86), wind = Vector2(-7, 2), motes = 24,
+			mote_color = Color(1.0, 0.92, 0.85, 0.5) },
 	},
 	# meio-dia: sol a pino, sombras curtas e duras, cores cheias
 	noon = {
@@ -35,7 +40,8 @@ const PRESETS := {
 		sun_dir = Vector2(0.20, 0.98), shadow_len = 0.35, shadow_alpha = 0.44, lamps = 0.0, glow = 0.5,
 		ground_sat = 0.86,
 		grade = { bloom = 0.5, saturation = 0.98, contrast = 1.10, shadow_tint = Color(0.98, 0.99, 1.04),
-			light_tint = Color(1.03, 1.01, 0.96), vignette = 0.18 },
+			light_tint = Color(1.03, 1.01, 0.96), vignette = 0.18, heat = 0.7 },
+		atmo = { clouds = 0.10, wind = Vector2(8, 3), motes = 16, mote_color = Color(1.0, 0.96, 0.84, 0.4) },
 	},
 	# tarde: luz dourada, sombras médias
 	afternoon = {
@@ -44,6 +50,7 @@ const PRESETS := {
 		ground_sat = 0.82,
 		grade = { bloom = 0.6, saturation = 0.97, contrast = 1.05, shadow_tint = Color(0.95, 0.97, 1.08),
 			light_tint = Color(1.05, 1.0, 0.93), vignette = 0.26 },
+		atmo = { clouds = 0.24, wind = Vector2(13, 5), motes = 26, mote_color = Color(1.0, 0.93, 0.74, 0.5) },
 	},
 	# tempestade de areia: luz difusa e empoeirada, sombras fracas, postes acesos na poeira
 	storm = {
@@ -52,6 +59,8 @@ const PRESETS := {
 		ground_sat = 0.72, unit_boost = 1.08,
 		grade = { bloom = 0.75, saturation = 0.84, contrast = 0.98, shadow_tint = Color(1.0, 0.93, 0.84),
 			light_tint = Color(1.05, 0.97, 0.86), vignette = 0.40, haze_color = Color(0.70, 0.55, 0.38), haze = 0.14 },
+		atmo = { fog = 0.36, fog_color = Color(0.80, 0.63, 0.42), wind = Vector2(95, 22), streaks = 0.30, motes = 130,
+			mote_color = Color(0.95, 0.80, 0.56, 0.6) },
 	},
 	# entardecer: ambiente frio e arroxeado, sol baixo alaranjado, postes acesos
 	dusk = {
@@ -60,6 +69,8 @@ const PRESETS := {
 		ground_sat = 0.58, unit_boost = 1.25,
 		grade = { bloom = 1.0, saturation = 1.0, contrast = 1.06, shadow_tint = Color(0.92, 0.95, 1.12),
 			light_tint = Color(1.05, 1.0, 0.92), vignette = 0.45 },
+		atmo = { fog = 0.12, fog_color = Color(0.50, 0.48, 0.70), wind = Vector2(5, 2), motes = 34,
+			mote_color = Color(0.85, 1.0, 0.45, 0.8), mote_glow = true },
 	},
 	# interior da colmeia: escuro, sem sol; a luz vem dos ninhos, do ácido, dos tiros e das lanternas
 	hive = {
@@ -68,6 +79,8 @@ const PRESETS := {
 		ground_sat = 0.92, unit_boost = 1.3,
 		grade = { bloom = 1.1, saturation = 1.0, contrast = 1.08, shadow_tint = Color(0.90, 0.92, 1.15),
 			light_tint = Color(1.04, 1.0, 0.96), vignette = 0.52 },
+		atmo = { fog = 0.16, fog_color = Color(0.42, 0.30, 0.56), wind = Vector2(3, 1), motes = 46,
+			mote_color = Color(1.0, 0.45, 0.9, 0.7), mote_glow = true },
 	},
 }
 

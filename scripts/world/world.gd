@@ -104,6 +104,7 @@ var shadow_layer: WorldLayer
 var shadows: Shadows
 var rocks: Node2D
 var lights: Lighting
+var atmo: Atmosphere
 var entities: Node2D
 var projectiles: Projectiles
 var fx: Fx
@@ -194,6 +195,10 @@ func _make_layers() -> void:
 	air = Node2D.new()
 	air.name = "Air"
 	add_child(air)
+	atmo = Atmosphere.new()
+	atmo.name = "Atmosphere"
+	atmo.setup(self)
+	add_child(atmo)
 	lights = Lighting.new()
 	lights.name = "Lights"
 	lights.setup(self)
@@ -1162,6 +1167,7 @@ func update(dt: float) -> void:
 	_prof("support")
 	fx.tick(dt)
 	lights.update(dt)
+	atmo.update(dt)
 	_prof("fx")
 	_compact()
 	_prof("compact")

@@ -122,6 +122,7 @@ func apply(grade: Dictionary, quality_level: int) -> void:
 	var hz: Color = grade.get("haze_color", Color.BLACK)
 	mat.set_shader_parameter("haze_color", Vector3(hz.r, hz.g, hz.b))
 	mat.set_shader_parameter("haze", float(grade.get("haze", 0.0)))
+	mat.set_shader_parameter("heat", float(grade.get("heat", 0.0)) if quality >= 1 else 0.0)
 	_update_glow(visible)
 
 
