@@ -39,6 +39,19 @@ const WEAPONS := {
 	plasma = { label = "Plasma", interval = 0.42, speed = 520.0, reach = 520.0, damage = 7.0, spread = 0.0, ammo = 30, pierce = 6, splash = 36.0 },
 	rifle = { label = "Fuzil", interval = 0.42, speed = 600.0, reach = 300.0, damage = 1.0, spread = 0.1, ammo = -1, pierce = 0, splash = 0.0 },
 	cannon = { label = "Canhão", interval = 0.22, speed = 600.0, reach = 340.0, damage = 2.0, spread = 0.04, ammo = -1, pierce = 0, splash = 0.0 },
+	turret = { label = "Metralhadora fixa", interval = 0.14, speed = 720.0, reach = 380.0, damage = 1.0, spread = 0.06, ammo = -1, pierce = 0, splash = 0.0 },
+}
+
+## Metralhadora de ponto montada (tile 'T'): atira sozinha quando alguém a opera.
+const TURRET := {
+	man_radius = 16.0, # distância para operar
+	claim_radius = 260.0, # soldados em Normal/Defender a esta distância vão operar
+	radius = 14.0,
+}
+
+## Hordas pelas bordas do mapa (configuradas por missão em settings.hordes).
+const HORDES := {
+	warn_time = 1.2, min_interval = 2.5, growth_per_min = 0.18,
 }
 
 const GRENADE := {
@@ -54,12 +67,23 @@ const BUG := {
 	flank = 0.55, # força do desvio lateral (cerco em vez de fila indiana)
 	lunge_dist = 52.0, lunge_boost = 1.55, lunge_time = 0.35, lunge_cd = 1.6,
 	sense = 112.0, # distância em que o inseto vê um humano e parte direto para ele
+	dodge_chance = 0.5, # fração "esperta" que foge do ponto de queda de granadas (× agressividade)
 }
 
 const LARVA := { hp = 1.0, speed = 192.0, radius = 6.0, damage = 1.0 }
 
 const MOTHER := {
 	hp = 40.0, speed = 44.0, radius = 22.0, damage = 2.0, birth_interval = 4.0, death_larvae = 7,
+	threat_birth = 0.65, # pare mais rápido quando há humanos perto
+	brood_burst = 3, # filhotes soltos ao perder 1/3 e 2/3 da vida
+	keep_dist = 150.0, # mantém esta distância dos humanos (fica atrás da ninhada)
+	charge_dist = 58.0, charge_boost = 2.6, charge_time = 0.35, charge_cd = 2.6, knockback = 46.0,
+	retreat_hp = 0.35, # abaixo disso recua para o ninho
+	mortar_cd = 6.0, mortar_min = 90.0, mortar_range = 360.0, mortar_flight = 1.1,
+	mortar_radius = 40.0, mortar_damage = 2.0,
+	pool_time = 3.5, pool_radius = 34.0, pool_tick = 0.8, pool_damage = 1.0,
+	aura_radius = 140.0, aura_speed = 1.12, aura_bite = 0.85, # frenesi dos aracnídeos próximos
+	max_alive = 3, # flor tocada com 3 matriarcas vivas é só comida
 }
 
 const NEST := {
@@ -70,7 +94,7 @@ const NEST := {
 
 const HEART := { hp = 320.0, radius = 40.0, spawn_interval = 2.2 }
 
-const FLOWER := { max_on_map = 6, respawn_interval = 12.0, radius = 12.0, bloom_time = 7.0 }
+const FLOWER := { max_on_map = 6, respawn_interval = 12.0, radius = 12.0, bloom_time = 7.0, initial_bloom = 14.0 }
 
 const AMBUSH := {
 	start_after = 75.0, base_interval = 22.0, min_interval = 9.0, size_min = 3, size_max = 6,
@@ -78,7 +102,7 @@ const AMBUSH := {
 }
 
 const PICKUPS := {
-	spawn_min = 16.0, spawn_max = 26.0, lifetime = 22.0, radius = 16.0,
+	spawn_min = 16.0, spawn_max = 26.0, lifetime = 22.0, radius = 18.0,
 	reinforce_soldiers = 6, reinforce_buggies = 3, airstrike_soldiers = 4,
 	bomb_spacing = 44.0, bomb_radius = 60.0, bomb_damage = 14.0, grenade_pack = 3,
 	weights = { reinforce = 3.0, airstrike = 2.0, robot = 1.2, flame = 1.5, plasma = 1.5, grenades = 2.0 },
@@ -89,7 +113,7 @@ const VEHICLES := {
 	robot_hp = 90.0, robot_speed = 76.0, robot_radius = 18.0,
 }
 
-const STRUCTURES := { wall_hp = 28.0, gate_hp = 22.0, generator_hp = 90.0, switch_time = 2.0 }
+const STRUCTURES := { wall_hp = 40.0, gate_hp = 32.0, generator_hp = 160.0, switch_time = 2.0 }
 
 const MERIT := {
 	bug = 1, larva = 1, mother = 12, nest = 30, heart = 120, flower = 5,
@@ -98,10 +122,12 @@ const MERIT := {
 
 const LIMITS := { max_bugs = 200, flowfield_interval = 0.2, max_decals = 450 }
 
+## aggro: agressividade da IA (cuspe, bote, investida, morteiro, esquiva).
+## Recruta = o antigo Soldado ~7% mais fácil; Soldado = mais pressão; Veterano mantido.
 const DIFFICULTY := {
-	facil = { label = "Recruta", troops = 14, bug_speed = 0.9, spawn = 0.7, bug_hp = 1.0, escalation = 0.08, ambush = 1.4 },
-	normal = { label = "Soldado", troops = 10, bug_speed = 1.0, spawn = 1.0, bug_hp = 1.0, escalation = 0.12, ambush = 1.0 },
-	dificil = { label = "Veterano", troops = 8, bug_speed = 1.1, spawn = 1.3, bug_hp = 1.25, escalation = 0.16, ambush = 0.75 },
+	facil = { label = "Recruta", troops = 11, bug_speed = 0.95, spawn = 0.93, bug_hp = 1.0, escalation = 0.11, ambush = 1.08, aggro = 0.9 },
+	normal = { label = "Soldado", troops = 9, bug_speed = 1.05, spawn = 1.15, bug_hp = 1.0, escalation = 0.14, ambush = 0.88, aggro = 1.1 },
+	dificil = { label = "Veterano", troops = 8, bug_speed = 1.1, spawn = 1.3, bug_hp = 1.25, escalation = 0.16, ambush = 0.75, aggro = 1.25 },
 }
 const DIFFICULTY_ORDER := ["facil", "normal", "dificil"]
 

@@ -22,6 +22,13 @@ var max_hp := 1.0
 # relé
 var progress := 0.0
 var active := false
+# metralhadora de ponto
+var claimed_by = null # Soldier que vai/está operando
+var operator = null # quem opera neste quadro (soldado ou comandante)
+var aim := -PI / 2.0
+var fire_cd := 0.0
+var retarget_cd := 0.0
+var target = null
 
 var sprite: Sprite2D
 
@@ -70,6 +77,14 @@ func setup_generator(w: World, x: Vector2) -> void:
 	hp = max_hp
 
 
+func setup_turret(w: World, x: Vector2) -> void:
+	world = w
+	kind = "turret"
+	position = x
+	r = Bal.TURRET.radius
+	aim = -PI / 2.0
+
+
 func setup_switch(w: World, x: Vector2) -> void:
 	world = w
 	kind = "switch"
@@ -83,6 +98,40 @@ func tick(dt: float) -> void:
 		flash -= dt
 	if kind == "flower" and grow > 0.0:
 		grow -= dt
+	elif kind == "turret":
+		_tick_turret(dt)
+
+
+func _tick_turret(dt: float) -> void:
+	fire_cd -= dt
+	retarget_cd -= dt
+	if claimed_by != null and not Unit.ok(claimed_by):
+		claimed_by = null
+	operator = null
+	var man: float = Bal.TURRET.man_radius
+	if claimed_by != null and claimed_by.position.distance_to(position) < man:
+		operator = claimed_by
+	else:
+		for c in world.commanders:
+			if not c.dead and not c.moving and c.position.distance_to(position) < man:
+				operator = c
+				break
+	if operator == null:
+		return
+	var wp: Dictionary = Bal.WEAPONS.turret
+	if retarget_cd <= 0.0 or not Unit.ok(target):
+		retarget_cd = 0.2
+		target = world.pick_target(self, wp.reach)
+	if not Unit.ok(target):
+		return
+	var want: float = (target.position - position).angle()
+	aim = lerp_angle(aim, want, minf(1.0, dt * 12.0))
+	if fire_cd <= 0.0 and absf(angle_difference(aim, want)) < 0.3:
+		fire_cd = wp.interval
+		var muzzle := position + Vector2(cos(aim), sin(aim)) * 20.0 + Vector2(0, -10)
+		world.projectiles.fire("turret", muzzle, aim + world.rng.randf_range(-wp.spread, wp.spread), target)
+		world.fx.muzzle(muzzle, aim)
+		Sfx.play("shot", position.x)
 
 
 func sync_visual() -> void:
@@ -107,6 +156,8 @@ func _draw() -> void:
 			_draw_generator()
 		"switch":
 			_draw_switch()
+		"turret":
+			_draw_turret()
 
 
 func _draw_wall() -> void:
@@ -158,6 +209,23 @@ func _draw_generator() -> void:
 		draw_rect(Rect2(-20 + i * 16, -2, 6, 3), Color(0.3, 1.0, 0.5, glow))
 	if flash > 0.0:
 		draw_rect(Rect2(-26, -26, 52, 40), Color(1, 0.3, 0.3, 0.5))
+
+
+func _draw_turret() -> void:
+	# anel de sacos de areia + metralhadora girando sobre um pedestal
+	for i in 10:
+		var a := TAU * i / 10.0
+		var p := Vector2(cos(a) * 15.0, sin(a) * 10.0 + 2.0)
+		draw_rect(Rect2(p - Vector2(5, 3), Vector2(10, 7)), Color("a8916f"))
+		draw_rect(Rect2(p - Vector2(5, 3), Vector2(10, 7)), Color(0, 0, 0, 0.45), false, 1.0)
+	draw_circle(Vector2(0, -4), 7.0, Color("3a3f47"))
+	var d := Vector2(cos(aim), sin(aim))
+	var base := Vector2(0, -10)
+	draw_line(base, base + d * 22.0, Color("1f2226"), 5.0)
+	draw_line(base, base + d * 22.0, Color("5b636e"), 2.0)
+	draw_circle(base, 5.0, Color("4a505b"))
+	var col := Color("7dff6b") if operator != null else Color("ff6b4a")
+	draw_circle(base + Vector2(0, -1), 2.0, col)
 
 
 func _draw_switch() -> void:

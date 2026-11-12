@@ -42,7 +42,12 @@ func spit(from: Vector2, angle: float) -> void:
 
 
 func throw_grenade(a: Vector2, b: Vector2, flight: float, bomb: bool) -> void:
-	grenades.append({ a = a, b = b, t = 0.0, T = flight, bomb = bomb })
+	grenades.append({ a = a, b = b, t = 0.0, T = flight, bomb = bomb, acid = false })
+
+
+## Bolota de ácido da matriarca: arco alto que passa por cima de muros.
+func lob_acid(a: Vector2, b: Vector2, flight: float) -> void:
+	grenades.append({ a = a, b = b, t = 0.0, T = flight, bomb = false, acid = true })
 
 
 func _release(pr: Dictionary) -> void:
@@ -95,7 +100,9 @@ func tick(dt: float) -> void:
 	for gr in grenades:
 		gr.t += dt
 		if gr.t >= gr.T:
-			if gr.bomb:
+			if gr.acid:
+				world.acid_impact(gr.b)
+			elif gr.bomb:
 				world.explode(gr.b, Bal.PICKUPS.bomb_radius, Bal.PICKUPS.bomb_damage, 1.1)
 			else:
 				world.explode(gr.b, Bal.GRENADE.radius, Bal.GRENADE.damage, 1.2)
@@ -205,10 +212,17 @@ func _draw() -> void:
 		var a: Vector2 = gr.a
 		var b: Vector2 = gr.b
 		var base := a.lerp(b, k2)
-		var hgt := sin(k2 * PI) * (18.0 if gr.bomb else 46.0)
+		var hgt := sin(k2 * PI) * (18.0 if gr.bomb else (110.0 if gr.acid else 46.0))
 		draw_circle(base, 3.5, Color(0, 0, 0, 0.35))
 		var pos := base - Vector2(0, hgt)
-		if gr.bomb:
+		if gr.acid:
+			# aviso no chão: anel que fecha até o impacto
+			var rr: float = Bal.MOTHER.mortar_radius * (1.0 + (1.0 - k2) * 0.6)
+			draw_arc(b, rr, 0.0, TAU, 28, Color(0.7, 1.0, 0.3, 0.35 + k2 * 0.5), 2.0)
+			draw_circle(b, Bal.MOTHER.mortar_radius, Color(0.6, 0.9, 0.2, 0.08 + k2 * 0.12))
+			draw_circle(pos, 6.0, Color(0.55, 0.9, 0.2, 0.95))
+			draw_circle(pos + Vector2(-2, -2), 2.5, Color(0.85, 1.0, 0.6))
+		elif gr.bomb:
 			draw_rect(Rect2(pos - Vector2(3, 5), Vector2(6, 10)), Color("3b3f2a"))
 		else:
 			draw_circle(pos, 4.0, Color("4e5a2c"))

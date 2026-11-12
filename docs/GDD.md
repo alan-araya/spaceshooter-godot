@@ -73,11 +73,11 @@ a troca de arte 2D → 3D não toque na lógica (ver §8).
 
 ### 3.4 Jogo (HUD)
 - **Topo esquerda**: retrato do soldado + **contagem de tropas** (número grande) + tempo de missão.
-- **Topo centro**: 1 painel por jogador ativo (P1 cinza, P2 amarelo, P3 vermelho, P4 verde) com
-  arma, munição, granadas e **ordem atual** (Normal / Atacar / Defender / Seguir).
+- **Topo centro**: 1 painel por jogador ativo (P1 azul, P2 amarelo, P3 vermelho, P4 verde): linha 1 com arma e
+  munição; linha 2 com **um ícone por granada** e a **ordem atual** (Normal / Atacar / Defender / Seguir) à direita.
 - **Topo direita**: méritos da missão.
 - **Rodapé**: texto do objetivo e progresso (ex.: "Ninhos 1/3 · Insetos 42").
-- Mensagens (*toasts*) no centro: "REFORÇOS!", "MATRIARCA À VISTA!", "COMANDANTE ABATIDO — 10 s".
+- Mensagens (*toasts*) logo abaixo da faixa superior (no máximo 3): "REFORÇOS!", "HORDA SE APROXIMANDO!".
 - Marcador colorido "P1..P4" acima de cada comandante.
 
 ### 3.5 Pausa
@@ -121,6 +121,19 @@ Melhorias de IA desta versão (o MVP tinha IA fraca):
 - **Insetos com papéis**: corredores (cercam pelos flancos), cuspidores (mantêm distância),
   coletores (buscam flores). Flanqueio via deslocamento lateral no campo de fluxo.
 - **Enxame coordenado**: insetos se agrupam antes de atacar (pequenos bandos) e evitam fila indiana.
+- **Esquiva**: parte dos aracnídeos ("espertos", proporção cresce com a dificuldade) foge do ponto onde uma granada vai cair.
+- **Frenesi**: aracnídeos perto de uma matriarca ficam mais rápidos e mordem mais rápido (levemente avermelhados).
+- **Metralhadoras de ponto**: soldados em Normal/Defender assumem sozinhos as metralhadoras livres por perto.
+- **Perigo de área**: soldados saem de poças de ácido e do ponto marcado onde a bolota da matriarca vai cair.
+
+IA da **matriarca** (aranha grande):
+- não entra na linha de tiro: mantém ~150 px dos humanos e circula atrás da ninhada;
+- **morteiro de ácido** a cada ~6 s, em arco por cima dos muros, mirando o maior grupo de humanos; um anel verde
+  marca o impacto (1,1 s de aviso) e fica uma poça que fere quem ficar em cima;
+- **investida** com empurrão quando alguém chega a ~58 px;
+- abaixo de 35% de vida **recua** para o ninho mais próximo; pare mais rápido quando ameaçada;
+- ao perder 1/3 e 2/3 da vida solta uma **ninhada de emergência** (3 filhotes);
+- no máximo 3 matriarcas vivas (com o teto atingido, a flor é só comida).
 
 ### 4.4 Inimigos
 | Inimigo | Papel |
@@ -130,8 +143,9 @@ Melhorias de IA desta versão (o MVP tinha IA fraca):
 | Matriarca | surge quando um aracnídeo toca uma **flor aberta**; lenta, muito resistente, pare um aracnídeo a cada 4 s e explode em 7 filhotes |
 | Ninho | monte orgânico que gera aracnídeos sem parar, com taxa crescente por minuto |
 | Coração da colmeia | ninho gigante da missão final; ao morrer libera o cristal |
-| Flor | broto que abre em 7 s; se um aracnídeo tocar, vira matriarca. Humanos pisam para arrancar |
+| Flor | broto que abre em 7 s (as do mapa, em ~14 s); se um aracnídeo tocar, vira matriarca. Humanos pisam para arrancar |
 | Emboscada | após 75 s, grupos brotam do chão perto dos humanos (aviso de 1 s com poeira) |
+| Horda | grupo que chega por uma borda do mapa (anel vermelho de aviso). Em defesas vem até o fim; nas outras missões, enquanto houver ninhos. Cresce com o tempo e pode trazer uma matriarca |
 
 ### 4.5 Pickups
 | Pickup | Efeito |
@@ -145,16 +159,33 @@ Melhorias de IA desta versão (o MVP tinha IA fraca):
 
 ### 4.6 Tipos de missão (data-driven)
 `eliminate` (limpar ninhos e insetos), `nests` (destruir ninhos), `switches` (religar relés ficando
-2 s parado em cima), `survive` (proteger o gerador até a evacuação; muros e portões destrutíveis),
-`retrieve` (destruir o Coração, pegar o cristal, levar à extração).
+2 s parado em cima), `survive` (proteger o gerador até a evacuação), `hold` (proteger o gerador até abater
+uma cota de inimigos, como a defesa de base do original), `retrieve` (destruir o Coração, pegar o cristal,
+levar à extração). Defesas usam muros/portões destrutíveis (40/32 PV), metralhadoras de ponto e hordas.
+Rede de segurança: uma defesa sem hordas, sem ninhos e sem insetos por 3 s termina em vitória ("área segura").
+
+### 4.6.1 Campanha
+| # | Missão | Tipo | Destaque |
+|---|---|---|---|
+| 1 | Queda Quente | eliminate | tutorial de fato; hordas pelo leste/norte enquanto houver ninhos |
+| 2 | Sinal Perdido | switches | cânion, 3 ninhos, hordas por todos os lados |
+| 3 | Posto Avançado Eco | survive 210 s | dois anéis (sacos de areia + muralha), hordas a partir de 40 s |
+| 4 | Linha de Trincheiras | hold 400 abates | duas trincheiras com metralhadoras de ponto, hordas pelo norte e pelos flancos |
+| 5 | Fortaleza Bastião | survive 240 s | muralhas concêntricas, portões desalinhados, fosso de ácido, 8 metralhadoras |
+| 6 | Coração da Colmeia | retrieve | final: interior da estação, cristal e extração |
+
+Os mapas das defesas 3–5 são gerados por `tools/build_maps.py`.
 
 ### 4.7 Dificuldades
 | | Recruta | Soldado | Veterano |
 |---|---|---|---|
-| Tropas iniciais | 14 | 10 | 8 |
-| Velocidade dos insetos | ×0,9 | ×1,0 | ×1,1 |
-| Taxa de spawn | ×0,7 | ×1,0 | ×1,3 |
+| Tropas iniciais | 11 | 9 | 8 |
+| Velocidade dos insetos | ×0,95 | ×1,05 | ×1,1 |
+| Taxa de spawn (ninhos, hordas, cota) | ×0,93 | ×1,15 | ×1,3 |
 | Vida dos insetos | ×1,0 | ×1,0 | ×1,25 |
+| Agressividade da IA (cuspe, bote, investida, morteiro, esquiva) | ×0,9 | ×1,1 | ×1,25 |
+
+Recruta = o antigo Soldado ~7% mais fácil. Soldado ficou mais pressionado. Veterano mantido (playtest de 2026-11-11).
 
 ---
 
@@ -197,13 +228,13 @@ Tamanhos são o tamanho final no jogo (o pipeline reduz e quantiza a paleta).
 |---|---|---|---|
 | `soldier.png` | soldado, 5 direções (S, SE, E, NE, N) × 4 passos de caminhada; W/SW/NW = espelho | 20 | 32×40 |
 | `commander.png` | igual ao soldado + braçadeira/insígnia colorida (tingida por jogador) | 20 | 32×40 |
-| `bug.png` | aracnídeo visto de cima, olhando para a **direita**, 4 frames de patas | 4 | 40×40 |
+| `bug.png` | aracnídeo visto de cima, olhando para a **direita**: 4 passos + bote (2) + morte (2) | 8 | 42×42 |
 | `larva.png` | filhote, de cima, direita | 2 | 20×20 |
 | `mother.png` | matriarca inchada, de cima, direita, pulsando | 2 | 72×72 |
 | `nest.png` | ninho/monte orgânico, 3/4, pulsando | 2 | 56×48 |
 | `heart.png` | coração da colmeia (ninho gigante) | 2 | 96×80 |
 | `flower.png` | broto fechado + flor aberta (rosa/roxa) | 2 | 20×20 |
-| `pickups.png` | reforço, ataque aéreo, blindado, lança-chamas, plasma, granadas | 6 | 32×32 |
+| `pickups.png` | reforço, ataque aéreo, blindado, lança-chamas, plasma, granadas | 6 | 37×37 |
 | `buggy.png` | buggy militar aberto, de cima, direita | 1 | 64×40 |
 | `dropship.png` | nave de transporte, de cima, direita | 1 | 112×72 |
 | `robot.png` | robô/tanque de apoio, de cima: base + torre | 2 | 48×48 |

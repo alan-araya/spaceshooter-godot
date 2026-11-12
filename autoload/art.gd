@@ -5,13 +5,13 @@ extends Node
 
 const DEFS := {
 	soldier = { h = 5, v = 4, size = Vector2i(32, 40), offset = Vector2(0, -15) },
-	bug = { h = 4, v = 2, size = Vector2i(40, 40), offset = Vector2.ZERO },
+	bug = { h = 4, v = 2, size = Vector2i(42, 42), offset = Vector2.ZERO },
 	larva = { h = 2, v = 1, size = Vector2i(20, 20), offset = Vector2.ZERO },
 	mother = { h = 2, v = 1, size = Vector2i(72, 72), offset = Vector2.ZERO },
 	nest = { h = 2, v = 1, size = Vector2i(56, 48), offset = Vector2(0, -10) },
 	heart = { h = 2, v = 1, size = Vector2i(96, 80), offset = Vector2(0, -18) },
 	flower = { h = 2, v = 1, size = Vector2i(20, 20), offset = Vector2.ZERO },
-	pickups = { h = 6, v = 1, size = Vector2i(32, 32), offset = Vector2.ZERO },
+	pickups = { h = 6, v = 1, size = Vector2i(37, 37), offset = Vector2.ZERO },
 	buggy = { h = 1, v = 1, size = Vector2i(64, 40), offset = Vector2.ZERO },
 	dropship = { h = 1, v = 1, size = Vector2i(112, 72), offset = Vector2.ZERO },
 	robot = { h = 2, v = 1, size = Vector2i(48, 48), offset = Vector2.ZERO },

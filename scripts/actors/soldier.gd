@@ -15,6 +15,7 @@ var fire_cd := 0.0
 var retarget_cd := 0.0
 var slot := 0 # posição na formação (entre os soldados do mesmo comandante)
 var lane := 0.0 # desvio lateral pessoal (-1..1) para avançar em leque
+var post: Prop = null # metralhadora de ponto que este soldado opera
 
 
 func setup(w: World, x: Vector2, owner_pid: int) -> void:
@@ -56,8 +57,33 @@ func tick(dt: float) -> void:
 	var order: String = cmd.order
 	var speed: float = S.speed
 
+	# metralhadoras de ponto: em Normal/Defender, soldados livres vão operá-las
+	if order == "atacar" or order == "seguir":
+		_release_post()
+	elif post == null and not world.turrets.is_empty() and retarget_cd > S.retarget * 0.7:
+		post = world.claim_turret(self)
+	var flee := world.danger_dir(position, r) if (not world.hazards.is_empty() or not world.projectiles.grenades.is_empty()) else Vector2.ZERO
+	if flee != Vector2.ZERO:
+		world.grid.move_circle(self, flee * speed * dt, r, Grid.MODE_HUMAN)
+		walk_t += dt * 7.0
+		moving = true
+		separate(dt)
+		return
+	var manning := false
+	if post != null:
+		if post.claimed_by != self:
+			post = null
+		else:
+			anchor = post.position
+			var dp := position.distance_to(post.position)
+			if dp > 4.0:
+				move_toward_point(post.position, speed, dt, true)
+			manning = dp < Bal.TURRET.man_radius
+
 	# recuo: inseto colado → um passo para trás, puxando para a âncora / comandante
-	if t != null and dist_t < S.kite_dist and t is Bug and order != "atacar":
+	if post != null:
+		pass # quem opera (ou vai operar) a metralhadora não sai da posição
+	elif t != null and dist_t < S.kite_dist and t is Bug and order != "atacar":
 		var away := (position - t.position).normalized()
 		var home := anchor
 		if order == "seguir" and not cmd.dead:
@@ -78,9 +104,13 @@ func tick(dt: float) -> void:
 	else:
 		_tick_patrol(t, dist_t, speed, dt)
 
-	separate(dt)
+	if not manning:
+		separate(dt)
 	push_out_of_structures()
 	trample_flowers()
+	if manning:
+		face = post.aim
+		return # operando a metralhadora: o fuzil fica parado
 
 	if t != null and dist_t <= S.reach + t.r:
 		face = (t.position - position).angle()
@@ -100,6 +130,12 @@ func tick(dt: float) -> void:
 				fire_weapon(face, "rifle", S.spread, t)
 				if world.rng.randf() < 0.3:
 					Sfx.play("shot_far", position.x)
+
+
+func _release_post() -> void:
+	if post != null and is_instance_valid(post) and post.claimed_by == self:
+		post.claimed_by = null
+	post = null
 
 
 ## Há um humano no corredor de tiro entre mim e o alvo?

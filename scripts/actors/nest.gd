@@ -31,7 +31,7 @@ func tick(dt: float) -> void:
 		return
 	var base: float = Bal.HEART.spawn_interval if kind == "heart" else Bal.NEST.spawn_interval
 	var minutes := world.time / 60.0
-	var rate: float = world.diff.spawn * (1.0 + world.diff.escalation * minutes)
+	var rate: float = world.diff.spawn * (1.0 + world.diff.escalation * minutes) * float(world.settings.get("nest_rate", 1.0))
 	spawn_cd = maxf(Bal.NEST.min_interval, base / rate) * world.rng.randf_range(0.8, 1.2)
 	if world.bugs.size() >= Bal.LIMITS.max_bugs:
 		return
@@ -45,7 +45,7 @@ func tick(dt: float) -> void:
 	b.face = a
 	b.impulse = Vector2(cos(a), sin(a)) * 60.0
 	# bando: espera junto do ninho (o tempo de espera cai com a escalada)
-	var wait: float = Bal.NEST.gather_time / (1.0 + minutes * 0.5)
+	var wait: float = Bal.NEST.gather_time / ((1.0 + minutes * 0.5) * world.diff.aggro)
 	b.start_gather(self, wait)
 	pack.append(b)
 	if pack.size() >= Bal.NEST.pack_size:

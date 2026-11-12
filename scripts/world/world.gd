@@ -39,7 +39,13 @@ var pickups: Array = []
 var vehicles: Array = []
 var walls := {} # índice da célula -> Prop
 var switches: Array = []
-var ambushes: Array = [] # Dictionary: p, t, n, done
+var ambushes: Array = [] # Dictionary: p, t, n, done (emboscadas e hordas)
+var turrets: Array = [] # Prop "turret" (metralhadoras de ponto)
+var hazards: Array = [] # Dictionary: p, r, t, tick (poças de ácido da matriarca)
+var mothers: Array = [] # matriarcas vivas (reconstruída a cada quadro)
+var horde_timer := 0.0
+var horde_count := 0
+var clear_timer := 0.0
 var generator: Prop = null
 var crystal = null # Dictionary: p, carried, carrier
 var extraction := Vector2.INF
@@ -95,6 +101,7 @@ func setup(mission_index: int, difficulty: String, players: int, seed_v: int = 1
 	settings = { max_flowers = Bal.FLOWER.max_on_map, ambush = true, pickup_interval = 1.0 }
 	settings.merge(mission.get("settings", {}), true)
 	flower_timer = Bal.FLOWER.respawn_interval
+	horde_timer = 0.0 # primeira horda exatamente em settings.hordes.start
 	pickup_timer = rng.randf_range(Bal.PICKUPS.spawn_min, Bal.PICKUPS.spawn_max) * settings.pickup_interval * 0.6
 	ambush_timer = Bal.AMBUSH.start_after
 
@@ -199,7 +206,7 @@ func _load_map(players: int) -> void:
 					spawn_nest("heart", p)
 					nest_cells.append(Vector2i(x, y))
 				"F":
-					_add_flower(p, 0.0)
+					_add_flower(p, Bal.FLOWER.initial_bloom * rng.randf_range(0.8, 1.2))
 				"S":
 					var sw := Prop.new()
 					sw.setup_switch(self, p)
@@ -214,6 +221,11 @@ func _load_map(players: int) -> void:
 				"1", "2", "3", "4", "5", "6":
 					var which: String = ["reinforce", "airstrike", "robot", "flame", "plasma", "grenades"][int(ch2) - 1]
 					_add_pickup(p, which, -1.0)
+				"T":
+					var tu := Prop.new()
+					tu.setup_turret(self, p)
+					turrets.append(tu)
+					entities.add_child(tu)
 				"=", "+":
 					var wl := Prop.new()
 					wl.setup_wall(self, p, grid.idx(x, y), ch2 == "+")
@@ -428,13 +440,25 @@ func pick_target(h, reach: float) -> Unit:
 	return null
 
 
-func damage_enemy(e: Unit, dmg: float) -> void:
+func damage_enemy(e, dmg: float) -> void:
 	if e.dead:
 		return
 	e.hp -= dmg
 	e.flash = 0.08
 	if e.hp <= 0.0:
 		kill_enemy(e)
+	elif e.kind == "mother":
+		# ninhada de emergência ao perder 1/3 e 2/3 da vida
+		var stage: int = 2 if e.hp < e.max_hp / 3.0 else (1 if e.hp < e.max_hp * 2.0 / 3.0 else 0)
+		while e.brood_stage < stage:
+			e.brood_stage += 1
+			for i in Bal.MOTHER.brood_burst:
+				var a: float = e.face + PI + rng.randf_range(-1.2, 1.2)
+				var l := spawn_bug("larva", e.position + Vector2(cos(a), sin(a)) * 16.0, 0.1)
+				if l != null:
+					l.impulse = Vector2(cos(a), sin(a)) * 160.0
+			fx.goo(e.position, 12)
+			Sfx.play("birth", e.position.x)
 
 
 func kill_enemy(e) -> void:
@@ -536,6 +560,103 @@ func kill_human(h) -> void:
 		Sfx.play("scream", h.position.x)
 
 
+## Empurra uma unidade (investida da matriarca), respeitando paredes.
+func knockback(u, dir: Vector2, dist: float) -> void:
+	if not is_instance_valid(u) or u.dead or not (u is Unit):
+		return
+	var steps := 4
+	for i in steps:
+		grid.move_circle(u, dir * dist / steps, u.r, Grid.MODE_HUMAN)
+	fx.dust(u.position, 6)
+
+
+func nearest_nest(p: Vector2):
+	var best = null
+	var bd := INF
+	for n in nests:
+		if n.dead:
+			continue
+		var d := p.distance_squared_to(n.position)
+		if d < bd:
+			bd = d
+			best = n
+	return best
+
+
+## Impacto do morteiro de ácido: dano em área + poça que fere quem ficar em cima.
+func acid_impact(p: Vector2) -> void:
+	var M: Dictionary = Bal.MOTHER
+	human_hash.query(p, M.mortar_radius + 24.0, tmp_a)
+	var hits := tmp_a.duplicate()
+	for h in hits:
+		if not h.dead and h.position.distance_to(p) < M.mortar_radius + h.r:
+			damage_human(h, M.mortar_damage)
+	hazards.append({ p = p, r = M.pool_radius, t = M.pool_time, tick = 0.0 })
+	fx.goo(p, 16)
+	decal_layer.add_decal("goo", p, 14.0)
+	Sfx.play("splat", p.x)
+	shake(2.0)
+
+
+func _update_hazards(dt: float) -> void:
+	if hazards.is_empty():
+		return
+	var M: Dictionary = Bal.MOTHER
+	var keep: Array = []
+	for hz in hazards:
+		hz.t -= dt
+		if hz.t <= 0.0:
+			continue
+		hz.tick -= dt
+		if hz.tick <= 0.0:
+			hz.tick = M.pool_tick
+			human_hash.query(hz.p, hz.r + 16.0, tmp_a)
+			var inside := tmp_a.duplicate()
+			for h in inside:
+				if not h.dead and h.position.distance_to(hz.p) < hz.r:
+					damage_human(h, M.pool_damage)
+		keep.append(hz)
+	hazards = keep
+
+
+## Alvo do morteiro: o humano com mais aliados em volta (grupo), entre o alcance mínimo e o máximo.
+func mortar_target(from: Vector2):
+	var M: Dictionary = Bal.MOTHER
+	var humans := humans_alive()
+	var best = null
+	var best_score := -1
+	for h in humans:
+		var d: float = from.distance_to(h.position)
+		if d < M.mortar_min or d > M.mortar_range:
+			continue
+		var score := 0
+		for o in humans:
+			if o != h and o.position.distance_squared_to(h.position) < 3600.0:
+				score += 1
+		if h is Commander:
+			score += 1
+		if score > best_score:
+			best_score = score
+			best = h
+	return best
+
+
+## Soldado em Normal/Defender procura uma metralhadora de ponto livre por perto.
+func claim_turret(s: Soldier) -> Prop:
+	var best: Prop = null
+	var bd: float = Bal.TURRET.claim_radius
+	for tu in turrets:
+		if Unit.ok(tu.claimed_by):
+			continue
+		var d := s.position.distance_to(tu.position)
+		if d < bd:
+			bd = d
+			best = tu
+	if best != null:
+		best.claimed_by = s
+	return best
+
+
 func explode(p: Vector2, radius: float, damage: float, scale_k: float) -> void:
 	bug_hash.query(p, radius + 24.0, tmp_b)
 	var hits := tmp_b.duplicate()
@@ -549,7 +670,7 @@ func explode(p: Vector2, radius: float, damage: float, scale_k: float) -> void:
 		if not n.dead and n.position.distance_to(p) < radius + n.r:
 			damage_enemy(n, damage * 0.8)
 	fx.explosion(p, scale_k)
-	decal_layer.add_decal("scorch", p, radius * 0.35)
+	decal_layer.add_decal("scorch", p, radius * 0.22)
 	shake(2.0 + scale_k * 3.0)
 	Sfx.play("boom", p.x)
 
@@ -607,7 +728,28 @@ func trample_flower(f: Prop, h) -> void:
 		toast("FLOR ARRANCADA", Color("c3ff6b"))
 
 
+## Direção para fugir de perigo de área (poça de ácido ou bolota prestes a cair), ou ZERO.
+func danger_dir(p: Vector2, r: float) -> Vector2:
+	var out := Vector2.ZERO
+	for hz in hazards:
+		var d: Vector2 = p - hz.p
+		if d.length() < hz.r + r + 6.0:
+			out += d.normalized() if d.length() > 0.5 else Vector2.RIGHT
+	for gr in projectiles.grenades:
+		if not gr.acid or gr.T - gr.t > 0.9:
+			continue
+		var d2: Vector2 = p - gr.b
+		if d2.length() < Bal.MOTHER.mortar_radius + r + 6.0:
+			out += d2.normalized() if d2.length() > 0.5 else Vector2.UP
+	return out.normalized() if out != Vector2.ZERO else Vector2.ZERO
+
+
 func flower_to_mother(f: Prop, b: Bug) -> void:
+	if mothers.size() >= Bal.MOTHER.max_alive:
+		# colmeia já tem matriarcas demais: a flor só é comida
+		f.dead = true
+		fx.petals(f.position)
+		return
 	f.dead = true
 	b.dead = true
 	var m := spawn_bug("mother", f.position, 0.6)
@@ -885,6 +1027,8 @@ func update(dt: float) -> void:
 		sw.tick(dt)
 	for wl in walls.values():
 		wl.tick(dt)
+	for tu in turrets:
+		tu.tick(dt)
 	if generator != null:
 		generator.tick(dt)
 
@@ -897,6 +1041,8 @@ func update(dt: float) -> void:
 	_update_pickups(dt)
 	_update_flowers(dt)
 	_update_ambush(dt)
+	_update_hordes(dt)
+	_update_hazards(dt)
 	_update_switches_and_crystal(dt)
 	_prof("support")
 	fx.tick(dt)
@@ -912,6 +1058,8 @@ func update(dt: float) -> void:
 			_finish("victory", "Objetivo cumprido")
 		elif troops <= 0 and alive_commanders().is_empty():
 			_finish("defeat", "Sem tropas e sem comandantes")
+		elif _area_secure(dt):
+			_finish("victory", "Área segura — nenhum inimigo restante")
 	else:
 		outcome_timer += dt
 	_sync_visuals()
@@ -966,6 +1114,10 @@ func _rebuild_hashes() -> void:
 	for r in robots:
 		if not r.dead:
 			human_hash.insert(r)
+	mothers.clear()
+	for b in bugs:
+		if b.kind == "mother" and not b.dead:
+			mothers.append(b)
 
 
 ## Recalcula UM campo de fluxo a cada FLOW_FRAMES quadros, em rodízio (cada campo é
@@ -1088,14 +1240,16 @@ func _update_ambush(dt: float) -> void:
 		if a.t <= 0.0 and not a.done:
 			a.done = true
 			for i in a.n:
-				spawn_bug("bug", a.p + Vector2(rng.randf_range(-16, 16), rng.randf_range(-16, 16)), 0.4)
+				var spread: float = 28.0 if a.get("edge", false) else 16.0
+				var kind := "mother" if (i == 0 and a.get("mother", false)) else "bug"
+				spawn_bug(kind, a.p + Vector2(rng.randf_range(-spread, spread), rng.randf_range(-spread, spread)), 0.4)
 			fx.dust(a.p, 16)
 			Sfx.play("burrow", a.p.x)
 		elif not a.done and rng.randf() < dt * 20.0:
 			fx.dust(a.p + Vector2(rng.randf_range(-12, 12), rng.randf_range(-12, 12)), 1)
 	if not settings.ambush or outcome != "":
 		return
-	if nests.is_empty() and mission.objective.type != "survive":
+	if nests.is_empty() and not _is_defense():
 		return
 	if time < Bal.AMBUSH.start_after:
 		return
@@ -1124,11 +1278,95 @@ func _update_ambush(dt: float) -> void:
 		if close:
 			continue
 		var c := grid.cell_of(p)
-		if grid.deco_at(c.x, c.y) == 95 and mission.objective.type == "survive":
+		if grid.deco_at(c.x, c.y) == 95 and _is_defense():
 			continue
 		ambushes.append({ p = p, t = Bal.AMBUSH.warn_time, n = rng.randi_range(Bal.AMBUSH.size_min, Bal.AMBUSH.size_max), done = false })
 		toast("EMBOSCADA! O CHÃO ESTÁ TREMENDO", Color("ff9f43"))
 		return
+
+
+func _is_defense() -> bool:
+	var t: String = mission.objective.type
+	return t == "survive" or t == "hold"
+
+
+## Hordas pelas bordas: ativas em missões de defesa; nas outras, enquanto houver ninhos.
+func _hordes_active() -> bool:
+	if not settings.has("hordes") or outcome != "":
+		return false
+	return _is_defense() or not nests.is_empty()
+
+
+func _update_hordes(dt: float) -> void:
+	if not _hordes_active():
+		return
+	var hz: Dictionary = settings.hordes
+	if time < hz.start:
+		return
+	horde_timer -= dt
+	if horde_timer > 0.0:
+		return
+	var growth: float = 1.0 + (time / 60.0) * Bal.HORDES.growth_per_min
+	horde_timer = maxf(Bal.HORDES.min_interval, hz.interval / (diff.spawn * growth)) * rng.randf_range(0.85, 1.15)
+	var n := roundi(rng.randi_range(hz.size_min, hz.size_max) * sqrt(growth))
+	var p := _edge_spawn_point(hz.edges)
+	if p == Vector2.INF:
+		return
+	var with_mother: bool = time > 60.0 and rng.randf() < float(hz.get("mother_chance", 0.0))
+	ambushes.append({ p = p, t = Bal.HORDES.warn_time, n = n, done = false, edge = true, mother = with_mother })
+	horde_count += 1
+	if horde_count % 4 == 1:
+		toast("HORDA SE APROXIMANDO!", Color("ff9f43"))
+
+
+## Ponto de chegada de horda numa das bordas permitidas ("n", "s", "e", "w"), longe dos humanos.
+func _edge_spawn_point(edges: String) -> Vector2:
+	var cands: Array = []
+	if edges.contains("n"):
+		for x in grid.cols:
+			cands.append(Vector2i(x, 0))
+	if edges.contains("s"):
+		for x in grid.cols:
+			cands.append(Vector2i(x, grid.rows - 1))
+	if edges.contains("w"):
+		for y in grid.rows:
+			cands.append(Vector2i(0, y))
+	if edges.contains("e"):
+		for y in grid.rows:
+			cands.append(Vector2i(grid.cols - 1, y))
+	var humans := humans_alive()
+	for tries in 30:
+		if cands.is_empty():
+			break
+		var c: Vector2i = cands[rng.randi() % cands.size()]
+		var i := grid.idx(c.x, c.y)
+		if grid.kind[i] != Grid.GROUND or grid.deco[i] == 95:
+			continue
+		var p := grid.center(c.x, c.y)
+		var close := false
+		for h in humans:
+			if h.position.distance_to(p) < 140.0:
+				close = true
+				break
+		if close:
+			continue
+		return p
+	return Vector2.INF
+
+
+## Rede de segurança: numa defesa sem hordas, sem ninhos e sem insetos por 3 s, a área está segura.
+func _area_secure(dt: float) -> bool:
+	if not _is_defense() or _hordes_active():
+		return false
+	if not bugs.is_empty() or not nests.is_empty():
+		clear_timer = 0.0
+		return false
+	for a in ambushes:
+		if not a.done:
+			clear_timer = 0.0
+			return false
+	clear_timer += dt
+	return clear_timer > 3.0
 
 
 func _update_switches_and_crystal(dt: float) -> void:
@@ -1217,6 +1455,8 @@ func _sync_visuals() -> void:
 		sw.sync_visual()
 	for wl in walls.values():
 		wl.sync_visual()
+	for tu in turrets:
+		tu.sync_visual()
 	if generator != null:
 		generator.sync_visual()
 	for v in vehicles:
@@ -1261,6 +1501,11 @@ func _objective_update() -> String:
 				outcome_reason = "O gerador foi destruído"
 				return "failed"
 			return "done" if time >= def.time else ""
+		"hold":
+			if generator != null and generator.dead:
+				outcome_reason = "O gerador foi destruído"
+				return "failed"
+			return "done" if stats.kills >= int(def.kills * diff.spawn) else ""
 		"retrieve":
 			if crystal != null and crystal.carried and crystal.carrier != null and not crystal.carrier.dead:
 				if crystal.carrier.position.distance_to(extraction) < 32.0:
@@ -1294,6 +1539,11 @@ func objective_text() -> String:
 			if generator != null:
 				gp = roundi(generator.hp / generator.max_hp * 100.0)
 			return "Evacuação em %d:%02d  ·  Gerador %d%%" % [int(left) / 60, int(left) % 60, gp]
+		"hold":
+			var gp2 := 100
+			if generator != null:
+				gp2 = roundi(generator.hp / generator.max_hp * 100.0)
+			return "Abates: %d/%d  ·  Gerador %d%%" % [stats.kills, int(def.kills * diff.spawn), gp2]
 		"retrieve":
 			if crystal == null:
 				for n in nests:

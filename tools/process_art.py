@@ -237,7 +237,7 @@ def do_soldier():
 def do_bug():
     a = chroma_key(load_rgba(SRC / "bug" / "bug_sheet.png"))
     cells = union_crop(grid_cells(a, 4, 2))
-    frames = build_frames(cells, (40, 40), colors=32)
+    frames = build_frames(cells, (42, 42), colors=32)
     save(sheet(frames, 4), "bug")
 
 
@@ -303,7 +303,7 @@ def do_support():
     icons = [i[bbox(i[..., 3])[1]:, :] for i in icons]
     frames = []
     for ic in icons:
-        f, _ = fit(ic, (32, 32), pad=2)
+        f, _ = fit(ic, (37, 37), pad=2)
         frames.append(crisp(f, colors=24))
     save(sheet(frames, 6), "pickups")
     for name, size in (("buggy", (64, 40)), ("dropship", (112, 72))):

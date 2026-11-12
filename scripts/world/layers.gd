@@ -31,7 +31,7 @@ func add_decal(kind: String, p: Vector2, size: float) -> void:
 		"blood":
 			col = Color(0.5, 0.05, 0.05, 0.6)
 		"scorch":
-			col = Color(0.12, 0.1, 0.08, 0.45)
+			col = Color(0.16, 0.11, 0.07, 0.22)
 		"crater":
 			col = Color(0.18, 0.12, 0.1, 0.65)
 		"rubble":
@@ -132,6 +132,16 @@ func _draw_shadows() -> void:
 		draw_arc(c + off, rr, 0.0, TAU, 10, Color(0.85, 1.0, 0.55, 0.7 * (1.0 - ph)), 1.0)
 		if i % 3 == 0:
 			draw_rect(Rect2(c + Vector2(-off.y, off.x) * 0.8, Vector2(2, 2)), Color(0.9, 1.0, 0.6, 0.5 + 0.5 * sin(tt * 3.0 + i)))
+	for hz in world.hazards:
+		var k: float = clampf(hz.t / Bal.MOTHER.pool_time, 0.0, 1.0)
+		var pr: float = hz.r
+		var hp2: Vector2 = hz.p
+		draw_set_transform(hp2, 0.0, Vector2(1.0, 0.7))
+		draw_circle(Vector2.ZERO, pr, Color(0.45, 0.8, 0.15, 0.35 * k))
+		draw_circle(Vector2.ZERO, pr * 0.7, Color(0.6, 0.95, 0.25, 0.3 * k))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		var bp := hp2 + Vector2(sin(tt * 3.0 + hp2.x) * pr * 0.5, cos(tt * 2.3 + hp2.y) * pr * 0.3)
+		draw_arc(bp, 3.0 + fmod(tt * 4.0, 3.0), 0.0, TAU, 8, Color(0.85, 1.0, 0.5, 0.6 * k), 1.0)
 	var sc := Color(0, 0, 0, 0.28)
 	for u in world.shadow_casters():
 		if not is_instance_valid(u) or u.dead or not u.visible:
@@ -177,8 +187,9 @@ func _draw_overlay() -> void:
 	# avisos de emboscada
 	for a in world.ambushes:
 		if not a.done:
-			var k: float = 1.0 - a.t / Bal.AMBUSH.warn_time
-			draw_arc(a.p, 10.0 + k * 22.0, 0.0, TAU, 24, Color(1.0, 0.5, 0.2, 0.8), 2.0)
+			var k: float = clampf(1.0 - a.t / Bal.AMBUSH.warn_time, 0.0, 1.0)
+			var col_a := Color(1.0, 0.25, 0.2, 0.9) if a.get("edge", false) else Color(1.0, 0.5, 0.2, 0.8)
+			draw_arc(a.p, 10.0 + k * 22.0, 0.0, TAU, 24, col_a, 2.0)
 	# cristal
 	if world.crystal != null:
 		var cp: Vector2 = world.crystal.p
