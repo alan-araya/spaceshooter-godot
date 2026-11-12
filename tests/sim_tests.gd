@@ -34,8 +34,13 @@ func run(m: Node) -> void:
 	_test_snapshot_roundtrip()
 	_test_loopback_replica()
 	if main.args.has("probe"):
-		for id in ["m3", "m4", "m5"]:
-			_probe_defense(id)
+		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
+		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
+		var dk: String = main.args.get("probe-diff", "normal")
+		var seeds := int(main.args.get("probe-seeds", "1"))
+		for id in ids:
+			for k in seeds:
+				_probe_defense(id, dk, 21 + k)
 	_test_stress()
 	print("=== %d ok, %d falhas ===" % [passes, failures.size()])
 	for f in failures:
@@ -332,8 +337,8 @@ func _test_mother_mortar_and_brood() -> void:
 
 
 ## Sonda de balanceamento (só com --probe): bot que defende o gerador, 1 jogador, Soldado.
-func _probe_defense(id: String) -> void:
-	var w := _new_world(_idx(id), 1, "normal", 21)
+func _probe_defense(id: String, dk: String = "normal", seed_v: int = 21) -> void:
+	var w := _new_world(_idx(id), 1, dk, seed_v)
 	var c: Commander = w.commanders[0]
 	var limit: float = float(w.mission.objective.get("time", 400.0)) + 5.0
 	var frames := int(limit * 60.0)
@@ -355,8 +360,8 @@ func _probe_defense(id: String) -> void:
 	var gp := 0
 	if w.generator != null:
 		gp = roundi(w.generator.hp / w.generator.max_hp * 100.0)
-	print("SONDA %s (%s): %s em %ds · %s · gerador %d%% · abates %d · tropas %d · matriarcas %d" % [
-		id, w.mission.name, w.outcome if w.outcome != "" else "sem fim", int(w.time), w.outcome_reason, gp,
+	print("SONDA %s %s semente %d (%s): %s em %ds · %s · gerador %d%% · abates %d · tropas %d · matriarcas %d" % [
+		id, dk, seed_v, w.mission.name, w.outcome if w.outcome != "" else "sem fim", int(w.time), w.outcome_reason, gp,
 		w.stats.kills, w.troops, w.stats.mothers])
 	w.queue_free()
 

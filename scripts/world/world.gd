@@ -110,6 +110,7 @@ func setup(mission_index: int, difficulty: String, players: int, seed_v: int = 1
 	troops = diff.troops
 	settings = { max_flowers = Bal.FLOWER.max_on_map, ambush = true, pickup_interval = 1.0 }
 	settings.merge(mission.get("settings", {}), true)
+	troops += int(settings.get("troops_bonus", 0)) # missões longas começam com reserva maior
 	flower_timer = Bal.FLOWER.respawn_interval
 	horde_timer = 0.0 # primeira horda exatamente em settings.hordes.start
 	pickup_timer = rng.randf_range(Bal.PICKUPS.spawn_min, Bal.PICKUPS.spawn_max) * settings.pickup_interval * 0.6
@@ -1334,7 +1335,7 @@ func _update_hordes(dt: float) -> void:
 	horde_timer -= dt
 	if horde_timer > 0.0:
 		return
-	var growth: float = 1.0 + (time / 60.0) * Bal.HORDES.growth_per_min
+	var growth: float = 1.0 + (time / 60.0) * float(hz.get("growth", Bal.HORDES.growth_per_min))
 	horde_timer = maxf(Bal.HORDES.min_interval, hz.interval / (diff.spawn * growth)) * rng.randf_range(0.85, 1.15)
 	var n := roundi(rng.randi_range(hz.size_min, hz.size_max) * sqrt(growth))
 	var p := _edge_spawn_point(hz.edges)

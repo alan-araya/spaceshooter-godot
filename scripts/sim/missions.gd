@@ -22,6 +22,8 @@ extends RefCounted
 ##   (depois de 60 s, mother_chance é a chance de uma matriarca vir junto).
 ##   Em defesas (survive/hold) vêm até o fim; nas outras, enquanto houver ninhos.
 ## settings.nest_rate: multiplicador da taxa dos ninhos da missão.
+## settings.troops_bonus: tropas extras na contagem inicial. settings.hordes.growth: crescimento por minuto
+##   (padrão Bal.HORDES.growth_per_min).
 
 const LIST := [
 	{
@@ -171,24 +173,24 @@ const LIST := [
 			"Resista até a frota chegar.",
 		],
 		objective = { type = "survive", time = 240.0, text = "Defenda a torre do gerador até a frota chegar" },
-		settings = { max_flowers = 3, ambush = false, pickup_interval = 0.75,
-			hordes = { start = 15.0, interval = 5.0, size_min = 6, size_max = 9, edges = "nsew", mother_chance = 0.18 } },
+		settings = { max_flowers = 3, ambush = false, pickup_interval = 0.7, troops_bonus = 4,
+			hordes = { start = 25.0, interval = 7.5, size_min = 5, size_max = 7, edges = "nsew", mother_chance = 0.1, growth = 0.12 } },
 		map = [
 			"....~~~~~~~~~~~~........~~~~~~~~~~~~....",
 			"..=================++=================..",
 			"..==.......,,,,.....................==..",
 			"~.=..T............................T..=.~",
 			"~.=.....======+=================.....=.~",
-			"~.=.....=......................=.1...=.~",
+			"~.=.....=...........s..........=.1...=.~",
 			"~.=.....+.s........T.........s.=.....=.~",
 			"~.=.....=.....============.....=.....=.~",
 			"..=.fff.=.....=_s_____s__=.....=.....=..",
-			"..+.fFf.=..T..=_____G____+.....=.fff.+..",
-			"..+.fff.=.....+__C_______=..T..=.fFf.+..",
+			"..+.fFf.=..T..=_____G____+...s.=.fff.+..",
+			"..+.fff.=.s...+__C_______=..T..=.fFf.+..",
 			"..=.....=.....=_6______T_=.....=.fff.=..",
 			"~.=.....=.....============.....=.....=.~",
 			"~.=.....=.s.........T........s.+.....=.~",
-			"~.=.....=......................=.....=.~",
+			"~.=.....=..........s...........=.....=.~",
 			"~.=.....=================+======.....=.~",
 			"~.=..T............................T..=.~",
 			"..==.....................,,,,.......==..",
