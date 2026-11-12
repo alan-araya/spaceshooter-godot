@@ -77,6 +77,16 @@ var ff_cmd: Array = []
 var tmp_a: Array = []
 var tmp_b: Array = []
 
+## Rede (fase 0): a simulação não fala direto com som/partículas/decalques/HUD; tudo passa por
+## sfx()/record()/toast()/shake(). No host, `recording` guarda os eventos para enviar aos clientes.
+var recording := false
+var net_events: Array = [] # [quadro, tipo, args]
+## false = mundo "fantasma" (só simula e grava eventos; não toca som nem cria partículas).
+var present := true
+## true = mundo do cliente: não simula, só recebe estado (Replica).
+var replica := false
+var replica_objective := ""
+
 var ground: Sprite2D
 var decal_layer: WorldLayer
 var shadow_layer: WorldLayer
@@ -324,6 +334,7 @@ func spawn_nest(type: String, p: Vector2) -> Nest:
 func _add_flower(p: Vector2, bloom: float) -> void:
 	var f := Prop.new()
 	f.setup_flower(self, p, bloom)
+	f.uid = _uid()
 	flowers.append(f)
 	entities.add_child(f)
 
@@ -331,6 +342,7 @@ func _add_flower(p: Vector2, bloom: float) -> void:
 func _add_pickup(p: Vector2, which: String, lifetime: float) -> Prop:
 	var pk := Prop.new()
 	pk.setup_pickup(self, p, which, lifetime)
+	pk.uid = _uid()
 	pickups.append(pk)
 	entities.add_child(pk)
 	return pk
@@ -350,11 +362,24 @@ func _reslot() -> void:
 # =============================================================================
 
 func toast(text: String, color: Color = Color("ffe066")) -> void:
+	record("toast", [text, color])
 	toast_requested.emit(text, color)
 
 
 func shake(amount: float) -> void:
+	record("shake", [amount])
 	shake_requested.emit(amount)
+
+
+func sfx(sound: String, x: float = 0.0) -> void:
+	record("sfx", [sound, x])
+	if present:
+		Sfx.play(sound, x)
+
+
+func record(type: String, args: Array) -> void:
+	if recording:
+		net_events.append([frame, type, args])
 
 
 func humans_alive() -> Array:
@@ -389,7 +414,7 @@ func set_order(cmd: Commander, order: String) -> void:
 			s.wander = s.position
 	var label: String = Bal.ORDER_LABELS[order]
 	toast("P%d · ORDEM: %s" % [cmd.pid + 1, label.to_upper()], Bal.PLAYER_COLORS[cmd.pid])
-	Sfx.play("order", cmd.position.x)
+	sfx("order", cmd.position.x)
 
 
 ## Escolha de alvo por AMEAÇA (melhoria sobre o MVP, que só pegava o mais próximo).
@@ -458,7 +483,7 @@ func damage_enemy(e, dmg: float) -> void:
 				if l != null:
 					l.impulse = Vector2(cos(a), sin(a)) * 160.0
 			fx.goo(e.position, 12)
-			Sfx.play("birth", e.position.x)
+			sfx("birth", e.position.x)
 
 
 func kill_enemy(e) -> void:
@@ -474,7 +499,7 @@ func kill_enemy(e) -> void:
 			decal_layer.add_corpse("bug", 7, p, e.face)
 		else:
 			decal_layer.add_decal("goo", p, 4.0)
-		Sfx.play("squish", p.x)
+		sfx("squish", p.x)
 	elif e.kind == "mother":
 		stats.kills += 1
 		stats.mothers += 1
@@ -487,7 +512,7 @@ func kill_enemy(e) -> void:
 			var l := spawn_bug("larva", p + Vector2(cos(a), sin(a)) * 12.0, 0.15)
 			if l != null:
 				l.impulse = Vector2(cos(a), sin(a)) * 180.0
-		Sfx.play("burst", p.x)
+		sfx("burst", p.x)
 		shake(4.0)
 	elif e.kind == "nest" or e.kind == "heart":
 		stats.nests += 1
@@ -495,7 +520,7 @@ func kill_enemy(e) -> void:
 		fx.explosion(p, 2.2 if e.kind == "heart" else 1.4)
 		fx.goo(p, 30)
 		decal_layer.add_decal("crater", p, 40.0 if e.kind == "heart" else 26.0)
-		Sfx.play("bigboom", p.x)
+		sfx("bigboom", p.x)
 		shake(10.0 if e.kind == "heart" else 7.0)
 		e.release_pack()
 		if e.kind == "heart":
@@ -521,11 +546,11 @@ func damage_human(h, dmg: float) -> void:
 			h.hp = 0.0
 			fx.explosion(h.position, 2.0)
 			shake(12.0)
-			Sfx.play("bigboom", h.position.x)
+			sfx("bigboom", h.position.x)
 		return
 	if h is Commander:
 		h.invuln = Bal.COMMANDER.hit_invuln
-		Sfx.play("hurt", h.position.x)
+		sfx("hurt", h.position.x)
 	if h.hp <= 0.0:
 		kill_human(h)
 
@@ -539,13 +564,13 @@ func kill_human(h) -> void:
 	if h is Robot:
 		fx.explosion(h.position, 1.1)
 		toast("BLINDADO DESTRUÍDO", Color("ff6b6b"))
-		Sfx.play("boom", h.position.x)
+		sfx("boom", h.position.x)
 		return
 	troops = maxi(0, troops - 1)
 	stats.troops_lost += 1
 	if h is Commander:
 		stats.commander_deaths += 1
-		Sfx.play("death", h.position.x)
+		sfx("death", h.position.x)
 		if h.carrying and crystal != null:
 			h.carrying = false
 			crystal.carried = false
@@ -557,7 +582,7 @@ func kill_human(h) -> void:
 		else:
 			toast("P%d ABATIDO — SEM TROPAS!" % (h.pid + 1), Color("ff3b3b"))
 	else:
-		Sfx.play("scream", h.position.x)
+		sfx("scream", h.position.x)
 
 
 ## Empurra uma unidade (investida da matriarca), respeitando paredes.
@@ -594,7 +619,7 @@ func acid_impact(p: Vector2) -> void:
 	hazards.append({ p = p, r = M.pool_radius, t = M.pool_time, tick = 0.0 })
 	fx.goo(p, 16)
 	decal_layer.add_decal("goo", p, 14.0)
-	Sfx.play("splat", p.x)
+	sfx("splat", p.x)
 	shake(2.0)
 
 
@@ -672,7 +697,7 @@ func explode(p: Vector2, radius: float, damage: float, scale_k: float) -> void:
 	fx.explosion(p, scale_k)
 	decal_layer.add_decal("scorch", p, radius * 0.22)
 	shake(2.0 + scale_k * 3.0)
-	Sfx.play("boom", p.x)
+	sfx("boom", p.x)
 
 
 func splash(p: Vector2, radius: float, dmg: float) -> void:
@@ -682,7 +707,7 @@ func splash(p: Vector2, radius: float, dmg: float) -> void:
 		if not b.dead and b.position.distance_to(p) < radius + b.r:
 			damage_enemy(b, dmg)
 	fx.plasma_pop(p)
-	Sfx.play("zap", p.x)
+	sfx("zap", p.x)
 
 
 ## Inseto travado num muro/portão: morde o tile.
@@ -703,7 +728,7 @@ func bite_tile(b: Bug, tile_idx: int) -> void:
 	if grid.damage_tile(cx, cy, Bal.BUG.wall_damage * (3.0 if b.kind == "mother" else 1.0)):
 		fx.dust(c, 16)
 		decal_layer.add_decal("rubble", c, 12.0)
-		Sfx.play("wallbreak", c.x)
+		sfx("wallbreak", c.x)
 		shake(3.0)
 		if walls.has(tile_idx):
 			walls[tile_idx].queue_free()
@@ -712,7 +737,7 @@ func bite_tile(b: Bug, tile_idx: int) -> void:
 			wall_toast_at = time
 			toast("PORTÃO ROMPIDO!" if k == Grid.GATE else "MURO ROMPIDO!", Color("ff6b6b"))
 	elif rng.randf() < 0.3:
-		Sfx.play("scratch", c.x)
+		sfx("scratch", c.x)
 
 
 func trample_flower(f: Prop, h) -> void:
@@ -723,7 +748,7 @@ func trample_flower(f: Prop, h) -> void:
 	merit += Bal.MERIT.flower
 	fx.petals(f.position)
 	decal_layer.add_decal("petals", f.position, 4.0)
-	Sfx.play("trample", f.position.x)
+	sfx("trample", f.position.x)
 	if h is Commander:
 		toast("FLOR ARRANCADA", Color("c3ff6b"))
 
@@ -758,7 +783,7 @@ func flower_to_mother(f: Prop, b: Bug) -> void:
 	decal_layer.add_decal("goo", f.position, 12.0)
 	if m != null:
 		toast("UM ARACNÍDEO TOCOU UMA FLOR — MATRIARCA!", Color("ff7ae0"))
-		Sfx.play("alarm", f.position.x)
+		sfx("alarm", f.position.x)
 
 
 # =============================================================================
@@ -832,7 +857,7 @@ func apply_pickup(which: String, c: Commander) -> void:
 	var info: Dictionary = PICKUP_INFO[which]
 	stats.pickups += 1
 	toast("P%d · %s" % [c.pid + 1, info.label], info.color)
-	Sfx.play("pickup", c.position.x)
+	sfx("pickup", c.position.x)
 	fx.sparkle(c.position, info.color)
 	match which:
 		"reinforce":
@@ -921,9 +946,10 @@ func call_reinforcements(c: Commander) -> void:
 		var my: Array = path.slice(0, maxi(2, path.size() - k))
 		var v := Vehicle.new()
 		v.setup_buggy(self, my, k * 0.45, per, c.pid)
+		v.uid = _uid()
 		vehicles.append(v)
 		entities.add_child(v)
-	Sfx.play("engine", c.position.x)
+	sfx("engine", c.position.x)
 
 
 func call_airstrike(c: Commander) -> void:
@@ -935,6 +961,7 @@ func call_airstrike(c: Commander) -> void:
 		drops.append({ p = Vector2(clampf(c.position.x + dx, 20.0, Bal.WORLD_W - 20.0), y), soldier = true, done = false })
 	var ship := Vehicle.new()
 	ship.setup_dropship(self, Vector2(-100, y), Bal.VEHICLES.dropship_speed, 0.2, drops, c.pid)
+	ship.uid = _uid()
 	vehicles.append(ship)
 	air.add_child(ship)
 	# segunda passagem: bombas na faixa com mais insetos
@@ -958,9 +985,10 @@ func call_airstrike(c: Commander) -> void:
 		x += Bal.PICKUPS.bomb_spacing
 	var bomber := Vehicle.new()
 	bomber.setup_dropship(self, Vector2(Bal.WORLD_W + 100, by), -Bal.VEHICLES.dropship_speed * 1.15, 1.6, bombs, c.pid)
+	bomber.uid = _uid()
 	vehicles.append(bomber)
 	air.add_child(bomber)
-	Sfx.play("jet", c.position.x)
+	sfx("jet", c.position.x)
 
 
 func call_robot(c: Commander) -> void:
@@ -1068,7 +1096,7 @@ func update(dt: float) -> void:
 
 func _update_respawns(dt: float) -> void:
 	for c in commanders:
-		if not c.dead:
+		if not c.dead or c.disconnected:
 			continue
 		if c.respawn_timer > 0.0:
 			c.respawn_timer -= dt
@@ -1096,7 +1124,7 @@ func _respawn_commander(c: Commander) -> void:
 	fx.explosion(p, 0.6)
 	decal_layer.add_decal("scorch", p, 18.0)
 	toast("P%d DE VOLTA AO CAMPO" % (c.pid + 1), Color("7cff8a"))
-	Sfx.play("respawn", p.x)
+	sfx("respawn", p.x)
 
 
 func _rebuild_hashes() -> void:
@@ -1244,7 +1272,7 @@ func _update_ambush(dt: float) -> void:
 				var kind := "mother" if (i == 0 and a.get("mother", false)) else "bug"
 				spawn_bug(kind, a.p + Vector2(rng.randf_range(-spread, spread), rng.randf_range(-spread, spread)), 0.4)
 			fx.dust(a.p, 16)
-			Sfx.play("burrow", a.p.x)
+			sfx("burrow", a.p.x)
 		elif not a.done and rng.randf() < dt * 20.0:
 			fx.dust(a.p + Vector2(rng.randf_range(-12, 12), rng.randf_range(-12, 12)), 1)
 	if not settings.ambush or outcome != "":
@@ -1384,7 +1412,7 @@ func _update_switches_and_crystal(dt: float) -> void:
 				s.progress = 1.0
 				merit += Bal.MERIT.switch
 				toast("RELÉ RELIGADO", Color("7cff8a"))
-				Sfx.play("switch", s.position.x)
+				sfx("switch", s.position.x)
 		else:
 			s.progress = maxf(0.0, s.progress - dt * 0.25)
 	if crystal != null:
@@ -1395,7 +1423,7 @@ func _update_switches_and_crystal(dt: float) -> void:
 					crystal.carrier = c
 					c.carrying = true
 					toast("P%d PEGOU O CRISTAL — VÁ PARA A EXTRAÇÃO" % (c.pid + 1), Color("9fe8ff"))
-					Sfx.play("pickup", c.position.x)
+					sfx("pickup", c.position.x)
 					break
 		elif crystal.carrier != null and not crystal.carrier.dead:
 			crystal.p = crystal.carrier.position + Vector2(0, -22)
@@ -1515,6 +1543,8 @@ func _objective_update() -> String:
 
 
 func objective_text() -> String:
+	if replica:
+		return replica_objective
 	var def: Dictionary = mission.objective
 	match def.type:
 		"eliminate":
@@ -1562,14 +1592,33 @@ func _finish(result: String, reason: String) -> void:
 	outcome_timer = 0.0
 	if result == "victory":
 		merit += Bal.MERIT.objective + troops * Bal.MERIT.per_surviving_troop
-		Sfx.play("victory", Bal.WORLD_W * 0.5)
+		sfx("victory", Bal.WORLD_W * 0.5)
 	else:
-		Sfx.play("defeat", Bal.WORLD_W * 0.5)
+		sfx("defeat", Bal.WORLD_W * 0.5)
 
 
 # =============================================================================
 # depuração / testes
 # =============================================================================
+
+## Jogador saiu da partida (rede): o comandante sai de campo sem custar tropa e não renasce.
+func disconnect_commander(pid: int) -> void:
+	if pid < 0 or pid >= commanders.size():
+		return
+	var c: Commander = commanders[pid]
+	c.disconnected = true
+	c.dead = true
+	c.respawn_timer = 0.0
+	if c.carrying and crystal != null:
+		c.carrying = false
+		crystal.carried = false
+		crystal.carrier = null
+		crystal.p = c.position
+	for s in soldiers:
+		if s.pid == pid:
+			s.pid = 0 # o pelotão passa para o P1
+	toast("P%d SAIU DA PARTIDA" % (pid + 1), Color("ff9f43"))
+
 
 func debug_kill_nests() -> void:
 	for n in nests.duplicate():

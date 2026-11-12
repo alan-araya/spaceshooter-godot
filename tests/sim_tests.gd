@@ -30,6 +30,9 @@ func run(m: Node) -> void:
 	_test_area_secure()
 	_test_turret_manned()
 	_test_mother_mortar_and_brood()
+	_test_cmd_input_roundtrip()
+	_test_snapshot_roundtrip()
+	_test_loopback_replica()
 	if main.args.has("probe"):
 		for id in ["m3", "m4", "m5"]:
 			_probe_defense(id)
@@ -381,3 +384,109 @@ func _timeline(id: String) -> void:
 			print("FIM ", w.outcome, " — ", w.outcome_reason, " t=", int(w.time))
 			break
 	w.queue_free()
+
+
+# =============================================================================
+# rede — fase 0
+# =============================================================================
+
+func _test_cmd_input_roundtrip() -> void:
+	var c := CmdInput.new()
+	c.move = Vector2(cos(PI / 4.0), sin(PI / 4.0))
+	c.fire = true
+	c.strafe = true
+	c.grenade_n = 200
+	c.order_n = 7
+	c.order_set = 2
+	c.order_set_n = 9
+	var d := CmdInput.decode(c.encode())
+	check(c.encode().size() == 6, "CmdInput não tem 6 bytes")
+	check(d.move.distance_to(c.move) < 0.08 and d.fire and d.strafe, "CmdInput: movimento/botões não sobreviveram")
+	check(d.grenade_n == 200 and d.order_n == 7 and d.order_set == 2 and d.order_set_n == 9, "CmdInput: contadores não sobreviveram")
+	# contador mudou => aperto aplicado uma vez
+	var w := _new_world(0)
+	var cm: Commander = w.commanders[0]
+	var prev := d.copy()
+	d.grenade_n = 201
+	d.apply_to(cm, prev)
+	check(cm.in_grenade, "CmdInput: aperto de granada não disparou")
+	w.queue_free()
+
+
+func _count_ents(w: World) -> int:
+	var n := 0
+	for arr in [w.soldiers, w.robots, w.bugs, w.nests, w.flowers, w.pickups, w.vehicles]:
+		for u in arr:
+			if not u.dead:
+				n += 1
+	return n
+
+
+func _test_snapshot_roundtrip() -> void:
+	var w := _new_world(_idx("m4"), 2)
+	w.apply_pickup("airstrike", w.commanders[0])
+	_run(w, 6.0)
+	var bytes := Snapshot.encode(w)
+	var s := Snapshot.decode(bytes)
+	print("snapshot: %d bytes, %d entidades, %d projéteis" % [bytes.size(), s.ents.size(), s.proj.size()])
+	check(s.tick == w.frame and is_equal_approx(s.time, w.time), "snapshot: tick/tempo")
+	check(s.ents.size() == _count_ents(w), "snapshot: %d entidades (mundo tem %d)" % [s.ents.size(), _count_ents(w)])
+	check(s.walls.size() == w.walls.size() and s.turrets.size() == w.turrets.size(), "snapshot: muros/torretas")
+	check(s.cmds.size() == 2 and s.cmds[0].p.distance_to(w.commanders[0].position) <= 0.5, "snapshot: comandantes")
+	check(s.objective == w.objective_text(), "snapshot: texto do objetivo")
+	var ok_pos := true
+	for e in s.ents:
+		var found := false
+		for arr in [w.soldiers, w.bugs, w.nests]:
+			for u in arr:
+				if u.uid == e.uid:
+					found = true
+					if u.position.distance_to(e.p) > 0.5:
+						ok_pos = false
+		if not found:
+			continue
+	check(ok_pos, "snapshot: posição com erro > 0,5 px")
+	w.queue_free()
+
+
+## Mundo-fantasma simula e grava; mundo-réplica só recebe snapshots + eventos (como um cliente).
+func _test_loopback_replica() -> void:
+	var seed_v := 77
+	var sim := World.new()
+	add_child(sim)
+	sim.present = false
+	sim.recording = true
+	sim.setup(_idx("m3"), "normal", 2, seed_v)
+	var rep_world := World.new()
+	add_child(rep_world)
+	rep_world.setup(_idx("m3"), "normal", 2, seed_v)
+	var rep := Replica.new(rep_world)
+	check(rep.nodes.size() == _count_ents(sim), "loopback: uids iniciais diferem (%d x %d)" % [rep.nodes.size(), _count_ents(sim)])
+	var events_seen := 0
+	for f in 60 * 20:
+		_bot(sim)
+		sim.update(1.0 / 60.0)
+		if f % 2 == 0:
+			rep.push_snapshot(Snapshot.encode(sim))
+			events_seen += sim.net_events.size()
+			rep.push_events(sim.net_events.duplicate())
+			sim.net_events.clear()
+		rep.render(1.0 / 60.0)
+	rep.push_snapshot(Snapshot.encode(sim))
+	rep.push_events(sim.net_events.duplicate())
+	rep.catch_up()
+	check(events_seen > 50, "loopback: poucos eventos gravados (%d)" % events_seen)
+	check(rep_world.bugs.size() == sim.bugs.size() and rep_world.soldiers.size() == sim.soldiers.size(),
+		"loopback: réplica com %d insetos/%d soldados, host com %d/%d" % [rep_world.bugs.size(), rep_world.soldiers.size(), sim.bugs.size(), sim.soldiers.size()])
+	check(rep_world.walls.size() == sim.walls.size(), "loopback: muros destruídos não replicados")
+	check(rep_world.troops == sim.troops and rep_world.objective_text() == sim.objective_text(), "loopback: HUD (tropas/objetivo)")
+	var maxd := 0.0
+	for b in sim.bugs:
+		var rb = rep.nodes.get(b.uid)
+		if rb != null:
+			maxd = maxf(maxd, rb.position.distance_to(b.position))
+	check(maxd <= 0.5, "loopback: posição de inseto difere %.2f px" % maxd)
+	check(rep_world.decal_layer.decal_count() > 0, "loopback: decalques não chegaram à réplica")
+	print("loopback: %d eventos, réplica %d insetos, %d decalques" % [events_seen, rep_world.bugs.size(), rep_world.decal_layer.decal_count()])
+	sim.queue_free()
+	rep_world.queue_free()

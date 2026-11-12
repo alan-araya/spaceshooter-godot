@@ -57,7 +57,7 @@ func tick(dt: float) -> void:
 		if fire_cd <= 0.0:
 			fire_cd = Bal.WEAPONS.cannon.interval
 			fire_weapon(turret, "cannon", Bal.WEAPONS.cannon.spread, t)
-			Sfx.play("cannon", position.x)
+			world.sfx("cannon", position.x)
 	else:
 		turret = lerp_angle(turret, face, minf(1.0, dt * 4.0))
 

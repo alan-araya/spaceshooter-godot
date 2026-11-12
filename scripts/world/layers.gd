@@ -38,11 +38,17 @@ func add_decal(kind: String, p: Vector2, size: float) -> void:
 			col = Color(0.45, 0.38, 0.3, 0.8)
 		"petals":
 			col = Color(0.85, 0.35, 0.7, 0.6)
+	world.record("decal", [kind, p, size])
+	if not world.present:
+		return
 	_push({ kind = kind, p = p, size = size, seed = world.rng.randi(), col = col })
 
 
 ## Carcaça: frame da folha de sprites desenhado girado no chão (ex.: aracnídeo esmagado).
 func add_corpse(sheet: String, frame: int, p: Vector2, rot: float) -> void:
+	world.record("corpse", [sheet, frame, p, rot])
+	if not world.present:
+		return
 	_push({ kind = "corpse", p = p, size = 0.0, seed = 0, col = Color(0.78, 0.72, 0.62, 0.75), sheet = sheet, frame = frame, rot = rot })
 
 

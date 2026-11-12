@@ -11,6 +11,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 - Balanceamento das defesas: `-- --test --probe` (bot parado no gerador, 1 jogador, Soldado) e
   `-- --test --timeline=m3` (estado da missão segundo a segundo).
 - Mapas das defesas em camadas: `python -I tools/build_maps.py` (imprime os mapas para colar em missions.gd).
+- Rede com 2 instâncias: host `-- --net-host --mission=3 --net-start-when=2 --net-log --quit-after=30` (pode ser
+  `--headless`) e cliente `-- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24`. `-- --loopback` = réplica sem rede.
 - Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title]`.
 
 ## Regras do projeto
@@ -26,5 +28,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 7. Texto de UI em pt-BR.
 8. Campos de fluxo (Dijkstra em GDScript) são o custo dominante: um campo a cada 4 quadros, pulando os sem uso.
    Não volte a recalcular todo frame.
+10. Rede: a simulação só produz efeitos via `world.sfx()`, `world.fx.*`, `world.decal_layer.*`, `world.toast()`,
+   `world.shake()` (gravam eventos para os clientes). Entidade nova com estado visível = campo novo em
+   `Snapshot.encode/decode` + `Replica._create/_apply_ent`, senão o cliente não vê. O teste de loopback pega isso.
 9. Geração de imagem no Codex: rode as chamadas em SEQUÊNCIA (em paralelo o WSL quebra). Fundo magenta; o
    `process_art.py` remove só o magenta ligado às bordas (sprites têm rosa/roxo por dentro).

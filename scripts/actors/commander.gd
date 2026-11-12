@@ -14,6 +14,7 @@ var carrying := false
 var order := "normal"
 var respawn_timer := 0.0
 var god := false
+var disconnected := false # rede: jogador saiu
 
 # entrada do frame (preenchida pelo World a partir do InputSetup)
 var in_move := Vector2.ZERO
@@ -77,7 +78,7 @@ func tick(dt: float) -> void:
 			snd = "flame"
 		elif weapon == "plasma":
 			snd = "plasma"
-		Sfx.play(snd, position.x)
+		world.sfx(snd, position.x)
 		if ammo > 0:
 			ammo -= 1
 			if ammo <= 0:
@@ -93,7 +94,7 @@ func tick(dt: float) -> void:
 		dest.x = clampf(dest.x, 8.0, Bal.WORLD_W - 8.0)
 		dest.y = clampf(dest.y, 8.0, Bal.WORLD_H - 8.0)
 		world.projectiles.throw_grenade(position + Vector2(0, -14), dest, Bal.GRENADE.flight_time, false)
-		Sfx.play("throw", position.x)
+		world.sfx("throw", position.x)
 
 	in_order_next = false
 	in_order_set = ""

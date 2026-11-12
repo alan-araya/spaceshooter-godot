@@ -46,15 +46,39 @@ Sai com código 1 se algo falhar.
 
 Com 1 jogador, qualquer teclado ou controle comanda o P1. Teclas 1–4: ordem direta. Esc/Start: pausa.
 
+## Jogar em rede (LAN)
+
+1. Um jogador escolhe **JOGAR EM REDE → HOSPEDAR PARTIDA**. O lobby mostra o IP dele (porta UDP 24565).
+   Na primeira vez o Windows pede permissão no firewall: libere em **redes privadas**.
+2. Os outros digitam esse IP e escolhem **ENTRAR** (até 4 jogadores, um por PC).
+3. O host troca missão e dificuldade no lobby e aperta **COMEÇAR**.
+
+Pela internet sem servidor: todos instalam uma rede virtual (ex.: Tailscale) e usam o IP dela.
+Em rede a partida não pausa (Esc abre um menu por cima).
+
+Teste automático com duas instâncias no mesmo PC:
+
+```bash
+godot --headless --path . -- --net-host --mission=3 --net-start-when=2 --net-log --quit-after=30
+```
+
+```bash
+godot --path . -- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24
+```
+
+Sem rede, `-- --loopback --mission=3 --autostart` joga localmente desenhando tudo pelo mesmo caminho
+do cliente (snapshots + eventos), útil para achar o que não está sendo replicado.
+
 ## Estrutura
 
 ```
-autoload/      Game (progresso), InputSetup (ações por jogador), Art (sprites por contrato), Sfx (som sintetizado)
+autoload/      Game (progresso), InputSetup (ações por jogador), Art (sprites por contrato), Sfx (som sintetizado), Net (ENet/lobby/RPCs)
 scripts/core/  Bal — TODOS os números de jogabilidade
 scripts/sim/   Grid, FlowField, SpatialHash, Missions (dados)
 scripts/world/ World (loop), GroundBuilder (terreno 3/4), Projectiles, Fx, camadas
 scripts/actors/ Commander, Soldier, Robot, Bug, Nest, Prop, Vehicle
-scripts/ui/    Main (telas), Hud, UiKit (tema)
+scripts/net/   CmdInput (comandos), Snapshot (estado binário), Replica (cliente: interpolação + eventos)
+scripts/ui/    Main (telas, lobby, laço host/cliente), Hud, UiKit (tema)
 assets/sprites/ sprites finais (gerados pelo pipeline)
 art_src/       imagens-fonte geradas por IA (ignoradas pelo Godot)
 tools/         process_art.py (fonte → sprites)

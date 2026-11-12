@@ -129,7 +129,7 @@ func tick(dt: float) -> void:
 				fire_cd = S.fire_interval * world.rng.randf_range(0.85, 1.2)
 				fire_weapon(face, "rifle", S.spread, t)
 				if world.rng.randf() < 0.3:
-					Sfx.play("shot_far", position.x)
+					world.sfx("shot_far", position.x)
 
 
 func _release_post() -> void:

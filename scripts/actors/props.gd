@@ -4,6 +4,7 @@ extends Node2D
 ## flor, pickup, muro/portão, gerador, relé. Desenhados por sprite (Art) ou procedural (_draw).
 
 var world: World
+var uid := 0
 var kind := ""
 var r := 10.0
 var dead := false
@@ -131,7 +132,7 @@ func _tick_turret(dt: float) -> void:
 		var muzzle := position + Vector2(cos(aim), sin(aim)) * 20.0 + Vector2(0, -10)
 		world.projectiles.fire("turret", muzzle, aim + world.rng.randf_range(-wp.spread, wp.spread), target)
 		world.fx.muzzle(muzzle, aim)
-		Sfx.play("shot", position.x)
+		world.sfx("shot", position.x)
 
 
 func sync_visual() -> void:

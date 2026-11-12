@@ -73,6 +73,8 @@ func _draw() -> void:
 		_text(r.position + Vector2(4, 24), "P%d" % (c.pid + 1), 14, Color.WHITE)
 		if c.dead:
 			var msg := "VOLTA EM %ds" % ceili(c.respawn_timer) if c.respawn_timer > 0.0 else "SEM TROPAS"
+			if c.disconnected:
+				msg = "DESCONECTADO"
 			_text(r.position + Vector2(34, 23), msg, 14, Color("ff7b6b"))
 			continue
 		var wlabel: String = Bal.WEAPONS[c.weapon].label

@@ -22,6 +22,7 @@ Game="*res://autoload/game.gd"
 InputSetup="*res://autoload/input_setup.gd"
 Art="*res://autoload/art.gd"
 Sfx="*res://autoload/sfx.gd"
+Net="*res://autoload/net.gd"
 
 [debug]
 
@@ -32,8 +33,8 @@ gdscript/warnings/narrowing_conversion=0
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=1440
+window/size/viewport_height=900
 window/stretch/mode="canvas_items"
 
 [rendering]

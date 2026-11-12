@@ -290,7 +290,7 @@ func _mother_intent() -> Vector2:
 		charge_cd = M.charge_cd / world.diff.aggro
 		charge_dir = nd
 		attacking = 0.4
-		Sfx.play("burst", position.x)
+		world.sfx("burst", position.x)
 		_spd = speed * M.charge_boost
 		return charge_dir
 	# mantém distância e circula atrás da ninhada
@@ -378,7 +378,7 @@ func _try_bite() -> void:
 		if kind == "mother" and charge_t > 0.0 and t is Unit:
 			world.knockback(t, charge_dir, Bal.MOTHER.knockback)
 			charge_t = 0.0
-		Sfx.play("bite", position.x)
+		world.sfx("bite", position.x)
 
 
 func _touch_flower() -> void:
@@ -411,7 +411,7 @@ func _try_spit(dt: float) -> void:
 	world.projectiles.spit(position + Vector2(cos(a), sin(a)) * 10.0, a)
 	face = a
 	attacking = 0.3
-	Sfx.play("spit", position.x)
+	world.sfx("spit", position.x)
 
 
 ## Morteiro de ácido: arco por cima de muros, com aviso no chão; mira onde o alvo VAI estar.
@@ -434,7 +434,7 @@ func _try_mortar(dt: float) -> void:
 	world.projectiles.lob_acid(position + Vector2(0, -12), tp, M.mortar_flight)
 	face = (tp - position).angle()
 	attacking = 0.4
-	Sfx.play("spit", position.x)
+	world.sfx("spit", position.x)
 
 
 func _tick_birth(dt: float) -> void:
@@ -453,7 +453,7 @@ func _tick_birth(dt: float) -> void:
 	if nb != null:
 		nb.impulse = Vector2(cos(a), sin(a)) * 80.0
 	world.fx.goo(p, 4)
-	Sfx.play("birth", position.x)
+	world.sfx("birth", position.x)
 
 
 func sync_visual() -> void:

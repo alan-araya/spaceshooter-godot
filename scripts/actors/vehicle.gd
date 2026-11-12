@@ -3,6 +3,7 @@ extends Node2D
 ## Veículos de apoio: buggy de reforço (atropela insetos e desembarca soldados) e nave (soldados/bombas).
 
 var world: World
+var uid := 0
 var kind := ""
 var dead := false
 var r := 18.0
@@ -52,6 +53,17 @@ func setup_dropship(w: World, start: Vector2, speed: float, d: float, drop_list:
 	visible = false
 
 
+## Cliente de rede: só o visual (posição e estado vêm do snapshot).
+func setup_replica(w: World, which: String, flip: bool) -> void:
+	world = w
+	kind = which
+	sprite = Sprite2D.new()
+	add_child(sprite)
+	Art.apply(sprite, which)
+	sprite.flip_h = flip
+	vx = -1.0 if flip else 1.0
+
+
 func tick(dt: float) -> void:
 	if delay > 0.0:
 		delay -= dt
@@ -79,7 +91,7 @@ func _tick_buggy(dt: float) -> void:
 			for i in carry:
 				var a := face + PI / 2.0 + (i - (carry - 1) * 0.5) * 0.9
 				world.drop_soldier(position + Vector2(cos(a), sin(a)) * 24.0, owner_pid, 0.0)
-			Sfx.play("brake", position.x)
+			world.sfx("brake", position.x)
 		else:
 			dead = true
 		return
@@ -108,7 +120,7 @@ func _tick_buggy(dt: float) -> void:
 					world.damage_enemy(b, 8.0)
 			else:
 				world.kill_enemy(b)
-				Sfx.play("splat", b.position.x)
+				world.sfx("splat", b.position.x)
 	if world.rng.randf() < dt * 12.0:
 		world.fx.dust(position - Vector2(cos(face), sin(face)) * 20.0, 1)
 

@@ -16,8 +16,16 @@ const LAYOUTS := {
 
 const SCHEME_NAMES := ["Teclado WASD", "Teclado Setas", "Controle 1", "Controle 2"]
 
+## Comando atual de cada jogador LOCAL (slot 0..3) e o último aplicado ao comandante.
+## O mesmo formato (CmdInput) é o que viaja pela rede.
+var _cur: Array = []
+var _applied: Array = []
+
 
 func _ready() -> void:
+	for i in 4:
+		_cur.append(CmdInput.new())
+		_applied.append(null)
 	_kb(0, { up = [KEY_W], down = [KEY_S], left = [KEY_A], right = [KEY_D],
 		fire = [KEY_SPACE, KEY_J], order = [KEY_Q, KEY_K], grenade = [KEY_E, KEY_L], strafe = [KEY_SHIFT] })
 	_kb(1, { up = [KEY_UP], down = [KEY_DOWN], left = [KEY_LEFT], right = [KEY_RIGHT],
@@ -85,12 +93,20 @@ func schemes_for(pid: int, players: int) -> Array:
 	return layout[pid]
 
 
-## Preenche a entrada do comandante a partir dos esquemas do jogador.
-func read_into(c: Commander, players: int) -> void:
+## Zera os contadores (início de missão).
+func reset() -> void:
+	for i in 4:
+		_cur[i] = CmdInput.new()
+		_applied[i] = null
+
+
+## Lê os esquemas do jogador local `slot` e atualiza o comando dele. Chamar 1× por quadro de física.
+func sample(slot: int, players: int) -> CmdInput:
+	var cmd: CmdInput = _cur[slot]
 	var best := Vector2.ZERO
 	var fire := false
 	var strafe := false
-	for s in schemes_for(c.pid, players):
+	for s in schemes_for(slot, players):
 		var v := Input.get_vector("s%d_left" % s, "s%d_right" % s, "s%d_up" % s, "s%d_down" % s)
 		if v.length() > best.length():
 			best = v
@@ -99,22 +115,32 @@ func read_into(c: Commander, players: int) -> void:
 		if Input.is_action_pressed("s%d_strafe" % s):
 			strafe = true
 		if Input.is_action_just_pressed("s%d_order" % s):
-			c.in_order_next = true
+			cmd.order_n = (cmd.order_n + 1) & 255
 		if Input.is_action_just_pressed("s%d_grenade" % s):
-			c.in_grenade = true
+			cmd.grenade_n = (cmd.grenade_n + 1) & 255
 	# 8 direções (como o original)
 	if best.length() > 0.2:
 		var a := roundf(best.angle() / SNAP8) * SNAP8
 		best = Vector2(cos(a), sin(a)) * minf(1.0, best.length())
 	else:
 		best = Vector2.ZERO
-	c.in_move = best
-	c.in_fire = fire
-	c.in_strafe = strafe
-	if c.pid == 0:
+	cmd.move = best
+	cmd.fire = fire
+	cmd.strafe = strafe
+	if slot == 0:
 		for i in 4:
 			if Input.is_action_just_pressed("order_%d" % (i + 1)):
-				c.in_order_set = Bal.ORDERS[i]
+				cmd.order_set = i
+				cmd.order_set_n = (cmd.order_set_n + 1) & 255
+	return cmd
+
+
+## Jogo local: lê os esquemas do jogador `slot` e aplica ao comandante `c`.
+func read_into(c: Commander, players: int, slot: int = -1) -> void:
+	var s := c.pid if slot < 0 else slot
+	var cmd := sample(s, players)
+	cmd.apply_to(c, _applied[s])
+	_applied[s] = cmd.copy()
 
 
 ## Texto de ajuda dos controles de um jogador.

@@ -279,7 +279,30 @@ comandantes vivos — a simulação não depende da câmera.
 
 ---
 
-## 9. Estado atual (2026-11-11) e próximos passos
+## 9. Multiplayer em rede
+
+**Modelo**: o host é autoritativo (o PC de quem hospeda roda a simulação). Clientes mandam só comandos e
+recebem estado. Transporte ENet/UDP pela API de multiplayer do Godot (`autoload/net.gd`), porta 24565.
+
+| Peça | Arquivo | O que faz |
+|---|---|---|
+| Comandos | `scripts/net/cmd_input.gd` | 6 bytes por quadro: direção (8 + parado), força, tiro, travar mira e **contadores** de granada/ordem (um pacote perdido não perde o aperto) |
+| Estado | `scripts/net/snapshot.gd` | 30×/s, não confiável: comandantes, entidades com `uid` (posição em meio pixel, ângulo em 1/256 de volta, vida 0–255), muros, torretas, relés, gerador, cristal, poças, avisos, projéteis e granadas. ~0,7–3 KB por snapshot; ~25 KB/s por cliente medidos |
+| Eventos | `World.record()` | som, partículas, decalques, mensagens e tremor; lista confiável junto com cada snapshot |
+| Réplica | `scripts/net/replica.gd` | o cliente monta a mesma missão com a mesma semente (mesmos `uid` iniciais), desenha ~100 ms no passado interpolando entre 2 snapshots e dispara os eventos no quadro certo |
+| Lobby | `scripts/ui/main.gd` | hospedar/entrar por IP, slots P1–P4, host escolhe missão e dificuldade; resultado e "próxima missão" decididos pelo host |
+
+Regras: a simulação nunca chama `Sfx`, `Fx`, decalques ou o HUD direto — usa `world.sfx()`, `world.fx.*`,
+`world.decal_layer.*`, `world.toast()` e `world.shake()`, que gravam o evento. Jogador que cai sai de campo sem
+custar tropa; o pelotão dele passa para o P1. Em rede a partida não pausa.
+
+**Fases**: 0 (eventos, comandos, estado, réplica — feito, validado por `--loopback` e testes) ·
+1 (LAN — feito, validado com 2 instâncias) · 2 (previsão do próprio comandante para esconder o atraso,
+reconexão, medidor de ping, compressão por diferença) · 3 (internet: lobbies da Steam/EOS ou relay noray).
+
+---
+
+## 10. Estado atual (2026-11-11) e próximos passos
 
 **Feito**: 5 missões do MVP portadas (limpar, ninhos, relés, defesa do posto, coração + cristal); co-op local até 4
 (teclado WASD, setas, 2 controles); 4 ordens; IA melhorada (§4.3); flor → matriarca, filhotes, emboscadas, bandos nos
