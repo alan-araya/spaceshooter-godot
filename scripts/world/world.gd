@@ -6,6 +6,8 @@ extends Node2D
 
 signal toast_requested(text: String, color: Color)
 signal shake_requested(amount: float)
+## Explosão: o palco distorce a tela em volta (só aparência; emitido por Fx no mundo que apresenta).
+signal shock_requested(pos: Vector2, power: float)
 
 const TILE_KIND := {
 	".": Grid.GROUND, ",": Grid.GROUND, ":": Grid.GROUND, "_": Grid.GROUND, "f": Grid.GROUND, "x": Grid.GROUND,

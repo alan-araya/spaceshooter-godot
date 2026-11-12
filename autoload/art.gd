@@ -76,6 +76,7 @@ var _light_tex: Texture2D
 var _flat_mat: ShaderMaterial
 var _unshaded: CanvasItemMaterial
 var _unshaded_add: CanvasItemMaterial
+var _soft: Texture2D
 
 
 ## Textura para sprites iluminados: cor + mapa de relevo (`<nome>_n.png`, gerado por tools/build_normals.py).
@@ -126,6 +127,21 @@ func light_texture() -> Texture2D:
 				i.set_pixel(x, y, Color(k, k, k, 1.0))
 		_light_tex = ImageTexture.create_from_image(i)
 	return _light_tex
+
+
+## Bolinha branca de borda macia em 4 degraus (fumaça e poeira com cara de pixel art).
+func soft_dot() -> Texture2D:
+	if _soft == null:
+		var n := 24
+		var i := Image.create(n, n, false, Image.FORMAT_RGBA8)
+		for y in n:
+			for x in n:
+				var dx := (x + 0.5) / n * 2.0 - 1.0
+				var dy := (y + 0.5) / n * 2.0 - 1.0
+				var k := clampf(1.0 - (dx * dx + dy * dy), 0.0, 1.0)
+				i.set_pixel(x, y, Color(1, 1, 1, ceilf(k * k * 4.0) / 4.0 if k > 0.0 else 0.0))
+		_soft = ImageTexture.create_from_image(i)
+	return _soft
 
 
 ## Material para desenhos sem mapa de relevo (formas, decalques, partículas).

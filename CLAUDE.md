@@ -14,7 +14,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 - Rede com 2 instâncias: host `-- --net-host --mission=3 --net-start-when=2 --net-log --quit-after=30` (pode ser
   `--headless`) e cliente `-- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24`. `-- --loopback` = réplica sem rede.
 - Visual: `-- --gfx=alto|medio|baixo`, `-- --seed=N` (screenshot repetível), `-- --shot-all=PASTA --shot-after=8`
-  (as seis missões numa janela só). Relevo dos sprites:
+  (as seis missões numa janela só). `-- --fx-demo=SEG` dispara uma explosão ao lado do P1 e
+  `-- --hurt-demo=SEG` o aviso de dano, para screenshot (só visual). Relevo dos sprites:
   `python -I tools/build_normals.py` (rode depois de mudar um sprite). Muros: `python -I tools/build_structures.py`.
   Estruturas 3D (gerador, metralhadora, relé): `python -I tools/build_props.py` (roda o Blender sem janela;
   caminho na variável BLENDER). Depois de gerar PNG novo: `godot --headless --path . --import`.

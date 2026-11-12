@@ -6,6 +6,8 @@ extends Node
 ##   --mission=N --players=N --difficulty=facil|normal|dificil --autostart --unlockall
 ##   --gfx=alto|medio|baixo   qualidade gráfica só nesta execução
 ##   --seed=N   semente fixa da missão (screenshots e medições repetíveis)
+##   --fx-demo=SEG   aos SEG segundos dispara efeitos de explosão ao lado do P1 (só visual, para screenshot)
+##   --hurt-demo=SEG   aos SEG segundos dispara o aviso de dano na tela
 ##   --test [--probe] [--timeline=m3]   testes headless
 ##   --shot=arquivo.png --shot-after=SEG --quit-after-shot   screenshot
 ##   --shot-all=PASTA [--shot-after=SEG]   uma janela só: joga cada missão SEG segundos e salva mN.png
@@ -457,6 +459,8 @@ func start_mission(seed_v: int = -1, players: int = -1) -> void:
 	game_root.add_child(world)
 	world.setup(Game.mission_index, Game.difficulty, players, seed_v)
 	world.shake_requested.connect(func(a: float): shake = maxf(shake, a))
+	world.shock_requested.connect(stage.add_shock)
+	_hp_seen = {}
 	stage.apply(world.amb.grade, Game.gfx)
 	stage.set_active(true)
 	if Net.is_client():
@@ -719,9 +723,42 @@ func _resume() -> void:
 	screen = Screen.PLAYING
 
 
+var _hp_seen := {} # pid -> [vida, morto] no quadro anterior
+
+
+## Depuração visual: dispara efeitos num instante marcado, sem mexer na simulação.
+func _fx_demo() -> void:
+	if args.has("fx-demo") and world.time >= float(args["fx-demo"]):
+		args.erase("fx-demo")
+		var p: Vector2 = world.commanders[0].position + Vector2(130, -20)
+		world.fx.explosion(p, 1.0)
+		world.fx.spark(p + Vector2(-70, 40), 8)
+		world.fx.smoke(p + Vector2(60, 50))
+		world.fx.muzzle(world.commanders[0].position + Vector2(14, -14), 0.0)
+	if args.has("hurt-demo") and world.time >= float(args["hurt-demo"]):
+		args.erase("hurt-demo")
+		stage.add_hurt(1.0)
+
+
+## Pulso vermelho na tela quando um comandante DESTE jogador perde vida (só leitura do estado).
+func _watch_damage() -> void:
+	for c in world.commanders:
+		if Net.is_online() and c.pid != Net.my_pid:
+			continue
+		var prev: Array = _hp_seen.get(c.pid, [c.hp, c.dead])
+		if c.dead and not prev[1]:
+			stage.add_hurt(1.0)
+		elif not c.dead and c.hp < float(prev[0]) - 0.01:
+			stage.add_hurt(clampf((float(prev[0]) - c.hp) / maxf(1.0, c.max_hp) * 4.0, 0.35, 1.0))
+		_hp_seen[c.pid] = [c.hp, c.dead]
+
+
 func _process(delta: float) -> void:
 	if replica != null and world != null and screen in [Screen.PLAYING, Screen.RESULT]:
 		replica.render(delta)
+	if world != null and screen == Screen.PLAYING:
+		_watch_damage()
+		_fx_demo()
 	if shake > 0.0:
 		shake = maxf(0.0, shake - delta * 30.0)
 		stage.set_shake(Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake)

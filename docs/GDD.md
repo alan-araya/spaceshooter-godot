@@ -320,6 +320,7 @@ e não entra nos snapshots. O teste `_test_visuals` confere que ligar a parte vi
 | Muros | `tools/build_structures.py`, `Prop._draw_wall` | Topo (deslocado 18 px) + face frontal, texturas procedurais com relevo, amostradas pela posição no mundo |
 | Estruturas 3D | `tools/build_props.py`, `tools/blender/props_scene.py` | Gerador, metralhadora de ponto (base + arma que gira) e relé modelados por código no Blender e renderizados na mesma projeção dos muros, em três passes: cor, normais e máscara de luz própria. Viram `<nome>.png`, `<nome>_n.png` e `<nome>_e.png` (somado por cima, sem sofrer com a escuridão) |
 | Atmosfera | `scripts/world/atmosphere.gd`, `shaders/clouds.gdshader`, `shaders/fog.gdshader` | Por clima: sombras de nuvens passando (multiplicam o que está embaixo), poeira/névoa em duas camadas que andam com o vento, rajadas de areia na tempestade, partículas soltas (poeira de dia, vaga-lumes ao entardecer, esporos na colmeia) e esporos subindo dos ninhos vivos. Ao meio-dia a imagem ondula de leve (ar quente). As flores balançam |
+| Impacto | `Fx`, `Stage.add_shock`, `Stage.add_hurt` | Explosão: anel de luz, torrões de terra, faíscas em risco que caem, fumaça macia que cresce e recebe a luz do cenário e uma onda de choque que distorce a tela em volta (até 4 ao mesmo tempo). Tiro: clarão em cone na boca da arma e cápsula de latão ejetada. Quando o comandante do jogador perde vida, a borda da tela pulsa em vermelho e as cores se separam por um instante (lido do estado, sem mexer na simulação) |
 | Dunas | `GroundBuilder.add_dunes` | Ondulação larga somada ao relevo fino da areia: faixas suaves de luz e sombra com o sol baixo |
 | Brilho | `Stage` | Itens emissivos (tiros, partículas de fogo, lâmpadas, ácido) usam material sem luz e a camada de visibilidade 2; um segundo viewport desenha só eles em meia resolução, dois passes de desfoque e a composição somam o halo |
 
@@ -333,8 +334,7 @@ próximos do mesmo tipo se fundem num só.
 antes da reforma. O renderizador continua o Compatibility (não foi preciso trocar para ter brilho).
 
 **Etapas**: 0 base técnica, 1 missão-piloto (Fortaleza Bastião ao entardecer), 2 clima e luz em todas as
-missões, 3 estruturas em 3D (Blender) e relevo de dunas e 4 atmosfera — feitas · 5 impacto (onda de choque,
-fumaça iluminada). Comparação em `docs/shots/before` e `docs/shots/after`
+missões, 3 estruturas em 3D (Blender) e relevo de dunas, 4 atmosfera e 5 impacto — feitas. Comparação em `docs/shots/before` e `docs/shots/after`
 (`-- --shot-all=PASTA` tira as seis numa janela só).
 
 ---

@@ -22,6 +22,8 @@ var screen: ColorRect
 var mat: ShaderMaterial
 var quality := 2
 var _bloom := 0.0
+var shocks: Array = [] # Dictionary: uv, t, life, power
+var hurt := 0.0
 
 
 func _init() -> void:
@@ -97,6 +99,8 @@ func set_active(on: bool) -> void:
 	_update_glow(on)
 	if not on:
 		content.position = Vector2.ZERO
+		shocks.clear()
+		hurt = 0.0
 
 
 func _update_glow(on: bool) -> void:
@@ -128,3 +132,38 @@ func apply(grade: Dictionary, quality_level: int) -> void:
 
 func set_shake(offset: Vector2) -> void:
 	content.position = offset
+
+
+## Onda de choque de uma explosão em `world_pos` (até 4 ao mesmo tempo).
+func add_shock(world_pos: Vector2, power: float) -> void:
+	if quality < 1:
+		return
+	if shocks.size() >= 4:
+		shocks.pop_front()
+	shocks.append({ uv = world_pos / Vector2(Bal.WORLD_W, Bal.WORLD_H), t = 0.0, life = 0.42, power = clampf(power, 0.4, 1.6) })
+
+
+## Comandante do jogador levou dano: pulso vermelho nas bordas (0..1).
+func add_hurt(amount: float) -> void:
+	hurt = clampf(maxf(hurt, amount), 0.0, 1.0)
+
+
+func _process(delta: float) -> void:
+	if not visible:
+		return
+	var arr := PackedVector4Array()
+	var keep: Array = []
+	for s in shocks:
+		s.t += delta
+		if s.t < s.life:
+			keep.append(s)
+			var k: float = s.t / s.life
+			var uv: Vector2 = s.uv
+			arr.append(Vector4(uv.x, uv.y, 0.015 + k * 0.15 * s.power, (1.0 - k) * s.power))
+	shocks = keep
+	while arr.size() < 4:
+		arr.append(Vector4.ZERO)
+	mat.set_shader_parameter("shock", arr)
+	if hurt > 0.0:
+		hurt = maxf(0.0, hurt - delta * 2.2)
+	mat.set_shader_parameter("hurt", hurt)
