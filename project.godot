@@ -1,0 +1,45 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Enxame 2199"
+config/description="Ação tática retrô: um comandante e seu pelotão contra enxames de aracnídeos."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.8", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Game="*res://autoload/game.gd"
+InputSetup="*res://autoload/input_setup.gd"
+Art="*res://autoload/art.gd"
+Sfx="*res://autoload/sfx.gd"
+
+[debug]
+
+gdscript/warnings/unused_parameter=0
+gdscript/warnings/unused_variable=0
+gdscript/warnings/integer_division=0
+gdscript/warnings/narrowing_conversion=0
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.07, 0.06, 0.08, 1)
