@@ -9,10 +9,10 @@ signal closed
 
 const W := 1140.0
 const H := 600.0
-const PAGES := ["BEM-VINDO, COMANDANTE", "CONTROLES", "JOGANDO EM GRUPO", "CONHEÇA O INIMIGO", "APOIO E DICAS"]
+const PAGES := ["MANUAL_PAGE_1", "MANUAL_PAGE_2", "MANUAL_PAGE_3", "MANUAL_PAGE_4", "MANUAL_PAGE_5"] # chaves de i18n
 
 var page := 0
-var finish_label := "FECHAR"
+var finish_label := ""
 var _body: Control
 var _title: Label
 var _dots: HBoxContainer
@@ -22,8 +22,8 @@ var _anim: Array = [] # TextureRect animados: [rect, folha, frames, fps]
 var _t := 0.0
 
 
-func _init(finish_text: String = "FECHAR") -> void:
-	finish_label = finish_text
+func _init(finish_text: String = "") -> void:
+	finish_label = finish_text if finish_text != "" else L.t("MANUAL_CLOSE")
 
 
 func _ready() -> void:
@@ -42,7 +42,7 @@ func _ready() -> void:
 	panel.add_child(col)
 	var head := HBoxContainer.new()
 	col.add_child(head)
-	var tag := UiKit.label("MANUAL DE CAMPO", 15, UiKit.DIM)
+	var tag := UiKit.label(L.t("MANUAL_MANUAL_DE_CAMPO"), 15, UiKit.DIM)
 	tag.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(tag)
 	_dots = HBoxContainer.new()
@@ -57,14 +57,14 @@ func _ready() -> void:
 	var foot := HBoxContainer.new()
 	foot.add_theme_constant_override("separation", 12)
 	col.add_child(foot)
-	var skip := UiKit.button("PULAR", _close, 180)
+	var skip := UiKit.button(L.t("MANUAL_PULAR"), _close, 180)
 	foot.add_child(skip)
 	var gap := Control.new()
 	gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	foot.add_child(gap)
-	_prev = UiKit.button("◀ ANTERIOR", func(): _go(page - 1), 220)
+	_prev = UiKit.button(L.t("MANUAL_ANTERIOR"), func(): _go(page - 1), 220)
 	foot.add_child(_prev)
-	_next = UiKit.button("PRÓXIMO ▶", _on_next, 260)
+	_next = UiKit.button(L.t("MANUAL_PROXIMO"), _on_next, 260)
 	foot.add_child(_next)
 	_show()
 	_next.grab_focus.call_deferred()
@@ -116,7 +116,7 @@ func _show() -> void:
 	for c in _body.get_children():
 		c.queue_free()
 	_anim.clear()
-	_title.text = PAGES[page]
+	_title.text = L.t(PAGES[page])
 	for c in _dots.get_children():
 		c.queue_free()
 	for i in PAGES.size():
@@ -125,7 +125,7 @@ func _show() -> void:
 		d.color = UiKit.AMBER if i == page else UiKit.METAL_HI
 		_dots.add_child(d)
 	_prev.disabled = page == 0
-	_next.text = finish_label if page == PAGES.size() - 1 else "PRÓXIMO ▶"
+	_next.text = finish_label if page == PAGES.size() - 1 else L.t("MANUAL_PROXIMO")
 	match page:
 		0:
 			_page_welcome()
@@ -146,12 +146,12 @@ func _show() -> void:
 func _page_welcome() -> void:
 	_illustration("tutorial_welcome", Rect2(0, 0, 600, 338))
 	var v := _column(Rect2(624, 0, W - 52 - 624, 420))
-	_para(v, "Um planeta desértico foi tomado por um enxame de aracnídeos. Você comanda um pelotão: lute ao lado dos seus soldados, dê ordens e cumpra o objetivo de cada missão.", 18)
-	_point(v, "TROPAS = VIDAS", "Cada soldado ou comandante que cai custa 1 tropa. O contador fica no canto de cima da tela.")
-	_point(v, "O COMANDANTE VOLTA", "Se você cair, renasce em 10 s na zona de pouso, enquanto houver tropas.")
-	_point(v, "DERROTA", "Sem tropas e sem comandante vivo, ou se o objetivo falhar (por exemplo, o gerador destruído).")
-	_point(v, "OBJETIVO", "Aparece no rodapé: destruir ninhos, religar relés, defender o gerador até a evacuação…")
-	var cap := UiKit.label("Use as setas ou o direcional para virar as páginas.", 14, UiKit.DIM)
+	_para(v, L.t("MANUAL_UM_PLANETA_DESERTICO_FOI"), 18)
+	_point(v, L.t("MANUAL_TROPAS_VIDAS"), L.t("MANUAL_CADA_SOLDADO_OU_COMANDANTE"))
+	_point(v, L.t("MANUAL_O_COMANDANTE_VOLTA"), L.t("MANUAL_SE_VOCE_CAIR_RENASCE"))
+	_point(v, L.t("MANUAL_DERROTA"), L.t("MANUAL_SEM_TROPAS_E_SEM"))
+	_point(v, L.t("MANUAL_OBJETIVO"), L.t("MANUAL_APARECE_NO_RODAPE_DESTRUIR"))
+	var cap := UiKit.label(L.t("MANUAL_USE_AS_SETAS_OU"), 14, UiKit.DIM)
 	cap.position = Vector2(0, 350)
 	cap.size = Vector2(600, 24)
 	_body.add_child(cap)
@@ -159,23 +159,23 @@ func _page_welcome() -> void:
 
 func _page_controls() -> void:
 	var kb := _column(Rect2(0, 0, 520, 300))
-	kb.add_child(UiKit.label("TECLADO", 18, UiKit.AMBER))
-	_key_row(kb, ["W", "A", "S", "D"], "mover em 8 direções")
-	_key_row(kb, ["ESPAÇO"], "atirar para onde está virado")
-	_key_row(kb, ["SHIFT"], "travar a mira (recuar atirando)")
-	_key_row(kb, ["E"], "granada (começa com 3, até 9)")
-	_key_row(kb, ["Q"], "trocar a ordem do pelotão")
-	_key_row(kb, ["1", "2", "3", "4"], "ordem direta")
-	_key_row(kb, ["ESC"], "pausa")
+	kb.add_child(UiKit.label(L.t("MANUAL_TECLADO"), 18, UiKit.AMBER))
+	_key_row(kb, ["W", "A", "S", "D"], L.t("MANUAL_MOVER_EM_8_DIRECOES"))
+	_key_row(kb, [L.t("MANUAL_ESPACO")], L.t("MANUAL_ATIRAR_PARA_ONDE_ESTA"))
+	_key_row(kb, ["SHIFT"], L.t("MANUAL_TRAVAR_A_MIRA_RECUAR"))
+	_key_row(kb, ["E"], L.t("MANUAL_GRANADA_COMECA_COM_3"))
+	_key_row(kb, ["Q"], L.t("MANUAL_TROCAR_A_ORDEM_DO"))
+	_key_row(kb, ["1", "2", "3", "4"], L.t("MANUAL_ORDEM_DIRETA"))
+	_key_row(kb, ["ESC"], L.t("MANUAL_PAUSA"))
 	var pad := _column(Rect2(560, 0, W - 52 - 560, 300))
-	pad.add_child(UiKit.label("CONTROLE", 18, UiKit.AMBER))
-	_key_row(pad, ["ANALÓGICO"], "mover")
-	_key_row(pad, ["A", "RT"], "atirar")
-	_key_row(pad, ["LB", "RB"], "travar a mira")
-	_key_row(pad, ["B", "LT"], "granada")
-	_key_row(pad, ["X"], "trocar a ordem")
-	_key_row(pad, ["START"], "pausa")
-	var oh := UiKit.label("ORDENS DO PELOTÃO  (Q / X troca · 1-4 escolhe direto)", 16, UiKit.AMBER)
+	pad.add_child(UiKit.label(L.t("MANUAL_CONTROLE"), 18, UiKit.AMBER))
+	_key_row(pad, [L.t("MANUAL_ANALOGICO")], L.t("MANUAL_MOVER"))
+	_key_row(pad, ["A", "RT"], L.t("MANUAL_ATIRAR"))
+	_key_row(pad, ["LB", "RB"], L.t("MANUAL_TRAVAR_A_MIRA"))
+	_key_row(pad, ["B", "LT"], L.t("MANUAL_GRANADA"))
+	_key_row(pad, ["X"], L.t("MANUAL_TROCAR_A_ORDEM"))
+	_key_row(pad, ["START"], L.t("MANUAL_PAUSA"))
+	var oh := UiKit.label(L.t("MANUAL_ORDENS_DO_PELOTAO_Q"), 16, UiKit.AMBER)
 	oh.position = Vector2(0, 296)
 	_body.add_child(oh)
 	var orders := HBoxContainer.new()
@@ -184,10 +184,10 @@ func _page_controls() -> void:
 	orders.add_theme_constant_override("separation", 10)
 	_body.add_child(orders)
 	var info := [
-		["NORMAL", "patrulham por perto e atiram no mais próximo"],
-		["ATACAR", "avançam até os insetos e os ninhos"],
-		["DEFENDER", "seguram o ponto onde receberam a ordem"],
-		["SEGUIR", "andam em formação em volta de você"],
+		[L.t("MANUAL_NORMAL"), L.t("MANUAL_PATRULHAM_POR_PERTO_E")],
+		[L.t("MANUAL_ATACAR"), L.t("MANUAL_AVANCAM_ATE_OS_INSETOS")],
+		[L.t("MANUAL_DEFENDER"), L.t("MANUAL_SEGURAM_O_PONTO_ONDE")],
+		[L.t("MANUAL_SEGUIR"), L.t("MANUAL_ANDAM_EM_FORMACAO_EM")],
 	]
 	for o in info:
 		var card := _card(orders, Vector2(262, 90))
@@ -198,13 +198,13 @@ func _page_controls() -> void:
 func _page_coop() -> void:
 	_illustration("tutorial_coop", Rect2(0, 0, 520, 293))
 	var v := _column(Rect2(544, 0, W - 52 - 544, 420))
-	v.add_child(UiKit.label("ATÉ 4 JOGADORES NO MESMO PC", 18, UiKit.AMBER))
-	_para(v, "Escolha JOGADORES NESTE PC no menu. Cada jogador tem uma cor e o próprio pelotão; as tropas são compartilhadas.", 15)
+	v.add_child(UiKit.label(L.t("MANUAL_ATE_4_JOGADORES_NO"), 18, UiKit.AMBER))
+	_para(v, L.t("MANUAL_ESCOLHA_JOGADORES_NESTE_PC"), 15)
 	var rows := [
-		[0, "P1", "Teclado WASD (ou Controle 1, com 2 jogadores)"],
-		[1, "P2", "Setas · Num0 atira · Num1 ordem · Num2 granada (ou Controle 2)"],
-		[2, "P3", "Controle 1 (com 3 jogadores, também o Controle 2)"],
-		[3, "P4", "Controle 2"],
+		[0, "P1", L.t("MANUAL_TECLADO_WASD_OU_CONTROLE")],
+		[1, "P2", L.t("MANUAL_SETAS_NUM0_ATIRA_NUM1")],
+		[2, "P3", L.t("MANUAL_CONTROLE_1_COM_3")],
+		[3, "P4", L.t("MANUAL_CONTROLE_2")],
 	]
 	for r in rows:
 		var h := HBoxContainer.new()
@@ -220,10 +220,10 @@ func _page_coop() -> void:
 		var l := _wrap(r[2], 15)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		h.add_child(l)
-	_para(v, "Com 1 jogador, qualquer teclado ou controle comanda o P1.", 14, UiKit.DIM)
+	_para(v, L.t("MANUAL_COM_1_JOGADOR_QUALQUER"), 14, UiKit.DIM)
 	var net := _card_at(Rect2(0, 306, 520, 112))
-	net.add_child(UiKit.label("JOGAR EM REDE", 17, Color("9fe8ff")))
-	net.add_child(_wrap("Até 4 PCs na mesma rede: um jogador HOSPEDA (o PC dele roda a partida) e os outros ENTRAM pelo IP mostrado no lobby. Pela internet, use uma rede virtual como o Tailscale.", 14))
+	net.add_child(UiKit.label(L.t("MANUAL_JOGAR_EM_REDE"), 17, Color("9fe8ff")))
+	net.add_child(_wrap(L.t("MANUAL_ATE_4_PCS_NA"), 14))
 
 
 func _page_enemies() -> void:
@@ -234,18 +234,18 @@ func _page_enemies() -> void:
 	grid.add_theme_constant_override("h_separation", 10)
 	grid.add_theme_constant_override("v_separation", 10)
 	_body.add_child(grid)
-	_enemy(grid, "bug", [0, 1, 2, 3], 8, Color.WHITE, "ARACNÍDEO", "Corre em bando, cerca pelos lados e morde de perto. Perto de você, dá um bote.",
-		"ATAQUE: mordida e bote · rói muros")
-	_enemy(grid, "bug", [0, 1, 2, 3], 6, Color(0.8, 1.0, 0.72), "CUSPIDOR", "Esverdeado. Fica longe e cospe ácido. Muros e portões bloqueiam o cuspe.",
-		"ATAQUE: cuspe de ácido à distância")
-	_enemy(grid, "mother", [0, 1], 2, Color.WHITE, "MATRIARCA", "Nasce quando um aracnídeo toca uma flor aberta. Fica atrás da ninhada e investe em quem chega perto.",
-		"ATAQUE: ácido em arco (saia do anel verde!) · investida · filhotes")
-	_enemy(grid, "larva", [0, 1], 6, Color.WHITE, "FILHOTE", "Pequeno e rápido; morre com um tiro. Sai da matriarca quando ela é ferida ou morre.",
-		"ATAQUE: mordida")
-	_enemy(grid, "nest", [0, 1], 2, Color.WHITE, "NINHO", "Gera aracnídeos sem parar, cada vez mais rápido. Destrua para cortar o fluxo.",
-		"NÃO ATACA · prioridade nas missões de limpeza")
-	_enemy(grid, "flower", [0, 1], 1, Color.WHITE, "FLOR", "Abre depois de alguns segundos. Pise nela para arrancar antes que um aracnídeo a toque.",
-		"PERIGO: aracnídeo + flor aberta = matriarca")
+	_enemy(grid, "bug", [0, 1, 2, 3], 8, Color.WHITE, L.t("MANUAL_ARACNIDEO"), L.t("MANUAL_CORRE_EM_BANDO_CERCA"),
+		L.t("MANUAL_ATAQUE_MORDIDA_E_BOTE"))
+	_enemy(grid, "bug", [0, 1, 2, 3], 6, Color(0.8, 1.0, 0.72), L.t("MANUAL_CUSPIDOR"), L.t("MANUAL_ESVERDEADO_FICA_LONGE_E"),
+		L.t("MANUAL_ATAQUE_CUSPE_DE_ACIDO"))
+	_enemy(grid, "mother", [0, 1], 2, Color.WHITE, L.t("MANUAL_MATRIARCA"), L.t("MANUAL_NASCE_QUANDO_UM_ARACNIDEO"),
+		L.t("MANUAL_ATAQUE_ACIDO_EM_ARCO"))
+	_enemy(grid, "larva", [0, 1], 6, Color.WHITE, L.t("MANUAL_FILHOTE"), L.t("MANUAL_PEQUENO_E_RAPIDO_MORRE"),
+		L.t("MANUAL_ATAQUE_MORDIDA"))
+	_enemy(grid, "nest", [0, 1], 2, Color.WHITE, L.t("MANUAL_NINHO"), L.t("MANUAL_GERA_ARACNIDEOS_SEM_PARAR"),
+		L.t("MANUAL_NAO_ATACA_PRIORIDADE_NAS"))
+	_enemy(grid, "flower", [0, 1], 1, Color.WHITE, L.t("MANUAL_FLOR"), L.t("MANUAL_ABRE_DEPOIS_DE_ALGUNS"),
+		L.t("MANUAL_PERIGO_ARACNIDEO_FLOR_ABERTA"))
 
 
 func _page_support() -> void:
@@ -256,12 +256,12 @@ func _page_support() -> void:
 	grid.add_theme_constant_override("v_separation", 10)
 	_body.add_child(grid)
 	var items := [
-		[0, "REFORÇOS", "buggies atropelam insetos e trazem +6 tropas"],
-		[1, "ATAQUE AÉREO", "nave solta soldados e bombardeia o enxame"],
-		[2, "APOIO BLINDADO", "um robô aliado com canhão luta ao seu lado"],
-		[3, "LANÇA-CHAMAS", "cone curto que atravessa vários insetos"],
-		[4, "CANHÃO DE PLASMA", "tiros perfurantes que explodem"],
-		[5, "+3 GRANADAS", "até 9 no total"],
+		[0, L.t("MANUAL_REFORCOS"), L.t("MANUAL_BUGGIES_ATROPELAM_INSETOS_E")],
+		[1, L.t("MANUAL_ATAQUE_AEREO"), L.t("MANUAL_NAVE_SOLTA_SOLDADOS_E")],
+		[2, L.t("MANUAL_APOIO_BLINDADO"), L.t("MANUAL_UM_ROBO_ALIADO_COM")],
+		[3, L.t("MANUAL_LANCA_CHAMAS"), L.t("MANUAL_CONE_CURTO_QUE_ATRAVESSA")],
+		[4, L.t("MANUAL_CANHAO_DE_PLASMA"), L.t("MANUAL_TIROS_PERFURANTES_QUE_EXPLODEM")],
+		[5, L.t("MANUAL_3_GRANADAS"), L.t("MANUAL_ATE_9_NO_TOTAL")],
 	]
 	for it in items:
 		var card := _card(grid, Vector2(354, 78))
@@ -274,17 +274,17 @@ func _page_support() -> void:
 		h.add_child(v)
 		v.add_child(UiKit.label(it[1], 16, UiKit.AMBER))
 		v.add_child(_wrap(it[2], 13))
-	_para_at(Rect2(0, 186, W - 52, 24), "Só o comandante pega os itens que aparecem no chão.", 14, UiKit.DIM)
-	var th := UiKit.label("DICAS DE CAMPO", 18, UiKit.AMBER)
+	_para_at(Rect2(0, 186, W - 52, 24), L.t("MANUAL_SO_O_COMANDANTE_PEGA"), 14, UiKit.DIM)
+	var th := UiKit.label(L.t("MANUAL_DICAS_DE_CAMPO"), 18, UiKit.AMBER)
 	th.position = Vector2(0, 222)
 	_body.add_child(th)
 	var half := (W - 52 - 24) * 0.5
 	var t1 := _column(Rect2(0, 254, half, 170))
-	_point(t1, "METRALHADORA DE PONTO", "Pare ao lado de uma para operar; soldados em NORMAL ou DEFENDER assumem as livres sozinhos.")
-	_point(t1, "MUROS E PORTÕES", "Seguram o enxame, mas os insetos roem. Recue camada por camada.")
+	_point(t1, L.t("MANUAL_METRALHADORA_DE_PONTO"), L.t("MANUAL_PARE_AO_LADO_DE"))
+	_point(t1, L.t("MANUAL_MUROS_E_PORTOES"), L.t("MANUAL_SEGURAM_O_ENXAME_MAS"))
 	var t2 := _column(Rect2(half + 24, 254, half, 170))
-	_point(t2, "ANEL VERMELHO NA BORDA", "Horda chegando por ali. Anel laranja perto de você: emboscada saindo do chão.")
-	_point(t2, "REVER ESTE MANUAL", "Ele fica no menu principal, em MANUAL DE CAMPO.")
+	_point(t2, L.t("MANUAL_ANEL_VERMELHO_NA_BORDA"), L.t("MANUAL_HORDA_CHEGANDO_POR_ALI"))
+	_point(t2, L.t("MANUAL_REVER_ESTE_MANUAL"), L.t("MANUAL_ELE_FICA_NO_MENU"))
 
 
 # =============================================================================
@@ -322,7 +322,7 @@ func _point(parent: Control, head: String, text: String) -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 0)
 	parent.add_child(v)
-	v.add_child(UiKit.label("▸ " + head, 15, Color("9fe8ff")))
+	v.add_child(UiKit.label(L.t("MANUAL_") + head, 15, Color("9fe8ff")))
 	v.add_child(_wrap(text, 15))
 
 

@@ -35,6 +35,7 @@ func run(m: Node) -> void:
 	_test_loopback_replica()
 	_test_visuals()
 	_test_effects_keep_sim()
+	_test_i18n_keys()
 	if main.args.has("probe"):
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
@@ -440,7 +441,7 @@ func _test_snapshot_roundtrip() -> void:
 	check(s.ents.size() == _count_ents(w), "snapshot: %d entidades (mundo tem %d)" % [s.ents.size(), _count_ents(w)])
 	check(s.walls.size() == w.walls.size() and s.turrets.size() == w.turrets.size(), "snapshot: muros/torretas")
 	check(s.cmds.size() == 2 and s.cmds[0].p.distance_to(w.commanders[0].position) <= 0.5, "snapshot: comandantes")
-	check(s.objective == w.objective_text(), "snapshot: texto do objetivo")
+	check(L.tp(s.objective) == w.objective_text(), "snapshot: texto do objetivo")
 	var ok_pos := true
 	for e in s.ents:
 		var found := false
@@ -463,6 +464,50 @@ func _sim_hash(w: World) -> String:
 	for s in w.soldiers:
 		acc += s.position.x * 0.9 + s.position.y * 1.1 + s.hp
 	return "%d|%d|%d|%d|%.2f|%.2f" % [w.frame, w.troops, w.stats.kills, w.bugs.size(), acc, w.commanders[0].position.x]
+
+
+## Toda chave usada no código e nos dados tem texto no idioma ativo (i18n/strings.csv).
+## Chave sem texto aparece na tela como "MENU_ALGUMA_COISA": o teste pega antes.
+func _test_i18n_keys() -> void:
+	var keys := {}
+	var re := RegEx.create_from_string('L[.]t[(]"([A-Z0-9_]+)"')
+	for dir in ["res://scripts", "res://autoload"]:
+		_collect_keys(dir, re, keys)
+	for i in Missions.count():
+		var m := Missions.get_mission(i)
+		keys[m.name] = true
+		keys[m.objective.text] = true
+		for line in m.briefing:
+			keys[line] = true
+	for w in Bal.WEAPONS.values():
+		keys[w.label] = true
+	for d in Bal.DIFFICULTY.values():
+		keys[d.label] = true
+	for o in Bal.ORDER_LABELS.values():
+		keys[o] = true
+	for pk in World.PICKUP_INFO.values():
+		keys[pk.label] = true
+	for g in Game.GFX_LABELS:
+		keys[g] = true
+	for pg in FieldManual.PAGES:
+		keys[pg] = true
+	var missing: Array = []
+	for key in keys:
+		if String(TranslationServer.translate(key)) == key:
+			missing.append(key)
+	check(keys.size() > 200, "i18n: poucas chaves encontradas (%d)" % keys.size())
+	check(missing.is_empty(), "i18n: chaves sem texto: %s" % str(missing))
+	check(L.t("TOAST_ORDER", {p = 2, order = "@ORDER_ATACAR"}) == "P2 · ORDEM: Atacar", "i18n: parâmetros e chave aninhada")
+	check(L.tp(JSON.parse_string(JSON.stringify(["HUD_RESPAWN", {s = 7}]))) == "VOLTA EM 7s", "i18n: número que passou pela rede")
+
+
+func _collect_keys(dir: String, re: RegEx, keys: Dictionary) -> void:
+	for f in DirAccess.get_files_at(dir):
+		if f.ends_with(".gd"):
+			for m in re.search_all(FileAccess.get_file_as_string(dir + "/" + f)):
+				keys[m.get_string(1)] = true
+	for d in DirAccess.get_directories_at(dir):
+		_collect_keys(dir + "/" + d, re, keys)
 
 
 ## Partículas e decalques não podem gastar world.rng: um mundo que apresenta e um fantasma

@@ -89,7 +89,7 @@ func _ready() -> void:
 		_join(args["net-join"])
 		return
 	if args.has("manual"):
-		var m := show_manual(show_menu, "VOLTAR AO MENU")
+		var m := show_manual(show_menu, L.t("MANUAL_BACK_TO_MENU"))
 		if args["manual"] != "1":
 			m._go(int(args["manual"]) - 1)
 		return
@@ -203,42 +203,42 @@ func show_menu() -> void:
 		Net.leave()
 	var root := _screen_root()
 	_background(root)
-	var logo := UiKit.label("ENXAME 2199", 84, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER)
+	var logo := UiKit.label(L.t("GAME_TITLE"), 84, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER)
 	logo.add_theme_constant_override("outline_size", 14)
 	logo.position = Vector2(0, 70)
 	logo.size = Vector2(1280, 100)
 	root.add_child(logo)
-	var sub := UiKit.label("UM COMANDANTE, UM PELOTÃO, UM PLANETA INFESTADO", 20, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER)
+	var sub := UiKit.label(L.t("MENU_TAGLINE"), 20, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER)
 	sub.position = Vector2(0, 170)
 	sub.size = Vector2(1280, 30)
 	root.add_child(sub)
 	var box := _center_box(root, 170)
-	var play := UiKit.button("JOGAR", show_select)
+	var play := UiKit.button(L.t("MENU_PLAY"), show_select)
 	box.add_child(play)
-	box.add_child(UiKit.button("JOGAR EM REDE", show_net_menu.bind("")))
+	box.add_child(UiKit.button(L.t("MENU_NET"), show_net_menu.bind("")))
 	var cycle_players := func() -> void:
 		Game.players = Game.players % 4 + 1
 		Game.save()
 		show_menu()
 		_focus_index(2)
-	box.add_child(UiKit.button("JOGADORES NESTE PC: %d" % Game.players, cycle_players))
-	var dl: String = Bal.DIFFICULTY[Game.difficulty].label
+	box.add_child(UiKit.button(L.t("MENU_PLAYERS", {n = Game.players}), cycle_players))
+	var dl := L.t(Bal.DIFFICULTY[Game.difficulty].label)
 	var cycle_diff := func() -> void:
 		var i := Bal.DIFFICULTY_ORDER.find(Game.difficulty)
 		Game.difficulty = Bal.DIFFICULTY_ORDER[(i + 1) % Bal.DIFFICULTY_ORDER.size()]
 		Game.save()
 		show_menu()
 		_focus_index(3)
-	box.add_child(UiKit.button("DIFICULDADE: %s" % dl.to_upper(), cycle_diff))
+	box.add_child(UiKit.button(L.t("MENU_DIFFICULTY", {d = dl.to_upper()}), cycle_diff))
 	var cycle_gfx := func() -> void:
 		Game.gfx = (Game.gfx + 2) % 3 # alto → médio → baixo → alto
 		Game.save()
 		show_menu()
 		_focus_index(4)
-	box.add_child(UiKit.button("GRÁFICOS: %s" % Game.GFX_LABELS[Game.gfx], cycle_gfx))
-	box.add_child(UiKit.button("MANUAL DE CAMPO", show_manual.bind(show_menu, "VOLTAR AO MENU")))
-	box.add_child(UiKit.button("SAIR", func(): get_tree().quit()))
-	var foot := UiKit.label("Méritos: %d   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais." % Game.merit_total, 13, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER)
+	box.add_child(UiKit.button(L.t("MENU_GFX", {g = "@" + Game.GFX_LABELS[Game.gfx]}), cycle_gfx))
+	box.add_child(UiKit.button(L.t("MENU_MANUAL"), show_manual.bind(show_menu, L.t("MANUAL_BACK_TO_MENU"))))
+	box.add_child(UiKit.button(L.t("MENU_QUIT"), func(): get_tree().quit()))
+	var foot := UiKit.label(L.t("MENU_FOOTER", {m = Game.merit_total}), 13, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	foot.position = Vector2(0, 690)
 	foot.size = Vector2(1280, 20)
 	root.add_child(foot)
@@ -266,7 +266,7 @@ func _begin_from_briefing() -> void:
 	if Game.mission_index == 0 and not Game.tutorial_seen:
 		Game.tutorial_seen = true
 		Game.save()
-		show_manual(start_mission.bind(-1, -1), "COMEÇAR MISSÃO")
+		show_manual(start_mission.bind(-1, -1), L.t("MANUAL_START_MISSION"))
 		return
 	start_mission()
 
@@ -277,8 +277,8 @@ func show_select() -> void:
 	var root := _screen_root()
 	_background(root)
 	var box := _center_box(root)
-	box.add_child(UiKit.label("ESCOLHA A MISSÃO", 34, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(UiKit.label("Méritos: %d" % Game.merit_total, 16, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(UiKit.label(L.t("SELECT_TITLE"), 34, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(UiKit.label(L.t("SELECT_MERIT", {m = Game.merit_total}), 16, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER))
 	var first: Button = null
 	for i in Missions.count():
 		var m := Missions.get_mission(i)
@@ -286,24 +286,24 @@ func show_select() -> void:
 		var pick := func() -> void:
 			Game.mission_index = i
 			show_briefing()
-		var b := UiKit.button("%d. %s%s" % [i + 1, m.name, done], pick, 520)
+		var b := UiKit.button(L.t("SELECT_ITEM", {n = i + 1, name = "@" + m.name}) + done, pick, 520)
 		b.disabled = i >= Game.unlocked and not args.has("unlockall")
 		box.add_child(b)
 		if first == null and not b.disabled:
 			first = b
-	box.add_child(UiKit.button("VOLTAR", show_menu, 520))
+	box.add_child(UiKit.button(L.t("BACK"), show_menu, 520))
 	if first != null:
 		first.grab_focus.call_deferred()
 
 
 func _briefing_lines(v: VBoxContainer, mission_index: int, difficulty: String, players: int) -> void:
 	var m := Missions.get_mission(mission_index)
-	v.add_child(UiKit.label("MISSÃO %d — %s" % [mission_index + 1, String(m.name).to_upper()], 28, UiKit.AMBER))
+	v.add_child(UiKit.label(L.t("BRIEF_TITLE", {n = mission_index + 1, name = L.t(m.name).to_upper()}), 28, UiKit.AMBER))
 	for line in m.briefing:
-		v.add_child(UiKit.label(line, 17))
-	v.add_child(UiKit.label("OBJETIVO: " + String(m.objective.text), 17, Color("9fe8ff")))
+		v.add_child(UiKit.label(L.t(line), 17))
+	v.add_child(UiKit.label(L.t("BRIEF_OBJECTIVE", {text = "@" + m.objective.text}), 17, Color("9fe8ff")))
 	var d: Dictionary = Bal.DIFFICULTY[difficulty]
-	v.add_child(UiKit.label("Tropas: %d   ·   Dificuldade: %s   ·   Jogadores: %d" % [d.troops, d.label, players], 15, UiKit.DIM))
+	v.add_child(UiKit.label(L.t("BRIEF_FOOTER", {t = d.troops, d = "@" + d.label, p = players}), 15, UiKit.DIM))
 
 
 func show_briefing() -> void:
@@ -313,9 +313,9 @@ func show_briefing() -> void:
 	var box := _center_box(root)
 	var v := _panel(box, 820)
 	_briefing_lines(v, Game.mission_index, Game.difficulty, Game.players)
-	var go := UiKit.button("COMEÇAR", _begin_from_briefing, 820)
+	var go := UiKit.button(L.t("BRIEF_START"), _begin_from_briefing, 820)
 	box.add_child(go)
-	box.add_child(UiKit.button("VOLTAR", show_select, 820))
+	box.add_child(UiKit.button(L.t("BACK"), show_select, 820))
 	go.grab_focus.call_deferred()
 
 
@@ -332,33 +332,33 @@ func show_net_menu(message: String = "") -> void:
 	_background(root)
 	var box := _center_box(root)
 	var v := _panel(box, 640)
-	v.add_child(UiKit.label("JOGAR EM REDE", 32, UiKit.AMBER))
-	v.add_child(UiKit.label("Um jogador hospeda (o PC dele roda a partida); os outros entram pelo IP.", 15, UiKit.DIM))
-	v.add_child(UiKit.label("Rede local ou internet via rede virtual (ex.: Tailscale). Porta UDP %d." % Net.DEFAULT_PORT, 15, UiKit.DIM))
+	v.add_child(UiKit.label(L.t("NET_TITLE"), 32, UiKit.AMBER))
+	v.add_child(UiKit.label(L.t("NET_HELP_1"), 15, UiKit.DIM))
+	v.add_child(UiKit.label(L.t("NET_HELP_2", {port = Net.DEFAULT_PORT}), 15, UiKit.DIM))
 	if message != "":
 		v.add_child(UiKit.label(message, 17, Color("ff9f43")))
-	var host_btn := UiKit.button("HOSPEDAR PARTIDA", _host, 640)
+	var host_btn := UiKit.button(L.t("NET_HOST"), _host, 640)
 	box.add_child(host_btn)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	box.add_child(row)
 	var ip := LineEdit.new()
 	ip.text = _last_ip
-	ip.placeholder_text = "IP do host (ex.: 192.168.0.10)"
+	ip.placeholder_text = L.t("NET_IP_HINT")
 	ip.custom_minimum_size = Vector2(380, 46)
 	ip.add_theme_font_size_override("font_size", 20)
 	row.add_child(ip)
-	var join_btn := UiKit.button("ENTRAR", func(): _join(ip.text.strip_edges()), 250)
+	var join_btn := UiKit.button(L.t("NET_JOIN"), func(): _join(ip.text.strip_edges()), 250)
 	row.add_child(join_btn)
 	ip.text_submitted.connect(func(t: String): _join(t.strip_edges()))
-	box.add_child(UiKit.button("VOLTAR", show_menu, 640))
+	box.add_child(UiKit.button(L.t("BACK"), show_menu, 640))
 	host_btn.grab_focus.call_deferred()
 
 
 func _host() -> void:
 	var err := Net.host_game()
 	if err != OK:
-		show_net_menu("Não foi possível hospedar (erro %d). A porta %d pode estar em uso." % [err, Net.DEFAULT_PORT])
+		show_net_menu(L.t("NET_HOST_FAILED", {err = err, port = Net.DEFAULT_PORT}))
 		return
 	Net.set_lobby(Game.mission_index, Game.difficulty)
 	show_lobby()
@@ -370,7 +370,7 @@ func _join(address: String) -> void:
 	_last_ip = address
 	var err := Net.join_game(address)
 	if err != OK:
-		show_net_menu("Endereço inválido ou erro %d." % err)
+		show_net_menu(L.t("NET_BAD_ADDRESS", {err = err}))
 		return
 	show_lobby()
 
@@ -382,27 +382,27 @@ func show_lobby() -> void:
 	_background(root)
 	var box := _center_box(root)
 	var v := _panel(box, 860)
-	var title := "LOBBY — VOCÊ HOSPEDA" if Net.is_host() else "LOBBY"
+	var title := L.t("LOBBY_TITLE_HOST") if Net.is_host() else L.t("LOBBY_TITLE")
 	v.add_child(UiKit.label(title, 30, UiKit.AMBER))
 	if Net.is_host():
 		var ips := Net.local_addresses()
-		var ip_txt := ", ".join(ips) if not ips.is_empty() else "(sem rede local)"
-		v.add_child(UiKit.label("Seu IP: %s   ·   porta %d" % [ip_txt, Net.DEFAULT_PORT], 16, Color("9fe8ff")))
+		var ip_txt := ", ".join(ips) if not ips.is_empty() else L.t("LOBBY_NO_LAN")
+		v.add_child(UiKit.label(L.t("LOBBY_MY_IP", {ip = ip_txt, port = Net.DEFAULT_PORT}), 16, Color("9fe8ff")))
 	# jogadores
 	var by_pid := {}
 	for id in Net.roster:
 		by_pid[int(Net.roster[id])] = int(id)
 	for pid in Bal.MAX_PLAYERS:
-		var txt := "P%d  —  " % (pid + 1)
+		var txt := L.t("LOBBY_SLOT", {p = pid + 1})
 		if by_pid.has(pid):
-			txt += "host" if by_pid[pid] == 1 else "jogador conectado"
+			txt += L.t("LOBBY_HOST") if by_pid[pid] == 1 else L.t("LOBBY_PLAYER")
 			if pid == Net.my_pid and Net.roster.has(multiplayer.get_unique_id()):
-				txt += "  (você)"
+				txt += L.t("LOBBY_YOU")
 			v.add_child(UiKit.label(txt, 18, Bal.PLAYER_COLORS[pid]))
 		else:
-			v.add_child(UiKit.label(txt + "vago", 18, UiKit.DIM))
+			v.add_child(UiKit.label(txt + L.t("LOBBY_FREE"), 18, UiKit.DIM))
 	if Net.is_client() and Net.roster.is_empty():
-		v.add_child(UiKit.label("Conectando…", 16, UiKit.DIM))
+		v.add_child(UiKit.label(L.t("LOBBY_CONNECTING"), 16, UiKit.DIM))
 	v.add_child(UiKit.label(" ", 6))
 	_briefing_lines(v, Net.lobby_mission, Net.lobby_difficulty, maxi(1, Net.player_count()))
 	var first: Button = null
@@ -415,13 +415,13 @@ func show_lobby() -> void:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 10)
 		box.add_child(row)
-		row.add_child(UiKit.button("TROCAR MISSÃO", next_mission, 425))
-		row.add_child(UiKit.button("TROCAR DIFICULDADE", next_diff, 425))
-		first = UiKit.button("COMEÇAR (%d jogador%s)" % [Net.player_count(), "es" if Net.player_count() > 1 else ""], func(): Net.start_game(randi()), 860)
+		row.add_child(UiKit.button(L.t("LOBBY_NEXT_MISSION"), next_mission, 425))
+		row.add_child(UiKit.button(L.t("LOBBY_NEXT_DIFF"), next_diff, 425))
+		first = UiKit.button(L.t("LOBBY_START_MANY", {n = Net.player_count()}) if Net.player_count() > 1 else L.t("LOBBY_START_ONE"), func(): Net.start_game(randi()), 860)
 		box.add_child(first)
 	else:
-		box.add_child(UiKit.label("Aguardando o host começar a partida…", 18, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
-	var leave := UiKit.button("SAIR DO LOBBY", show_net_menu.bind(""), 860)
+		box.add_child(UiKit.label(L.t("LOBBY_WAIT_HOST"), 18, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+	var leave := UiKit.button(L.t("LOBBY_LEAVE"), show_net_menu.bind(""), 860)
 	box.add_child(leave)
 	(first if first != null else leave).grab_focus.call_deferred()
 
@@ -492,7 +492,7 @@ func start_mission(seed_v: int = -1, players: int = -1) -> void:
 	hud.theme = UiKit.theme()
 	hud_layer.add_child(hud)
 	hud.bind(world, players)
-	world.toast(String(world.mission.name).to_upper(), UiKit.AMBER)
+	world.toast(world.mission.name, UiKit.AMBER)
 	screen = Screen.PLAYING
 	_net_frame = 0
 	_client_outcome_t = 0.0
@@ -542,11 +542,11 @@ func show_pause() -> void:
 	screen = Screen.PAUSED
 	var root := _screen_root(0.55)
 	var box := _center_box(root)
-	box.add_child(UiKit.label("PAUSA", 40, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
-	var cont := UiKit.button("CONTINUAR", _resume)
+	box.add_child(UiKit.label(L.t("PAUSE_TITLE"), 40, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
+	var cont := UiKit.button(L.t("PAUSE_RESUME"), _resume)
 	box.add_child(cont)
-	box.add_child(UiKit.button("REINICIAR MISSÃO", start_mission.bind(-1, -1)))
-	box.add_child(UiKit.button("MENU PRINCIPAL", show_menu))
+	box.add_child(UiKit.button(L.t("PAUSE_RESTART"), start_mission.bind(-1, -1)))
+	box.add_child(UiKit.button(L.t("PAUSE_MAIN_MENU"), show_menu))
 	cont.grab_focus.call_deferred()
 
 
@@ -555,12 +555,12 @@ func _show_net_overlay() -> void:
 	var root := _screen_root(0.35)
 	_overlay = true
 	var box := _center_box(root)
-	box.add_child(UiKit.label("A PARTIDA CONTINUA (REDE)", 28, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
-	var back := UiKit.button("VOLTAR AO JOGO", _clear_ui)
+	box.add_child(UiKit.label(L.t("NETPAUSE_TITLE"), 28, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
+	var back := UiKit.button(L.t("NETPAUSE_BACK"), _clear_ui)
 	box.add_child(back)
 	if Net.is_host():
-		box.add_child(UiKit.button("ENCERRAR E VOLTAR AO LOBBY", Net.back_to_lobby))
-	box.add_child(UiKit.button("SAIR DA PARTIDA", show_net_menu.bind("")))
+		box.add_child(UiKit.button(L.t("NETPAUSE_END"), Net.back_to_lobby))
+	box.add_child(UiKit.button(L.t("NETPAUSE_LEAVE"), show_net_menu.bind("")))
 	back.grab_focus.call_deferred()
 
 
@@ -574,16 +574,16 @@ func show_result() -> void:
 	var root := _screen_root(0.6)
 	var box := _center_box(root)
 	var v := _panel(box, 620)
-	v.add_child(UiKit.label("MISSÃO CUMPRIDA!" if win else "MISSÃO FRACASSADA", 36, Color("7dff6b") if win else Color("ff5a5a"), HORIZONTAL_ALIGNMENT_CENTER))
-	v.add_child(UiKit.label(world.outcome_reason, 18, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+	v.add_child(UiKit.label(L.t("RESULT_WIN") if win else L.t("RESULT_LOSE"), 36, Color("7dff6b") if win else Color("ff5a5a"), HORIZONTAL_ALIGNMENT_CENTER))
+	v.add_child(UiKit.label(L.t(world.outcome_reason), 18, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 	var s: Dictionary = world.stats
 	var t := int(world.time)
 	for line in [
-		"Tempo: %d:%02d" % [t / 60, t % 60],
-		"Aracnídeos abatidos: %d   ·   Matriarcas: %d" % [s.kills, s.mothers],
-		"Ninhos destruídos: %d   ·   Flores arrancadas: %d" % [s.nests, s.flowers],
-		"Tropas perdidas: %d   ·   Comandantes abatidos: %d" % [s.troops_lost, s.commander_deaths],
-		"Mérito ganho: %d%s   ·   Total: %d" % [world.merit if win else world.merit / 2, "" if win else " (metade)", Game.merit_total],
+		L.t("RESULT_TIME", {time = "%d:%02d" % [t / 60, t % 60]}),
+		L.t("RESULT_KILLS", {k = s.kills, m = s.mothers}),
+		L.t("RESULT_NESTS", {n = s.nests, f = s.flowers}),
+		L.t("RESULT_LOSSES", {t = s.troops_lost, c = s.commander_deaths}),
+		L.t("RESULT_MERIT_WIN" if win else "RESULT_MERIT_LOSE", {m = world.merit if win else world.merit / 2, total = Game.merit_total}),
 	]:
 		v.add_child(UiKit.label(line, 17, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 	if Net.is_online():
@@ -594,21 +594,21 @@ func show_result() -> void:
 		var next_m := func() -> void:
 			Game.mission_index += 1
 			show_briefing()
-		first = UiKit.button("PRÓXIMA MISSÃO", next_m, 620)
+		first = UiKit.button(L.t("RESULT_NEXT"), next_m, 620)
 		box.add_child(first)
 	if not win:
 		var cost: int = Bal.MERIT.continue_cost
 		var cont_m := func() -> void:
 			if Game.spend_merit(cost):
 				_continue_mission()
-		var cb := UiKit.button("CONTINUAR (%d méritos)" % cost, cont_m, 620)
+		var cb := UiKit.button(L.t("RESULT_CONTINUE", {c = cost}), cont_m, 620)
 		cb.disabled = Game.merit_total < cost
 		box.add_child(cb)
 		if not cb.disabled:
 			first = cb
-	var retry := UiKit.button("TENTAR DE NOVO", start_mission.bind(-1, -1), 620)
+	var retry := UiKit.button(L.t("RESULT_RETRY"), start_mission.bind(-1, -1), 620)
 	box.add_child(retry)
-	box.add_child(UiKit.button("MENU PRINCIPAL", show_menu, 620))
+	box.add_child(UiKit.button(L.t("PAUSE_MAIN_MENU"), show_menu, 620))
 	(first if first != null else retry).grab_focus.call_deferred()
 
 
@@ -619,16 +619,16 @@ func _result_buttons_net(box: VBoxContainer, win: bool) -> void:
 			var next_m := func() -> void:
 				Net.set_lobby(Net.lobby_mission + 1, Net.lobby_difficulty)
 				Net.start_game(randi())
-			first = UiKit.button("PRÓXIMA MISSÃO (TODOS)", next_m, 620)
+			first = UiKit.button(L.t("RESULT_NEXT_ALL"), next_m, 620)
 			box.add_child(first)
-		var retry := UiKit.button("TENTAR DE NOVO (TODOS)", func(): Net.start_game(randi()), 620)
+		var retry := UiKit.button(L.t("RESULT_RETRY_ALL"), func(): Net.start_game(randi()), 620)
 		box.add_child(retry)
 		if first == null:
 			first = retry
-		box.add_child(UiKit.button("VOLTAR AO LOBBY", Net.back_to_lobby, 620))
+		box.add_child(UiKit.button(L.t("RESULT_BACK_LOBBY"), Net.back_to_lobby, 620))
 	else:
-		box.add_child(UiKit.label("Aguardando o host escolher a próxima missão…", 17, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
-	var leave := UiKit.button("SAIR DA PARTIDA", show_net_menu.bind(""), 620)
+		box.add_child(UiKit.label(L.t("RESULT_WAIT_HOST"), 17, UiKit.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+	var leave := UiKit.button(L.t("NETPAUSE_LEAVE"), show_net_menu.bind(""), 620)
 	box.add_child(leave)
 	(first if first != null else leave).grab_focus.call_deferred()
 
@@ -644,7 +644,7 @@ func _continue_mission() -> void:
 		world.generator.hp = world.generator.max_hp * 0.5
 	for c in world.commanders:
 		c.respawn_timer = 0.0
-	world.toast("REFORÇOS ORBITAIS — CONTINUE A MISSÃO!", UiKit.AMBER)
+	world.toast("TOAST_CONTINUE", UiKit.AMBER)
 	screen = Screen.PLAYING
 
 

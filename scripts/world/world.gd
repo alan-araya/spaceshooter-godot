@@ -14,12 +14,12 @@ const TILE_KIND := {
 	"#": Grid.ROCK, "^": Grid.ROCK, "~": Grid.ACID, "=": Grid.WALL, "+": Grid.GATE,
 }
 const PICKUP_INFO := {
-	reinforce = { label = "REFORÇOS!", color = Color("ffd166") },
-	airstrike = { label = "ATAQUE AÉREO!", color = Color("ff9f43") },
-	robot = { label = "APOIO BLINDADO!", color = Color("9fe8ff") },
-	flame = { label = "LANÇA-CHAMAS", color = Color("ff7b39") },
-	plasma = { label = "CANHÃO DE PLASMA", color = Color("7af5ff") },
-	grenades = { label = "+3 GRANADAS", color = Color("c3ff6b") },
+	reinforce = { label = "PICK_REINFORCE", color = Color("ffd166") },
+	airstrike = { label = "PICK_AIRSTRIKE", color = Color("ff9f43") },
+	robot = { label = "PICK_ROBOT", color = Color("9fe8ff") },
+	flame = { label = "PICK_FLAME", color = Color("ff7b39") },
+	plasma = { label = "PICK_PLASMA", color = Color("7af5ff") },
+	grenades = { label = "PICK_GRENADES", color = Color("c3ff6b") },
 }
 
 var mission: Dictionary
@@ -88,7 +88,7 @@ var net_events: Array = [] # [quadro, tipo, args]
 var present := true
 ## true = mundo do cliente: não simula, só recebe estado (Replica).
 var replica := false
-var replica_objective := ""
+var replica_objective: Array = ["", {}] # [chave, valores] vindos do host
 
 ## false nos mundos que só simulam (fantasma, testes sem janela): nada de luz, sombra ou relevo.
 var visuals := true
@@ -455,9 +455,11 @@ func _reslot() -> void:
 # eventos de jogo
 # =============================================================================
 
-func toast(text: String, color: Color = Color("ffe066")) -> void:
-	record("toast", [text, color])
-	toast_requested.emit(text, color)
+## Aviso no topo da tela. `key` = chave de i18n/strings.csv; em rede vai como [chave, valores] e cada
+## máquina traduz no próprio idioma (Replica).
+func toast(key: String, color: Color = Color("ffe066"), params: Dictionary = {}) -> void:
+	record("toast", [key, params, color])
+	toast_requested.emit(L.t(key, params).to_upper(), color)
 
 
 func shake(amount: float) -> void:
@@ -506,8 +508,7 @@ func set_order(cmd: Commander, order: String) -> void:
 		if s.pid == cmd.pid:
 			s.anchor = s.position
 			s.wander = s.position
-	var label: String = Bal.ORDER_LABELS[order]
-	toast("P%d · ORDEM: %s" % [cmd.pid + 1, label.to_upper()], Bal.PLAYER_COLORS[cmd.pid])
+	toast("TOAST_ORDER", Bal.PLAYER_COLORS[cmd.pid], {p = cmd.pid + 1, order = "@" + Bal.ORDER_LABELS[order]})
 	sfx("order", cmd.position.x)
 
 
@@ -618,10 +619,10 @@ func kill_enemy(e) -> void:
 		shake(10.0 if e.kind == "heart" else 7.0)
 		e.release_pack()
 		if e.kind == "heart":
-			toast("CORAÇÃO DA COLMEIA DESTRUÍDO! PEGUE O CRISTAL", Color("ff7ae0"))
+			toast("TOAST_HEART_DOWN", Color("ff7ae0"))
 			crystal = { p = p, carried = false, carrier = null }
 		else:
-			toast("NINHO DESTRUÍDO", Color("ffb347"))
+			toast("TOAST_NEST_DOWN", Color("ffb347"))
 			if rng.randf() < Bal.NEST.pickup_drop_chance:
 				spawn_random_pickup(p)
 
@@ -657,7 +658,7 @@ func kill_human(h) -> void:
 	decal_layer.add_decal("blood", h.position, 6.0)
 	if h is Robot:
 		fx.explosion(h.position, 1.1)
-		toast("BLINDADO DESTRUÍDO", Color("ff6b6b"))
+		toast("TOAST_ROBOT_DOWN", Color("ff6b6b"))
 		sfx("boom", h.position.x)
 		return
 	troops = maxi(0, troops - 1)
@@ -672,9 +673,9 @@ func kill_human(h) -> void:
 			crystal.p = h.position
 		h.respawn_timer = Bal.TROOPS.commander_respawn
 		if troops > 0:
-			toast("P%d ABATIDO — VOLTA EM 10 s" % (h.pid + 1), Color("ff6b6b"))
+			toast("TOAST_PLAYER_DOWN", Color("ff6b6b"), {p = h.pid + 1})
 		else:
-			toast("P%d ABATIDO — SEM TROPAS!" % (h.pid + 1), Color("ff3b3b"))
+			toast("TOAST_PLAYER_DOWN_NO_TROOPS", Color("ff3b3b"), {p = h.pid + 1})
 	else:
 		sfx("scream", h.position.x)
 
@@ -830,7 +831,7 @@ func bite_tile(b: Bug, tile_idx: int) -> void:
 			walls_version += 1
 		if time - wall_toast_at > 4.0:
 			wall_toast_at = time
-			toast("PORTÃO ROMPIDO!" if k == Grid.GATE else "MURO ROMPIDO!", Color("ff6b6b"))
+			toast("TOAST_GATE_BROKEN" if k == Grid.GATE else "TOAST_WALL_BROKEN", Color("ff6b6b"))
 	elif rng.randf() < 0.3:
 		sfx("scratch", c.x)
 
@@ -845,7 +846,7 @@ func trample_flower(f: Prop, h) -> void:
 	decal_layer.add_decal("petals", f.position, 4.0)
 	sfx("trample", f.position.x)
 	if h is Commander:
-		toast("FLOR ARRANCADA", Color("c3ff6b"))
+		toast("TOAST_FLOWER_PULLED", Color("c3ff6b"))
 
 
 ## Direção para fugir de perigo de área (poça de ácido ou bolota prestes a cair), ou ZERO.
@@ -877,7 +878,7 @@ func flower_to_mother(f: Prop, b: Bug) -> void:
 	fx.petals(f.position)
 	decal_layer.add_decal("goo", f.position, 12.0)
 	if m != null:
-		toast("UM ARACNÍDEO TOCOU UMA FLOR — MATRIARCA!", Color("ff7ae0"))
+		toast("TOAST_MOTHER_BORN", Color("ff7ae0"))
 		sfx("alarm", f.position.x)
 
 
@@ -951,7 +952,7 @@ func _update_pickups(dt: float) -> void:
 func apply_pickup(which: String, c: Commander) -> void:
 	var info: Dictionary = PICKUP_INFO[which]
 	stats.pickups += 1
-	toast("P%d · %s" % [c.pid + 1, info.label], info.color)
+	toast("TOAST_PICKUP", info.color, {p = c.pid + 1, item = "@" + info.label})
 	sfx("pickup", c.position.x)
 	fx.sparkle(c.position, info.color)
 	match which:
@@ -1180,11 +1181,11 @@ func update(dt: float) -> void:
 		if res == "failed":
 			_finish("defeat", outcome_reason)
 		elif res == "done":
-			_finish("victory", "Objetivo cumprido")
+			_finish("victory", "END_OBJECTIVE_DONE")
 		elif troops <= 0 and alive_commanders().is_empty():
-			_finish("defeat", "Sem tropas e sem comandantes")
+			_finish("defeat", "END_NO_TROOPS")
 		elif _area_secure(dt):
-			_finish("victory", "Área segura — nenhum inimigo restante")
+			_finish("victory", "END_AREA_SECURE")
 	else:
 		outcome_timer += dt
 	_sync_visuals()
@@ -1220,7 +1221,7 @@ func _respawn_commander(c: Commander) -> void:
 			kill_enemy(b)
 	fx.explosion(p, 0.6)
 	decal_layer.add_decal("scorch", p, 18.0)
-	toast("P%d DE VOLTA AO CAMPO" % (c.pid + 1), Color("7cff8a"))
+	toast("TOAST_PLAYER_BACK", Color("7cff8a"), {p = c.pid + 1})
 	sfx("respawn", p.x)
 
 
@@ -1406,7 +1407,7 @@ func _update_ambush(dt: float) -> void:
 		if grid.deco_at(c.x, c.y) == 95 and _is_defense():
 			continue
 		ambushes.append({ p = p, t = Bal.AMBUSH.warn_time, n = rng.randi_range(Bal.AMBUSH.size_min, Bal.AMBUSH.size_max), done = false })
-		toast("EMBOSCADA! O CHÃO ESTÁ TREMENDO", Color("ff9f43"))
+		toast("TOAST_AMBUSH", Color("ff9f43"))
 		return
 
 
@@ -1443,7 +1444,7 @@ func _update_hordes(dt: float) -> void:
 	horde_count += 1
 	if time - horde_toast_at > 30.0: # com hordas contínuas, avisar a cada 30 s e não a cada horda
 		horde_toast_at = time
-		toast("HORDA SE APROXIMANDO!", Color("ff9f43"))
+		toast("TOAST_HORDE", Color("ff9f43"))
 
 
 ## Ponto de chegada de horda numa das bordas permitidas ("n", "s", "e", "w"), longe dos humanos.
@@ -1510,7 +1511,7 @@ func _update_switches_and_crystal(dt: float) -> void:
 				s.active = true
 				s.progress = 1.0
 				merit += Bal.MERIT.switch
-				toast("RELÉ RELIGADO", Color("7cff8a"))
+				toast("TOAST_RELAY_ON", Color("7cff8a"))
 				sfx("switch", s.position.x)
 		else:
 			s.progress = maxf(0.0, s.progress - dt * 0.25)
@@ -1521,7 +1522,7 @@ func _update_switches_and_crystal(dt: float) -> void:
 					crystal.carried = true
 					crystal.carrier = c
 					c.carrying = true
-					toast("P%d PEGOU O CRISTAL — VÁ PARA A EXTRAÇÃO" % (c.pid + 1), Color("9fe8ff"))
+					toast("TOAST_CRYSTAL_TAKEN", Color("9fe8ff"), {p = c.pid + 1})
 					sfx("pickup", c.position.x)
 					break
 		elif crystal.carrier != null and not crystal.carrier.dead:
@@ -1627,12 +1628,12 @@ func _objective_update() -> String:
 			return "done"
 		"survive":
 			if generator != null and generator.dead:
-				outcome_reason = "O gerador foi destruído"
+				outcome_reason = "END_GENERATOR_LOST"
 				return "failed"
 			return "done" if time >= def.time else ""
 		"hold":
 			if generator != null and generator.dead:
-				outcome_reason = "O gerador foi destruído"
+				outcome_reason = "END_GENERATOR_LOST"
 				return "failed"
 			return "done" if stats.kills >= int(def.kills * diff.spawn) else ""
 		"retrieve":
@@ -1643,48 +1644,52 @@ func _objective_update() -> String:
 	return ""
 
 
+## Texto do objetivo no idioma desta máquina.
 func objective_text() -> String:
-	if replica:
-		return replica_objective
+	return L.tp(replica_objective if replica else objective_parts())
+
+
+## Objetivo como [chave, valores] (o host manda assim no snapshot).
+func objective_parts() -> Array:
 	var def: Dictionary = mission.objective
 	match def.type:
 		"eliminate":
 			if not nests.is_empty():
-				return "Ninhos restantes: %d/%d  ·  Aracnídeos: %d" % [nests.size(), total_nests, bugs.size()]
-			return "Elimine os aracnídeos restantes: %d" % bugs.size()
+				return ["OBJ_NESTS_AND_BUGS", {left = nests.size(), total = total_nests, bugs = bugs.size()}]
+			return ["OBJ_BUGS_LEFT", {bugs = bugs.size()}]
 		"nests":
 			var alive := 0
 			for n in nests:
 				if n.kind == "nest":
 					alive += 1
-			return "Ninhos destruídos: %d/%d" % [total_nests - alive, total_nests]
+			return ["OBJ_NESTS_DESTROYED", {done = total_nests - alive, total = total_nests}]
 		"switches":
 			var on := 0
 			for s in switches:
 				if s.active:
 					on += 1
-			return "Relés religados: %d/%d  —  fique parado sobre o relé" % [on, switches.size()]
+			return ["OBJ_RELAYS", {on = on, total = switches.size()}]
 		"survive":
 			var left := maxf(0.0, def.time - time)
 			var gp := 0
 			if generator != null:
 				gp = roundi(generator.hp / generator.max_hp * 100.0)
-			return "Evacuação em %d:%02d  ·  Gerador %d%%" % [int(left) / 60, int(left) % 60, gp]
+			return ["OBJ_SURVIVE", {time = "%d:%02d" % [int(left) / 60, int(left) % 60], gen = gp}]
 		"hold":
 			var gp2 := 100
 			if generator != null:
 				gp2 = roundi(generator.hp / generator.max_hp * 100.0)
-			return "Abates: %d/%d  ·  Gerador %d%%" % [stats.kills, int(def.kills * diff.spawn), gp2]
+			return ["OBJ_HOLD", {kills = stats.kills, goal = int(def.kills * diff.spawn), gen = gp2}]
 		"retrieve":
 			if crystal == null:
 				for n in nests:
 					if n.kind == "heart":
-						return "Destrua o Coração da Colmeia (%d PV)" % roundi(n.hp)
-				return "Destrua o Coração da Colmeia"
+						return ["OBJ_HEART_HP", {hp = roundi(n.hp)}]
+				return ["OBJ_HEART", {}]
 			if not crystal.carried:
-				return "Pegue o Cristal Prisma"
-			return "Leve o cristal até a EXTRAÇÃO"
-	return def.text
+				return ["OBJ_TAKE_CRYSTAL", {}]
+			return ["OBJ_CARRY_CRYSTAL", {}]
+	return [def.text, {}]
 
 
 func _finish(result: String, reason: String) -> void:
@@ -1718,7 +1723,7 @@ func disconnect_commander(pid: int) -> void:
 	for s in soldiers:
 		if s.pid == pid:
 			s.pid = 0 # o pelotão passa para o P1
-	toast("P%d SAIU DA PARTIDA" % (pid + 1), Color("ff9f43"))
+	toast("TOAST_PLAYER_LEFT", Color("ff9f43"), {p = pid + 1})
 
 
 func debug_kill_nests() -> void:

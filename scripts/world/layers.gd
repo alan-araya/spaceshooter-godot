@@ -182,7 +182,7 @@ func _draw_overlay() -> void:
 		var col: Color = Bal.PLAYER_COLORS[c.pid]
 		if c.dead:
 			if c.respawn_timer > 0.0:
-				var txt := "P%d  %ds" % [c.pid + 1, ceili(c.respawn_timer)]
+				var txt := L.t("OVERLAY_RESPAWN", {p = c.pid + 1, s = ceili(c.respawn_timer)})
 				draw_string(font, world.lz + Vector2(-26, -40 - c.pid * 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, col)
 			continue
 		var p: Vector2 = c.position

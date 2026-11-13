@@ -1,7 +1,10 @@
 # Plano de multi-idiomas — Enxame 2199
 
 Idiomas: **português do Brasil (padrão)**, inglês (EUA), espanhol, português de Portugal, alemão, japonês e
-chinês. Este documento é o plano; nada dele está implementado ainda.
+chinês.
+
+**Andamento**: etapa 1 feita (263 frases em `i18n/strings.csv`, coluna pt-BR; avisos, objetivo e motivo do fim
+de missão viajam na rede como chave + valores). Etapas 2 a 4 pendentes.
 
 ## 1. Situação atual
 

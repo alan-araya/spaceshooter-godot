@@ -82,7 +82,7 @@ func host_game(port: int = DEFAULT_PORT) -> Error:
 	my_pid = 0
 	in_game = false
 	_reset_inputs()
-	status_changed.emit("Hospedando na porta %d" % port)
+	status_changed.emit(L.t("NET_STATUS_HOSTING", {port = port}))
 	lobby_changed.emit()
 	return OK
 
@@ -98,7 +98,7 @@ func join_game(address: String, port: int = DEFAULT_PORT) -> Error:
 	mode = Mode.CLIENT
 	roster = {}
 	in_game = false
-	status_changed.emit("Conectando a %s:%d…" % [address, port])
+	status_changed.emit(L.t("NET_STATUS_CONNECTING", {addr = address, port = port}))
 	return OK
 
 
@@ -153,17 +153,17 @@ func _on_peer_disconnected(id: int) -> void:
 
 
 func _on_connected() -> void:
-	status_changed.emit("Conectado. Aguardando o host…")
+	status_changed.emit(L.t("NET_STATUS_CONNECTED"))
 
 
 func _on_connection_failed() -> void:
 	leave()
-	host_left.emit("Não foi possível conectar.")
+	host_left.emit(L.t("NET_CANT_CONNECT"))
 
 
 func _on_server_disconnected() -> void:
 	leave()
-	host_left.emit("A conexão com o host foi perdida.")
+	host_left.emit(L.t("NET_HOST_LOST"))
 
 
 # =============================================================================

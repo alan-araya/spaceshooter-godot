@@ -34,12 +34,12 @@ const SOLDIER := {
 }
 
 const WEAPONS := {
-	mg = { label = "Metralhadora", interval = 0.11, speed = 660.0, reach = 350.0, damage = 1.0, spread = 0.05, ammo = -1, pierce = 0, splash = 0.0 },
-	flame = { label = "Lança-chamas", interval = 0.03, speed = 300.0, reach = 144.0, damage = 0.35, spread = 0.32, ammo = 260, pierce = 99, splash = 0.0 },
-	plasma = { label = "Plasma", interval = 0.42, speed = 520.0, reach = 520.0, damage = 7.0, spread = 0.0, ammo = 30, pierce = 6, splash = 36.0 },
-	rifle = { label = "Fuzil", interval = 0.42, speed = 600.0, reach = 300.0, damage = 1.0, spread = 0.1, ammo = -1, pierce = 0, splash = 0.0 },
-	cannon = { label = "Canhão", interval = 0.22, speed = 600.0, reach = 340.0, damage = 2.0, spread = 0.04, ammo = -1, pierce = 0, splash = 0.0 },
-	turret = { label = "Metralhadora fixa", interval = 0.14, speed = 720.0, reach = 380.0, damage = 1.0, spread = 0.06, ammo = -1, pierce = 0, splash = 0.0 },
+	mg = { label = "WEAPON_MG", interval = 0.11, speed = 660.0, reach = 350.0, damage = 1.0, spread = 0.05, ammo = -1, pierce = 0, splash = 0.0 },
+	flame = { label = "WEAPON_FLAME", interval = 0.03, speed = 300.0, reach = 144.0, damage = 0.35, spread = 0.32, ammo = 260, pierce = 99, splash = 0.0 },
+	plasma = { label = "WEAPON_PLASMA", interval = 0.42, speed = 520.0, reach = 520.0, damage = 7.0, spread = 0.0, ammo = 30, pierce = 6, splash = 36.0 },
+	rifle = { label = "WEAPON_RIFLE", interval = 0.42, speed = 600.0, reach = 300.0, damage = 1.0, spread = 0.1, ammo = -1, pierce = 0, splash = 0.0 },
+	cannon = { label = "WEAPON_CANNON", interval = 0.22, speed = 600.0, reach = 340.0, damage = 2.0, spread = 0.04, ammo = -1, pierce = 0, splash = 0.0 },
+	turret = { label = "WEAPON_TURRET", interval = 0.14, speed = 720.0, reach = 380.0, damage = 1.0, spread = 0.06, ammo = -1, pierce = 0, splash = 0.0 },
 }
 
 ## Metralhadora de ponto montada (tile 'T'): atira sozinha quando alguém a opera.
@@ -125,13 +125,14 @@ const LIMITS := { max_bugs = 200, flowfield_interval = 0.2, max_decals = 450 }
 ## aggro: agressividade da IA (cuspe, bote, investida, morteiro, esquiva).
 ## Recruta = o antigo Soldado ~7% mais fácil; Soldado = mais pressão; Veterano mantido.
 const DIFFICULTY := {
-	facil = { label = "Recruta", troops = 11, bug_speed = 0.95, spawn = 0.93, bug_hp = 1.0, escalation = 0.11, ambush = 1.08, aggro = 0.9 },
-	normal = { label = "Soldado", troops = 9, bug_speed = 1.05, spawn = 1.15, bug_hp = 1.0, escalation = 0.14, ambush = 0.88, aggro = 1.1 },
-	dificil = { label = "Veterano", troops = 8, bug_speed = 1.1, spawn = 1.3, bug_hp = 1.25, escalation = 0.16, ambush = 0.75, aggro = 1.25 },
+	facil = { label = "DIFF_FACIL", troops = 11, bug_speed = 0.95, spawn = 0.93, bug_hp = 1.0, escalation = 0.11, ambush = 1.08, aggro = 0.9 },
+	normal = { label = "DIFF_NORMAL", troops = 9, bug_speed = 1.05, spawn = 1.15, bug_hp = 1.0, escalation = 0.14, ambush = 0.88, aggro = 1.1 },
+	dificil = { label = "DIFF_DIFICIL", troops = 8, bug_speed = 1.1, spawn = 1.3, bug_hp = 1.25, escalation = 0.16, ambush = 0.75, aggro = 1.25 },
 }
 const DIFFICULTY_ORDER := ["facil", "normal", "dificil"]
 
 const ORDERS := ["normal", "atacar", "defender", "seguir"]
-const ORDER_LABELS := { normal = "Normal", atacar = "Atacar", defender = "Defender", seguir = "Seguir" }
+## Rótulos = chaves de i18n/strings.csv (traduzir com L.t).
+const ORDER_LABELS := { normal = "ORDER_NORMAL", atacar = "ORDER_ATACAR", defender = "ORDER_DEFENDER", seguir = "ORDER_SEGUIR" }
 
 const PLAYER_COLORS := [Color("59c6ff"), Color("ffd23f"), Color("ff5a5a"), Color("7dff6b")]

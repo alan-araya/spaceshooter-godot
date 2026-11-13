@@ -14,8 +14,6 @@ const LAYOUTS := {
 	4: [[0], [1], [2], [3]],
 }
 
-const SCHEME_NAMES := ["Teclado WASD", "Teclado Setas", "Controle 1", "Controle 2"]
-
 ## Comando atual de cada jogador LOCAL (slot 0..3) e o último aplicado ao comandante.
 ## O mesmo formato (CmdInput) é o que viaja pela rede.
 var _cur: Array = []
@@ -144,14 +142,3 @@ func read_into(c: Commander, players: int, slot: int = -1) -> void:
 
 
 ## Texto de ajuda dos controles de um jogador.
-func help_for(pid: int, players: int) -> String:
-	var parts: Array = []
-	for s in schemes_for(pid, players):
-		match s:
-			0:
-				parts.append("WASD · Espaço atira · Q ordem · E granada · Shift trava mira · 1-4 ordem direta")
-			1:
-				parts.append("Setas · / ou Num0 atira · . ou Num1 ordem · , ou Num2 granada")
-			2, 3:
-				parts.append("%s: analógico · A/RT atira · X ordem · B/LT granada · LB/RB trava mira" % SCHEME_NAMES[s])
-	return "\n".join(parts)

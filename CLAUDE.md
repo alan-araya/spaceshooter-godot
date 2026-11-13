@@ -34,7 +34,9 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 5. GDScript: não use `:=` com valores Variant (dicionários `Bal.*`, elementos de Array, parâmetros sem tipo) — dá erro de
    inferência. Declare o tipo (`var x: float = Bal.BUG.speed`).
 6. Mudou mecânica? Acrescente um caso em `tests/sim_tests.gd`. Mudou visual? Tire screenshot e olhe.
-7. Texto de UI em pt-BR.
+7. Texto de UI: nunca escrito no código. Toda frase é uma chave em `i18n/strings.csv` (coluna `pt_BR` é a fonte)
+   e aparece com `L.t("CHAVE", {valor = x})`. Avisos em rede: `world.toast("CHAVE", cor, {valores})` (cada máquina
+   traduz). O teste `_test_i18n_keys` acusa chave sem texto. Plano completo em `docs/I18N_PLAN.md`.
 8. Campos de fluxo (Dijkstra em GDScript) são o custo dominante: um campo a cada 4 quadros, pulando os sem uso.
    Não volte a recalcular todo frame.
 10. Rede: a simulação só produz efeitos via `world.sfx()`, `world.fx.*`, `world.decal_layer.*`, `world.toast()`,

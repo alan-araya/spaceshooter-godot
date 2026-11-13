@@ -84,7 +84,7 @@ func _fire_events() -> void:
 			"sfx":
 				Sfx.play(args[0], args[1])
 			"toast":
-				w.toast_requested.emit(args[0], args[1])
+				w.toast_requested.emit(L.t(args[0], args[1]).to_upper(), args[2])
 			"shake":
 				w.shake_requested.emit(args[0])
 			"fx":

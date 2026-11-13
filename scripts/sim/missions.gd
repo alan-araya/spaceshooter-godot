@@ -21,6 +21,7 @@ extends RefCounted
 ## settings.hordes = { start, interval, size_min, size_max, edges = "nsew", mother_chance }: hordas pelas bordas
 ##   (depois de 60 s, mother_chance é a chance de uma matriarca vir junto).
 ##   Em defesas (survive/hold) vêm até o fim; nas outras, enquanto houver ninhos.
+## name, briefing e objective.text são CHAVES de i18n/strings.csv (o texto fica lá, por idioma).
 ## ambience: clima visual (hora do dia), chave de Ambience.PRESETS; padrão "day". Não muda a simulação.
 ## settings.nest_rate: multiplicador da taxa dos ninhos da missão.
 ## settings.troops_bonus: tropas extras na contagem inicial. settings.hordes.growth: crescimento por minuto
@@ -29,14 +30,14 @@ extends RefCounted
 
 const LIST := [
 	{
-		id = "m1", name = "Queda Quente", theme = "desert", ambience = "dawn",
+		id = "m1", name = "M1_NAME", theme = "desert", ambience = "dawn",
 		briefing = [
-			"Comandante, seu módulo de pouso vai cair no meio de um combate.",
-			"Um pelotão já está segurando a linha nas Planícies de Varga.",
-			"Assuma o esquadrão, limpe a área e destrua os dois ninhos a leste.",
-			"Enquanto os ninhos viverem, hordas vão chegar pelo leste e pelo norte.",
+			"M1_BRIEF_1",
+			"M1_BRIEF_2",
+			"M1_BRIEF_3",
+			"M1_BRIEF_4",
 		],
-		objective = { type = "eliminate", text = "Destrua os ninhos e elimine todos os aracnídeos" },
+		objective = { type = "eliminate", text = "M1_OBJ" },
 		settings = { max_flowers = 3, ambush = false, pickup_interval = 1.0, nest_rate = 1.25,
 			hordes = { start = 30.0, interval = 14.0, size_min = 3, size_max = 5, edges = "ne" } },
 		map = [
@@ -63,14 +64,14 @@ const LIST := [
 		],
 	},
 	{
-		id = "m2", name = "Sinal Perdido", theme = "canyon", ambience = "noon",
+		id = "m2", name = "M2_NAME", theme = "canyon", ambience = "noon",
 		briefing = [
-			"Os relés de comunicação do Cânion Rubro pararam de responder.",
-			"Sem eles, não há reforço orbital no setor.",
-			"Chegue a cada relé e fique PARADO sobre ele até religar.",
-			"Três ninhos e hordas pelas bordas do cânion. Seja rápido.",
+			"M2_BRIEF_1",
+			"M2_BRIEF_2",
+			"M2_BRIEF_3",
+			"M2_BRIEF_4",
 		],
-		objective = { type = "switches", text = "Religue os 3 relés de comunicação" },
+		objective = { type = "switches", text = "M2_OBJ" },
 		settings = { max_flowers = 3, ambush = true, pickup_interval = 0.9, nest_rate = 1.3,
 			hordes = { start = 25.0, interval = 12.0, size_min = 4, size_max = 6, edges = "nsew" } },
 		map = [
@@ -97,14 +98,14 @@ const LIST := [
 		],
 	},
 	{
-		id = "m3", name = "Posto Avançado Eco", theme = "desert", ambience = "afternoon",
+		id = "m3", name = "M3_NAME", theme = "desert", ambience = "afternoon",
 		briefing = [
-			"O Posto Eco guarda o gerador que mantém o escudo do vale ligado.",
-			"Agora com dois anéis: sacos de areia por fora, muralha por dentro.",
-			"Hordas vão chegar por todos os lados até a evacuação.",
-			"Os portões só deixam humanos passar. Se o gerador cair, perdemos o setor.",
+			"M3_BRIEF_1",
+			"M3_BRIEF_2",
+			"M3_BRIEF_3",
+			"M3_BRIEF_4",
 		],
-		objective = { type = "survive", time = 210.0, text = "Proteja o gerador até a evacuação" },
+		objective = { type = "survive", time = 210.0, text = "M3_OBJ" },
 		settings = { max_flowers = 2, ambush = true, pickup_interval = 0.8,
 			hordes = { start = 40.0, interval = 13.0, size_min = 3, size_max = 5, edges = "nsew" } },
 		map = [
@@ -131,15 +132,15 @@ const LIST := [
 		],
 	},
 	{
-		id = "m4", name = "Linha de Trincheiras", theme = "desert", ambience = "storm",
+		id = "m4", name = "M4_NAME", theme = "desert", ambience = "storm",
 		briefing = [
-			"A colmeia do norte está empurrando um exército contra a Linha Vega.",
-			"Duas trincheiras com metralhadoras de ponto protegem o bunker do gerador.",
-			"Soldados em NORMAL ou DEFENDER assumem as metralhadoras livres sozinhos.",
-			"Você também pode operar uma: fique parado em cima dela.",
-			"Segure a linha até abater o exército inteiro.",
+			"M4_BRIEF_1",
+			"M4_BRIEF_2",
+			"M4_BRIEF_3",
+			"M4_BRIEF_4",
+			"M4_BRIEF_5",
 		],
-		objective = { type = "hold", kills = 400, text = "Abata o exército inimigo e proteja o gerador" },
+		objective = { type = "hold", kills = 400, text = "M4_OBJ" },
 		settings = { max_flowers = 3, ambush = false, pickup_interval = 0.8,
 			hordes = { start = 12.0, interval = 5.0, size_min = 6, size_max = 9, edges = "nwe", mother_chance = 0.2 } },
 		map = [
@@ -166,15 +167,15 @@ const LIST := [
 		],
 	},
 	{
-		id = "m5", name = "Fortaleza Bastião", theme = "desert", ambience = "dusk",
+		id = "m5", name = "M5_NAME", theme = "desert", ambience = "dusk",
 		briefing = [
-			"O Bastião é a última fortaleza do vale: muralha, pátio, muralha interna e a torre.",
-			"Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.",
-			"Os portões internos ficam desalinhados com os externos: o enxame tem de serpentear.",
-			"Guarnição nas metralhadoras de ponto. Recue camada por camada se for preciso.",
-			"Resista até a frota chegar.",
+			"M5_BRIEF_1",
+			"M5_BRIEF_2",
+			"M5_BRIEF_3",
+			"M5_BRIEF_4",
+			"M5_BRIEF_5",
 		],
-		objective = { type = "survive", time = 240.0, text = "Defenda a torre do gerador até a frota chegar" },
+		objective = { type = "survive", time = 240.0, text = "M5_OBJ" },
 		settings = { max_flowers = 3, ambush = false, pickup_interval = 0.7, troops_bonus = 4,
 			# enxame quase contínuo: grupos pequenos a cada ~2 s, que crescem e ficam mais frequentes com o tempo
 			hordes = { start = 20.0, interval = 2.0, min_interval = 0.7, size_min = 2, size_max = 3, edges = "nsew",
@@ -203,14 +204,14 @@ const LIST := [
 		],
 	},
 	{
-		id = "m6", name = "Coração da Colmeia", theme = "hive", ambience = "hive",
+		id = "m6", name = "M6_NAME", theme = "hive", ambience = "hive",
 		briefing = [
-			"A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma",
-			"está dentro do Coração da Colmeia, no fundo da instalação.",
-			"Destrua o Coração, pegue o cristal e leve-o até a extração.",
-			"Carregando o cristal você fica mais lento. Proteja-se com o esquadrão.",
+			"M6_BRIEF_1",
+			"M6_BRIEF_2",
+			"M6_BRIEF_3",
+			"M6_BRIEF_4",
 		],
-		objective = { type = "retrieve", text = "Destrua o Coração da Colmeia e recupere o cristal" },
+		objective = { type = "retrieve", text = "M6_OBJ" },
 		settings = { max_flowers = 4, ambush = true, pickup_interval = 0.8, nest_rate = 1.2 },
 		map = [
 			"########################################",

@@ -55,7 +55,7 @@ static func encode(w: World) -> PackedByteArray:
 	b.put_32(w.merit)
 	b.put_u8(0 if w.outcome == "" else (1 if w.outcome == "victory" else 2))
 	b.put_utf8_string(w.outcome_reason)
-	b.put_utf8_string(w.objective_text())
+	b.put_utf8_string(JSON.stringify(w.objective_parts())) # [chave, valores]: o cliente traduz
 	for k in STATS:
 		b.put_u16(clampi(int(w.stats[k]), 0, 65535))
 
@@ -243,7 +243,8 @@ static func decode(bytes: PackedByteArray) -> Dictionary:
 	var oc := b.get_u8()
 	s.outcome = "" if oc == 0 else ("victory" if oc == 1 else "defeat")
 	s.reason = b.get_utf8_string()
-	s.objective = b.get_utf8_string()
+	var obj = JSON.parse_string(b.get_utf8_string())
+	s.objective = obj if obj is Array else ["", {}]
 	var st := {}
 	for k in STATS:
 		st[k] = b.get_u16()

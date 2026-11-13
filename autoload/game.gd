@@ -13,11 +13,12 @@ var tutorial_seen := false # manual de campo já mostrado antes da primeira miss
 ## Qualidade gráfica: 2 = alto (tudo), 1 = médio (menos luzes), 0 = baixo (sem luzes dinâmicas nem brilho).
 var gfx := 2
 
-const GFX_LABELS := ["BAIXO", "MÉDIO", "ALTO"]
+const GFX_LABELS := ["GFX_LOW", "GFX_MEDIUM", "GFX_HIGH"] # chaves de i18n
 const GFX_KEYS := { baixo = 0, medio = 1, alto = 2 }
 
 
 func _ready() -> void:
+	TranslationServer.set_locale("pt_BR") # idioma fixo até a etapa 2 do plano (docs/I18N_PLAN.md)
 	load_save()
 
 

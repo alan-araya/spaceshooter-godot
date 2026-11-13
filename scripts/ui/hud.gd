@@ -59,7 +59,7 @@ func _draw() -> void:
 	_draw_soldier_icon(Vector2(30, 24))
 	var tc := Color("ffffff") if world.troops > 3 else Color("ff5a5a")
 	_text(Vector2(52, 36), "%02d" % world.troops, 30, tc)
-	_text(Vector2(106, 22), "TROPAS", 11, UiKit.DIM)
+	_text(Vector2(106, 22), L.t("HUD_TROOPS"), 11, UiKit.DIM)
 	var t := int(world.time)
 	_text(Vector2(106, 38), "%d:%02d" % [t / 60, t % 60], 16, UiKit.TEXT)
 	# painéis dos jogadores
@@ -72,20 +72,20 @@ func _draw() -> void:
 		draw_rect(Rect2(r.position, Vector2(26, r.size.y)), col.darkened(0.35))
 		_text(r.position + Vector2(4, 24), "P%d" % (c.pid + 1), 14, Color.WHITE)
 		if c.dead:
-			var msg := "VOLTA EM %ds" % ceili(c.respawn_timer) if c.respawn_timer > 0.0 else "SEM TROPAS"
+			var msg := L.t("HUD_RESPAWN", {s = ceili(c.respawn_timer)}) if c.respawn_timer > 0.0 else L.t("HUD_NO_TROOPS")
 			if c.disconnected:
-				msg = "DESCONECTADO"
+				msg = L.t("HUD_DISCONNECTED")
 			_text(r.position + Vector2(34, 23), msg, 14, Color("ff7b6b"))
 			continue
-		var wlabel: String = Bal.WEAPONS[c.weapon].label
+		var wlabel := L.t(Bal.WEAPONS[c.weapon].label)
 		var ammo := "∞" if c.ammo < 0 else str(c.ammo)
 		_text(r.position + Vector2(34, 16), "%s %s" % [wlabel, ammo], 12, UiKit.TEXT)
 		# granadas: um ícone por granada, logo abaixo da linha da arma
 		for gi in c.grenades:
 			_draw_grenade(r.position + Vector2(38 + gi * 9, 26))
 		if c.grenades == 0:
-			_text(r.position + Vector2(34, 32), "sem granadas", 10, UiKit.DIM)
-		var olabel := String(Bal.ORDER_LABELS[c.order]).to_upper()
+			_text(r.position + Vector2(34, 32), L.t("HUD_NO_GRENADES"), 10, UiKit.DIM)
+		var olabel := L.t(Bal.ORDER_LABELS[c.order]).to_upper()
 		var ow := _font.get_string_size(olabel, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
 		_text(Vector2(r.end.x - 8 - ow, r.position.y + 32), olabel, 12, col)
 		# vida
@@ -94,14 +94,14 @@ func _draw() -> void:
 		draw_rect(Rect2(r.end.x - 52, r.position.y + 8, 44 * hk, 6), Color("7dff6b") if hk > 0.4 else Color("ff5a5a"))
 	# méritos
 	_panel(Rect2(W - 150, 6, 142, 36))
-	_text(Vector2(W - 140, 22), "MÉRITO", 11, UiKit.DIM)
+	_text(Vector2(W - 140, 22), L.t("HUD_MERIT"), 11, UiKit.DIM)
 	_text(Vector2(W - 140, 38), str(world.merit), 18, UiKit.AMBER)
 	# rodapé
 	var by := float(Bal.HUD_TOP + Bal.WORLD_H)
 	draw_rect(Rect2(0, by, W, Bal.HUD_BOTTOM), Color("1b1d22"))
 	draw_rect(Rect2(0, by, W, 2), Color("4a505b"))
-	_text(Vector2(14, by + 22), "OBJETIVO: " + world.objective_text(), 15, UiKit.AMBER)
-	var mname: String = world.mission.name
+	_text(Vector2(14, by + 22), L.t("HUD_OBJECTIVE", {text = world.objective_text()}), 15, UiKit.AMBER)
+	var mname := L.t(world.mission.name)
 	_text(Vector2(W - 14 - _font.get_string_size(mname, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x, by + 22), mname, 14, UiKit.DIM)
 
 
