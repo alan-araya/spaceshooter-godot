@@ -57,6 +57,7 @@ func _ready() -> void:
 	ui_layer.layer = 10
 	add_child(ui_layer)
 	Net.lobby_changed.connect(_on_lobby_changed)
+	Input.joy_connection_changed.connect(_on_joy_changed)
 	Net.status_changed.connect(_on_net_status)
 	Net.start_requested.connect(_on_net_start)
 	Net.lobby_requested.connect(show_lobby)
@@ -315,6 +316,10 @@ func _briefing_lines(v: VBoxContainer, mission_index: int, difficulty: String, p
 	v.add_child(UiKit.label(L.t("BRIEF_OBJECTIVE", {text = "@" + m.objective.text}), 17, Color("9fe8ff")))
 	var d: Dictionary = Bal.DIFFICULTY[difficulty]
 	v.add_child(UiKit.label(L.t("BRIEF_FOOTER", {t = d.troops, d = "@" + d.label, p = players}), 15, UiKit.DIM))
+	if not Net.is_online():
+		var dev := InputSetup.describe(players)
+		for pid in dev.size():
+			v.add_child(UiKit.label(L.t("BRIEF_DEVICES", {p = pid + 1, devices = dev[pid]}), 15, Bal.PLAYER_COLORS[pid]))
 
 
 func show_briefing() -> void:
@@ -435,6 +440,12 @@ func show_lobby() -> void:
 	var leave := UiKit.button(L.t("LOBBY_LEAVE"), show_net_menu.bind(""), 860)
 	box.add_child(leave)
 	(first if first != null else leave).grab_focus.call_deferred()
+
+
+## Controle ligou/desligou: o briefing mostra de novo quem usa o quê.
+func _on_joy_changed(_device: int, _connected: bool) -> void:
+	if screen == Screen.BRIEFING:
+		show_briefing.call_deferred()
 
 
 func _on_lobby_changed() -> void:

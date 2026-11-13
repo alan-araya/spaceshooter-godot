@@ -201,7 +201,12 @@ Recruta = o antigo Soldado ~7% mais fácil. Soldado ficou mais pressionado. Vete
 
 ---
 
-## 5. Controles (remapeáveis via `InputMap`, ações `pN_*`)
+## 5. Controles
+
+Controles são presos ao aparelho real, na ordem em que conectaram, e refeitos ao ligar/desligar (`InputSetup`).
+Sozinho no PC (local ou em rede) o jogador usa teclado e qualquer controle. Com mais gente: P1 = WASD, P2 = setas,
+P3/P4 = controles; os controles que sobram vão para P1 e depois P2. O briefing mostra quem ficou com o quê.
+ (remapeáveis via `InputMap`, ações `pN_*`)
 
 | Jogador | Mover | Fogo | Ordem | Granada | Travar mira |
 |---|---|---|---|---|---|

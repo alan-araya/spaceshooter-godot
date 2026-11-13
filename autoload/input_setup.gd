@@ -1,39 +1,62 @@
 extends Node
 ## Entrada: cria as ações em tempo de execução, remapeáveis via InputMap.
-## Esquemas: s0 = WASD, s1 = setas, s2 = controle 1, s3 = controle 2.
-## Cada jogador usa um ou mais esquemas, conforme o número de jogadores.
+## Esquemas: 0 = teclado WASD, 1 = teclado setas, 2..5 = controles 1..4 (na ordem em que conectaram).
+## Os controles são presos ao aparelho real (id do Godot) e refeitos quando um controle liga ou desliga.
+##
+## Quem usa o quê (assignments):
+## - 1 jogador no PC (local ou em rede): tudo — os dois teclados e qualquer controle.
+## - Vários jogadores no PC: P1 = WASD, P2 = setas, P3/P4 = controles. Controles que sobram vão
+##   primeiro para o P1 e depois para o P2, então o jogador principal pode usar teclado OU controle.
 
-const SCHEMES := 4
 const SNAP8 := PI / 4.0
-
-## jogadores -> lista de esquemas por jogador
-const LAYOUTS := {
-	1: [[0, 1, 2, 3]],
-	2: [[0, 2], [1, 3]],
-	3: [[0], [1], [2, 3]],
-	4: [[0], [1], [2], [3]],
-}
+const MAX_PADS := 4
+const KB_WASD := 0
+const KB_ARROWS := 1
+const PAD0 := 2
 
 ## Comando atual de cada jogador LOCAL (slot 0..3) e o último aplicado ao comandante.
 ## O mesmo formato (CmdInput) é o que viaja pela rede.
 var _cur: Array = []
 var _applied: Array = []
+var pads: Array = [] # ids dos controles conectados, em ordem de conexão
 
 
 func _ready() -> void:
 	for i in 4:
 		_cur.append(CmdInput.new())
 		_applied.append(null)
-	_kb(0, { up = [KEY_W], down = [KEY_S], left = [KEY_A], right = [KEY_D],
+	_kb(KB_WASD, { up = [KEY_W], down = [KEY_S], left = [KEY_A], right = [KEY_D],
 		fire = [KEY_SPACE, KEY_J], order = [KEY_Q, KEY_K], grenade = [KEY_E, KEY_L], strafe = [KEY_SHIFT] })
-	_kb(1, { up = [KEY_UP], down = [KEY_DOWN], left = [KEY_LEFT], right = [KEY_RIGHT],
+	_kb(KB_ARROWS, { up = [KEY_UP], down = [KEY_DOWN], left = [KEY_LEFT], right = [KEY_RIGHT],
 		fire = [KEY_KP_0, KEY_SLASH], order = [KEY_KP_1, KEY_PERIOD], grenade = [KEY_KP_2, KEY_COMMA], strafe = [KEY_KP_3, KEY_CTRL] })
-	_pad(2, 0)
-	_pad(3, 1)
 	for i in 4:
 		_add("order_%d" % (i + 1), [_key(KEY_1 + i)])
 	_add("pause", [_key(KEY_ESCAPE), _key(KEY_P), _joy_btn(JOY_BUTTON_START, -1)])
 	_add("debug_win", [_key(KEY_F9)])
+	# menus pelo controle: analógico esquerdo também navega (o direcional e o A já vêm do Godot)
+	for pair in [["ui_up", JOY_AXIS_LEFT_Y, -1.0], ["ui_down", JOY_AXIS_LEFT_Y, 1.0], ["ui_left", JOY_AXIS_LEFT_X, -1.0], ["ui_right", JOY_AXIS_LEFT_X, 1.0]]:
+		InputMap.action_add_event(pair[0], _joy_axis(pair[1], pair[2], -1))
+	_rebuild_pads()
+	Input.joy_connection_changed.connect(_on_joy_changed)
+
+
+func _on_joy_changed(_device: int, _connected: bool) -> void:
+	_rebuild_pads()
+
+
+## Refaz as ações dos controles 1..4 com os aparelhos conectados agora (mantendo a ordem de chegada).
+func _rebuild_pads() -> void:
+	var now := Input.get_connected_joypads()
+	var keep: Array = []
+	for d in pads:
+		if now.has(d):
+			keep.append(d)
+	for d in now:
+		if not keep.has(d):
+			keep.append(d)
+	pads = keep
+	for k in MAX_PADS:
+		_pad(PAD0 + k, pads[k] if k < pads.size() else 999) # 999 = nenhum aparelho
 
 
 func _add(action: String, events: Array, deadzone: float = 0.3) -> void:
@@ -84,11 +107,61 @@ func _pad(s: int, device: int) -> void:
 	_add("s%d_strafe" % s, [_joy_btn(JOY_BUTTON_LEFT_SHOULDER, device), _joy_btn(JOY_BUTTON_RIGHT_SHOULDER, device)])
 
 
+## Esquemas de cada jogador do PC, para `players` jogadores e `n_pads` controles conectados.
+static func assignments(players: int, n_pads: int) -> Array:
+	players = clampi(players, 1, 4)
+	n_pads = clampi(n_pads, 0, MAX_PADS)
+	if players == 1:
+		var all: Array = [KB_WASD, KB_ARROWS]
+		for k in MAX_PADS:
+			all.append(PAD0 + k)
+		return [all]
+	var out: Array = []
+	for i in players:
+		out.append([])
+	out[0].append(KB_WASD)
+	out[1].append(KB_ARROWS)
+	var next := 0
+	# primeiro quem não tem teclado (P3, P4); depois o P1; depois o P2
+	var order: Array = []
+	for i in range(2, players):
+		order.append(i)
+	order.append(0)
+	order.append(1)
+	for i in order:
+		if next < n_pads:
+			out[i].append(PAD0 + next)
+			next += 1
+	return out
+
+
 func schemes_for(pid: int, players: int) -> Array:
-	var layout: Array = LAYOUTS.get(clampi(players, 1, 4), LAYOUTS[1])
-	if pid >= layout.size():
-		return []
-	return layout[pid]
+	var a := assignments(players, pads.size())
+	return a[pid] if pid < a.size() else []
+
+
+## Texto curto com os aparelhos de cada jogador (briefing), ex.: "P1: teclado WASD + controle 1".
+func describe(players: int) -> Array:
+	var out: Array = []
+	var a := assignments(players, pads.size())
+	for pid in a.size():
+		var parts: Array = []
+		for s in a[pid]:
+			if s == KB_WASD:
+				parts.append(L.t("INPUT_WASD") if players > 1 else L.t("INPUT_KEYBOARD"))
+			elif s == KB_ARROWS:
+				if players > 1:
+					parts.append(L.t("INPUT_ARROWS"))
+			elif s - PAD0 < pads.size():
+				parts.append(L.t("INPUT_PAD", {n = s - PAD0 + 1}) if players > 1 else L.t("INPUT_ANY_PAD"))
+		var seen := {}
+		var uniq: Array = []
+		for p in parts:
+			if not seen.has(p):
+				seen[p] = true
+				uniq.append(p)
+		out.append(" + ".join(PackedStringArray(uniq)) if not uniq.is_empty() else L.t("INPUT_NONE"))
+	return out
 
 
 ## Zera os contadores (início de missão).
@@ -139,6 +212,3 @@ func read_into(c: Commander, players: int, slot: int = -1) -> void:
 	var cmd := sample(s, players)
 	cmd.apply_to(c, _applied[s])
 	_applied[s] = cmd.copy()
-
-
-## Texto de ajuda dos controles de um jogador.

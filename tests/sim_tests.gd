@@ -36,6 +36,7 @@ func run(m: Node) -> void:
 	_test_visuals()
 	_test_effects_keep_sim()
 	_test_i18n_keys()
+	_test_input_assignments()
 	if main.args.has("probe"):
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
@@ -464,6 +465,21 @@ func _sim_hash(w: World) -> String:
 	for s in w.soldiers:
 		acc += s.position.x * 0.9 + s.position.y * 1.1 + s.hp
 	return "%d|%d|%d|%d|%.2f|%.2f" % [w.frame, w.troops, w.stats.kills, w.bugs.size(), acc, w.commanders[0].position.x]
+
+
+## Quem usa qual aparelho: o jogador principal sempre pode usar controle quando há um sobrando.
+func _test_input_assignments() -> void:
+	var I := InputSetup
+	var a1: Array = I.assignments(1, 1)
+	check(a1.size() == 1 and a1[0].has(I.KB_WASD) and a1[0].has(I.KB_ARROWS) and a1[0].has(I.PAD0), "entrada: 1 jogador usa teclado e controle")
+	var a2: Array = I.assignments(2, 1)
+	check(a2[0] == [I.KB_WASD, I.PAD0] and a2[1] == [I.KB_ARROWS], "entrada: 2 jogadores e 1 controle -> controle do P1 (%s)" % str(a2))
+	var a4: Array = I.assignments(4, 1)
+	check(a4[2] == [I.PAD0] and a4[0] == [I.KB_WASD] and a4[3].is_empty(), "entrada: 4 jogadores e 1 controle -> P3 (%s)" % str(a4))
+	var a4b: Array = I.assignments(4, 4)
+	check(a4b[0].has(I.PAD0 + 2) and a4b[1].has(I.PAD0 + 3) and a4b[2] == [I.PAD0] and a4b[3] == [I.PAD0 + 1], "entrada: 4 jogadores e 4 controles (%s)" % str(a4b))
+	var a3: Array = I.assignments(3, 2)
+	check(a3[2] == [I.PAD0] and a3[0] == [I.KB_WASD, I.PAD0 + 1] and a3[1] == [I.KB_ARROWS], "entrada: 3 jogadores e 2 controles (%s)" % str(a3))
 
 
 ## Toda chave usada no código e nos dados tem texto no idioma ativo (i18n/strings.csv).
