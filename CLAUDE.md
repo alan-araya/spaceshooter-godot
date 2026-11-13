@@ -21,7 +21,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
   caminho na variável BLENDER). Depois de gerar PNG novo: `godot --headless --path . --import`.
   FPS: `godot --path . --disable-vsync --print-fps -- --mission=5 --autostart --seed=11 --quit-after=40 > fps.txt 2>&1`
   (sempre para arquivo: pelo pipe o número sai errado).
-- Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title]`.
+- Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title|tutorial]`.
+- Manual de campo (tutorial): `-- --manual=N` abre na página N (screenshot).
 
 ## Regras do projeto
 1. **IP**: mecânicas do Triumph! WAR 2099 podem ser replicadas; sprites, sons, mapas, textos e nomes não.

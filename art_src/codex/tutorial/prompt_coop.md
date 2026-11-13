@@ -1,0 +1,4 @@
+Detailed 16-bit pixel art illustration, wide 16:9 landscape, crisp hand-placed pixels, limited rich palette, strong rim lighting.
+Scene: four soldiers in olive-green fatigues and tactical vests standing back to back in a tight circle on orange desert sand, each firing a rifle outward with bright muzzle flashes. Each soldier wears a clearly different colored armband and helmet stripe: one blue, one red, one green, one yellow. Around them a ring of pale beige spider-like arachnids with long jointed legs and purple eyes leaping in, some splattering yellow-green goo. Slightly elevated 3/4 camera angle looking down at the group.
+Lighting: late afternoon sun from the left, long shadows, warm highlights, purple-tinted shadows, dust kicked up.
+Mood: teamwork, action, readable silhouettes. Original designs only. No text, no letters, no logos, no UI, no watermark.

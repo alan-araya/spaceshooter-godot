@@ -6,6 +6,7 @@
 | `assets/sprites/*_n.png` (mapas de relevo) | Calculados dos próprios sprites por `tools/build_normals.py` | Criação própria. |
 | `assets/sprites/walls*.png` (muros e portões) | Texturas procedurais geradas por `tools/build_structures.py` | Criação própria. |
 | `assets/sprites/generator*.png`, `turret_base*.png`, `turret_gun*.png`, `relay*.png` | Modelados por código e renderizados no Blender por `tools/build_props.py` (cena em `tools/blender/props_scene.py`, renders em `art_src/blender/`) | Criação própria. Sem modelos de terceiros. |
+| `assets/ui/tutorial_*.png` (ilustrações do manual de campo) | Gerados por IA (Codex / gpt-image) com os prompts em `art_src/codex/tutorial/`; reduzidos por `tools/process_art.py tutorial` | Criação própria do projeto. |
 | Efeitos sonoros | Sintetizados em tempo de execução por `autoload/sfx.gd` | Criação própria. |
 | Fonte da interface | Fonte padrão do Godot (embutida no motor) | Licença do Godot (MIT) / Open Sans e Noto (OFL). |
 

@@ -5,6 +5,7 @@ extends Node
 ## Argumentos de depuração (depois de "--"):
 ##   --mission=N --players=N --difficulty=facil|normal|dificil --autostart --unlockall
 ##   --gfx=alto|medio|baixo   qualidade gráfica só nesta execução
+##   --manual[=PÁGINA]   abre direto o manual de campo (screenshots)
 ##   --seed=N   semente fixa da missão (screenshots e medições repetíveis)
 ##   --fx-demo=SEG   aos SEG segundos dispara efeitos de explosão ao lado do P1 (só visual, para screenshot)
 ##   --hurt-demo=SEG   aos SEG segundos dispara o aviso de dano na tela
@@ -86,6 +87,11 @@ func _ready() -> void:
 		return
 	if args.has("net-join"):
 		_join(args["net-join"])
+		return
+	if args.has("manual"):
+		var m := show_manual(show_menu, "VOLTAR AO MENU")
+		if args["manual"] != "1":
+			m._go(int(args["manual"]) - 1)
 		return
 	if args.has("mission"):
 		if args.has("autostart"):
@@ -230,7 +236,7 @@ func show_menu() -> void:
 		show_menu()
 		_focus_index(4)
 	box.add_child(UiKit.button("GRÁFICOS: %s" % Game.GFX_LABELS[Game.gfx], cycle_gfx))
-	box.add_child(UiKit.button("CONTROLES", show_controls))
+	box.add_child(UiKit.button("MANUAL DE CAMPO", show_manual.bind(show_menu, "VOLTAR AO MENU")))
 	box.add_child(UiKit.button("SAIR", func(): get_tree().quit()))
 	var foot := UiKit.label("Méritos: %d   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais." % Game.merit_total, 13, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	foot.position = Vector2(0, 690)
@@ -245,19 +251,24 @@ func _focus_index(i: int) -> void:
 		(btns[i] as Button).grab_focus.call_deferred()
 
 
-func show_controls() -> void:
+## Manual de campo (tutorial ilustrado). `then` roda ao fechar.
+func show_manual(then: Callable, finish_text: String) -> FieldManual:
 	var root := _screen_root()
 	_background(root)
-	var box := _center_box(root)
-	var v := _panel(box)
-	v.add_child(UiKit.label("CONTROLES (%d JOGADOR%s)" % [Game.players, "ES" if Game.players > 1 else ""], 26, UiKit.AMBER))
-	for pid in Game.players:
-		v.add_child(UiKit.label("P%d" % (pid + 1), 18, Bal.PLAYER_COLORS[pid]))
-		v.add_child(UiKit.label(InputSetup.help_for(pid, Game.players), 15))
-	v.add_child(UiKit.label("Esc / Start: pausa. Ordens: Normal → Atacar → Defender → Seguir.", 15, UiKit.DIM))
-	var back := UiKit.button("VOLTAR", show_menu)
-	box.add_child(back)
-	back.grab_focus.call_deferred()
+	var m := FieldManual.new(finish_text)
+	m.closed.connect(then)
+	root.add_child(m)
+	return m
+
+
+## COMEÇAR no briefing: na primeira vez da missão 1, o manual vem antes.
+func _begin_from_briefing() -> void:
+	if Game.mission_index == 0 and not Game.tutorial_seen:
+		Game.tutorial_seen = true
+		Game.save()
+		show_manual(start_mission.bind(-1, -1), "COMEÇAR MISSÃO")
+		return
+	start_mission()
 
 
 func show_select() -> void:
@@ -302,7 +313,7 @@ func show_briefing() -> void:
 	var box := _center_box(root)
 	var v := _panel(box, 820)
 	_briefing_lines(v, Game.mission_index, Game.difficulty, Game.players)
-	var go := UiKit.button("COMEÇAR", start_mission, 820)
+	var go := UiKit.button("COMEÇAR", _begin_from_briefing, 820)
 	box.add_child(go)
 	box.add_child(UiKit.button("VOLTAR", show_select, 820))
 	go.grab_focus.call_deferred()

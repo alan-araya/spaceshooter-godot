@@ -9,6 +9,7 @@ var mission_index := 0
 var merit_total := 0
 var unlocked := 1
 var completed := {}
+var tutorial_seen := false # manual de campo já mostrado antes da primeira missão
 ## Qualidade gráfica: 2 = alto (tudo), 1 = médio (menos luzes), 0 = baixo (sem luzes dinâmicas nem brilho).
 var gfx := 2
 
@@ -30,6 +31,7 @@ func load_save() -> void:
 	players = cfg.get_value("options", "players", 1)
 	difficulty = cfg.get_value("options", "difficulty", "normal")
 	gfx = clampi(cfg.get_value("options", "gfx", 2), 0, 2)
+	tutorial_seen = cfg.get_value("progress", "tutorial_seen", false)
 
 
 func save() -> void:
@@ -40,6 +42,7 @@ func save() -> void:
 	cfg.set_value("options", "players", players)
 	cfg.set_value("options", "difficulty", difficulty)
 	cfg.set_value("options", "gfx", gfx)
+	cfg.set_value("progress", "tutorial_seen", tutorial_seen)
 	cfg.save(SAVE_PATH)
 
 

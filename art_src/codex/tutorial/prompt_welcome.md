@@ -1,0 +1,4 @@
+Detailed 16-bit pixel art illustration, wide 16:9 landscape, crisp hand-placed pixels, limited rich palette, strong rim lighting.
+Scene: a sandbag-fortified military outpost on an orange alien desert at dusk. In the foreground a squad commander in olive-green fatigues, tactical vest and a bright blue armband kneels over a supply crate that projects a glowing cyan holographic tactical map of a walled fortress. Two other soldiers in olive fatigues stand guard behind him with rifles. Warm orange lamp light on the sandbags, cool purple shadows.
+Background: purple-violet sky with two moons, a grey military dropship flying overhead with engine glow, layered red-orange mesas and dunes, and on the far dunes a swarm of pale beige spider-like arachnids with purple eyes approaching in silhouette.
+Mood: calm before the battle, heroic, readable. Original designs only. No text, no letters, no logos, no UI, no watermark.

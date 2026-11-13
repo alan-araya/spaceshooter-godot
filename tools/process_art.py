@@ -340,9 +340,23 @@ def do_title():
     print("  -> assets/sprites/title_bg.png 1280x720")
 
 
+def do_tutorial():
+    """Ilustrações do manual de campo: recorte 16:9 e redução para 800x450 (assets/ui/)."""
+    out = OUT.parent / "ui"
+    out.mkdir(parents=True, exist_ok=True)
+    for name in ("tutorial_welcome", "tutorial_coop"):
+        img = Image.open(SRC / "tutorial" / (name + ".png")).convert("RGB")
+        w, h = img.size
+        th = int(w * 9 / 16)
+        top = max(0, (h - th) // 2)
+        img = img.crop((0, top, w, top + th)).resize((800, 450), Image.Resampling.LANCZOS)
+        img.save(out / (name + ".png"))
+        print("  -> assets/ui/%s.png 800x450" % name)
+
+
 TASKS = {
     "soldier": do_soldier, "bug": do_bug, "mother": do_mother, "nest": do_nest,
-    "terrain": do_terrain, "support": do_support, "title": do_title,
+    "terrain": do_terrain, "support": do_support, "title": do_title, "tutorial": do_tutorial,
 }
 
 if __name__ == "__main__":

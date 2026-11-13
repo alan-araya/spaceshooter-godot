@@ -54,13 +54,25 @@ a troca de arte 2D → 3D não toque na lógica (ver §8).
                               │                                        ↑          │ pausa
                               │                                        │      [Pausa]
                               ├─ Jogadores (1–4) / Dificuldade         │          │
-                              ├─ Controles (lista de teclas)           └── Tentar de novo / Continuar (méritos)
+                              ├─ Manual de campo (tutorial)           └── Tentar de novo / Continuar (méritos)
                               └─ Sair
 ```
 
 ### 3.1 Menu principal
 - Fundo: arte-chave (soldados contra o enxame num cânion ao entardecer), logotipo **ENXAME 2199**.
-- Opções: **Jogar**, **Jogadores: 1–4**, **Dificuldade: Recruta / Soldado / Veterano**, **Controles**, **Sair**.
+- Opções: **Jogar**, **Jogar em rede**, **Jogadores: 1–4**, **Dificuldade: Recruta / Soldado / Veterano**,
+  **Gráficos: Alto / Médio / Baixo**, **Manual de campo**, **Sair**.
+
+### 3.1.1 Manual de campo (tutorial)
+- `scripts/ui/field_manual.gd`. Abre sozinho na primeira vez que o jogador aperta COMEÇAR na missão 1
+  (`Game.tutorial_seen`, salvo no progresso) e a qualquer momento pelo menu. Missões seguintes não mostram.
+- 5 páginas: **Bem-vindo** (premissa, tropas = vidas, renascer, derrota, objetivo) · **Controles** (teclas
+  desenhadas para teclado e controle + as 4 ordens) · **Jogando em grupo** (P1–P4 com cores e dispositivos,
+  jogo em rede) · **Conheça o inimigo** (aracnídeo, cuspidor, matriarca, filhote, ninho e flor, com o sprite
+  animado do jogo e como cada um ataca) · **Apoio e dicas** (6 pickups, metralhadoras, muros, avisos de horda).
+- Navegação: setas/direcional viram a página, Enter avança, Esc pula. `-- --manual[=N]` abre direto (screenshot).
+- Ilustrações das páginas 1 e 3 geradas no Codex (`art_src/codex/tutorial/prompt_*.md`) →
+  `python -I tools/process_art.py tutorial` → `assets/ui/`.
 - Navegação por teclado (setas/WASD + Enter) e controle (D-pad + A).
 
 ### 3.2 Seleção de missão
