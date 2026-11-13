@@ -125,6 +125,11 @@ func move_circle(u: Node2D, d: Vector2, r: float, mode: int) -> int:
 	return blocked
 
 
+## true se o círculo já está DENTRO de um tile que bloqueia (não só encostado).
+func overlaps_blocked(p: Vector2, r: float, mode: int) -> bool:
+	return _hit_tile(p.x, p.y, r, mode) >= 0
+
+
 func _hit_tile(x: float, y: float, r: float, mode: int) -> int:
 	var x0 := floori((x - r) / tile)
 	var x1 := floori((x + r - 0.001) / tile)

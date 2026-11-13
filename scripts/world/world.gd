@@ -581,6 +581,16 @@ func damage_enemy(e, dmg: float) -> void:
 			sfx("birth", e.position.x)
 
 
+## Inseto preso que se desfaz sozinho (Bug._check_stuck): some com gosma, sem mérito nem abate.
+func self_destruct(b) -> void:
+	if b.dead:
+		return
+	b.dead = true
+	fx.goo(b.position, 10)
+	decal_layer.add_decal("goo", b.position, 6.0)
+	sfx("squish", b.position.x)
+
+
 func kill_enemy(e) -> void:
 	if e.dead:
 		return

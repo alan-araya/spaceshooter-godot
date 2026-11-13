@@ -1,277 +1,277 @@
 keys,pt_BR,en_US,es,pt_PT,de,ja,zh_CN
-GAME_TITLE,ENXAME 2199,,,,,,
-MENU_TAGLINE,"UM COMANDANTE, UM PELOTÃO, UM PLANETA INFESTADO",,,,,,
-MENU_PLAY,JOGAR,,,,,,
-MENU_NET,JOGAR EM REDE,,,,,,
-MENU_PLAYERS,JOGADORES NESTE PC: {n},,,,,,
-MENU_DIFFICULTY,DIFICULDADE: {d},,,,,,
-MENU_GFX,GRÁFICOS: {g},,,,,,
-MENU_MANUAL,MANUAL DE CAMPO,,,,,,
-MENU_QUIT,SAIR,,,,,,
-MENU_FOOTER,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.,,,,,,
-MANUAL_BACK_TO_MENU,VOLTAR AO MENU,,,,,,
-MANUAL_START_MISSION,COMEÇAR MISSÃO,,,,,,
-SELECT_TITLE,ESCOLHA A MISSÃO,,,,,,
-SELECT_MERIT,Méritos: {m},,,,,,
-SELECT_ITEM,{n}. {name},,,,,,
-BACK,VOLTAR,,,,,,
-BRIEF_TITLE,MISSÃO {n} — {name},,,,,,
-BRIEF_OBJECTIVE,OBJETIVO: {text},,,,,,
-BRIEF_FOOTER,Tropas: {t}   ·   Dificuldade: {d}   ·   Jogadores: {p},,,,,,
-BRIEF_START,COMEÇAR,,,,,,
-NET_TITLE,JOGAR EM REDE,,,,,,
-NET_HELP_1,Um jogador hospeda (o PC dele roda a partida); os outros entram pelo IP.,,,,,,
-NET_HELP_2,Rede local ou internet via rede virtual (ex.: Tailscale). Porta UDP {port}.,,,,,,
-NET_HOST,HOSPEDAR PARTIDA,,,,,,
-NET_IP_HINT,IP do host (ex.: 192.168.0.10),,,,,,
-NET_JOIN,ENTRAR,,,,,,
-NET_HOST_FAILED,Não foi possível hospedar (erro {err}). A porta {port} pode estar em uso.,,,,,,
-NET_BAD_ADDRESS,Endereço inválido ou erro {err}.,,,,,,
-LOBBY_TITLE_HOST,LOBBY — VOCÊ HOSPEDA,,,,,,
-LOBBY_TITLE,LOBBY,,,,,,
-LOBBY_NO_LAN,(sem rede local),,,,,,
-LOBBY_MY_IP,Seu IP: {ip}   ·   porta {port},,,,,,
-LOBBY_SLOT,P{p}  —  ,,,,,,
-LOBBY_HOST,host,,,,,,
-LOBBY_PLAYER,jogador conectado,,,,,,
-LOBBY_YOU,  (você),,,,,,
-LOBBY_FREE,vago,,,,,,
-LOBBY_CONNECTING,Conectando…,,,,,,
-LOBBY_NEXT_MISSION,TROCAR MISSÃO,,,,,,
-LOBBY_NEXT_DIFF,TROCAR DIFICULDADE,,,,,,
-LOBBY_START_ONE,COMEÇAR (1 jogador),,,,,,
-LOBBY_START_MANY,COMEÇAR ({n} jogadores),,,,,,
-LOBBY_WAIT_HOST,Aguardando o host começar a partida…,,,,,,
-LOBBY_LEAVE,SAIR DO LOBBY,,,,,,
-PAUSE_TITLE,PAUSA,,,,,,
-PAUSE_RESUME,CONTINUAR,,,,,,
-PAUSE_RESTART,REINICIAR MISSÃO,,,,,,
-PAUSE_MAIN_MENU,MENU PRINCIPAL,,,,,,
-NETPAUSE_TITLE,A PARTIDA CONTINUA (REDE),,,,,,
-NETPAUSE_BACK,VOLTAR AO JOGO,,,,,,
-NETPAUSE_END,ENCERRAR E VOLTAR AO LOBBY,,,,,,
-NETPAUSE_LEAVE,SAIR DA PARTIDA,,,,,,
-RESULT_WIN,MISSÃO CUMPRIDA!,,,,,,
-RESULT_LOSE,MISSÃO FRACASSADA,,,,,,
-RESULT_TIME,Tempo: {time},,,,,,
-RESULT_KILLS,Aracnídeos abatidos: {k}   ·   Matriarcas: {m},,,,,,
-RESULT_NESTS,Ninhos destruídos: {n}   ·   Flores arrancadas: {f},,,,,,
-RESULT_LOSSES,Tropas perdidas: {t}   ·   Comandantes abatidos: {c},,,,,,
-RESULT_MERIT_WIN,Mérito ganho: {m}   ·   Total: {total},,,,,,
-RESULT_MERIT_LOSE,Mérito ganho: {m} (metade)   ·   Total: {total},,,,,,
-RESULT_NEXT,PRÓXIMA MISSÃO,,,,,,
-RESULT_CONTINUE,CONTINUAR ({c} méritos),,,,,,
-RESULT_RETRY,TENTAR DE NOVO,,,,,,
-RESULT_NEXT_ALL,PRÓXIMA MISSÃO (TODOS),,,,,,
-RESULT_RETRY_ALL,TENTAR DE NOVO (TODOS),,,,,,
-RESULT_BACK_LOBBY,VOLTAR AO LOBBY,,,,,,
-RESULT_WAIT_HOST,Aguardando o host escolher a próxima missão…,,,,,,
-TOAST_CONTINUE,REFORÇOS ORBITAIS — CONTINUE A MISSÃO!,,,,,,
-HUD_TROOPS,TROPAS,,,,,,
-HUD_RESPAWN,VOLTA EM {s}s,,,,,,
-HUD_NO_TROOPS,SEM TROPAS,,,,,,
-HUD_DISCONNECTED,DESCONECTADO,,,,,,
-HUD_NO_GRENADES,sem granadas,,,,,,
-HUD_MERIT,MÉRITO,,,,,,
-HUD_OBJECTIVE,OBJETIVO: {text},,,,,,
-WEAPON_MG,Metralhadora,,,,,,
-WEAPON_FLAME,Lança-chamas,,,,,,
-WEAPON_PLASMA,Plasma,,,,,,
-WEAPON_RIFLE,Fuzil,,,,,,
-WEAPON_CANNON,Canhão,,,,,,
-WEAPON_TURRET,Metralhadora fixa,,,,,,
-DIFF_FACIL,Recruta,,,,,,
-DIFF_NORMAL,Soldado,,,,,,
-DIFF_DIFICIL,Veterano,,,,,,
-ORDER_NORMAL,Normal,,,,,,
-ORDER_ATACAR,Atacar,,,,,,
-ORDER_DEFENDER,Defender,,,,,,
-ORDER_SEGUIR,Seguir,,,,,,
-GFX_LOW,BAIXO,,,,,,
-GFX_MEDIUM,MÉDIO,,,,,,
-GFX_HIGH,ALTO,,,,,,
-NET_STATUS_HOSTING,Hospedando na porta {port},,,,,,
-NET_STATUS_CONNECTING,Conectando a {addr}:{port}…,,,,,,
-NET_STATUS_CONNECTED,Conectado. Aguardando o host…,,,,,,
-NET_CANT_CONNECT,Não foi possível conectar.,,,,,,
-NET_HOST_LOST,A conexão com o host foi perdida.,,,,,,
-PICK_REINFORCE,REFORÇOS!,,,,,,
-PICK_AIRSTRIKE,ATAQUE AÉREO!,,,,,,
-PICK_ROBOT,APOIO BLINDADO!,,,,,,
-PICK_FLAME,LANÇA-CHAMAS,,,,,,
-PICK_PLASMA,CANHÃO DE PLASMA,,,,,,
-PICK_GRENADES,+3 GRANADAS,,,,,,
-TOAST_ORDER,P{p} · ORDEM: {order},,,,,,
-TOAST_HEART_DOWN,CORAÇÃO DA COLMEIA DESTRUÍDO! PEGUE O CRISTAL,,,,,,
-TOAST_NEST_DOWN,NINHO DESTRUÍDO,,,,,,
-TOAST_ROBOT_DOWN,BLINDADO DESTRUÍDO,,,,,,
-TOAST_PLAYER_DOWN,P{p} ABATIDO — VOLTA EM 10 s,,,,,,
-TOAST_PLAYER_DOWN_NO_TROOPS,P{p} ABATIDO — SEM TROPAS!,,,,,,
-TOAST_GATE_BROKEN,PORTÃO ROMPIDO!,,,,,,
-TOAST_WALL_BROKEN,MURO ROMPIDO!,,,,,,
-TOAST_FLOWER_PULLED,FLOR ARRANCADA,,,,,,
-TOAST_MOTHER_BORN,UM ARACNÍDEO TOCOU UMA FLOR — MATRIARCA!,,,,,,
-TOAST_PICKUP,P{p} · {item},,,,,,
-TOAST_PLAYER_BACK,P{p} DE VOLTA AO CAMPO,,,,,,
-TOAST_AMBUSH,EMBOSCADA! O CHÃO ESTÁ TREMENDO,,,,,,
-TOAST_HORDE,HORDA SE APROXIMANDO!,,,,,,
-TOAST_RELAY_ON,RELÉ RELIGADO,,,,,,
-TOAST_CRYSTAL_TAKEN,P{p} PEGOU O CRISTAL — VÁ PARA A EXTRAÇÃO,,,,,,
-TOAST_PLAYER_LEFT,P{p} SAIU DA PARTIDA,,,,,,
-END_OBJECTIVE_DONE,Objetivo cumprido,,,,,,
-END_NO_TROOPS,Sem tropas e sem comandantes,,,,,,
-END_AREA_SECURE,Área segura — nenhum inimigo restante,,,,,,
-END_GENERATOR_LOST,O gerador foi destruído,,,,,,
-OBJ_NESTS_AND_BUGS,Ninhos restantes: {left}/{total}  ·  Aracnídeos: {bugs},,,,,,
-OBJ_BUGS_LEFT,Elimine os aracnídeos restantes: {bugs},,,,,,
-OBJ_NESTS_DESTROYED,Ninhos destruídos: {done}/{total},,,,,,
-OBJ_RELAYS,Relés religados: {on}/{total}  —  fique parado sobre o relé,,,,,,
-OBJ_SURVIVE,Evacuação em {time}  ·  Gerador {gen}%,,,,,,
-OBJ_HOLD,Abates: {kills}/{goal}  ·  Gerador {gen}%,,,,,,
-OBJ_HEART_HP,Destrua o Coração da Colmeia ({hp} PV),,,,,,
-OBJ_HEART,Destrua o Coração da Colmeia,,,,,,
-OBJ_TAKE_CRYSTAL,Pegue o Cristal Prisma,,,,,,
-OBJ_CARRY_CRYSTAL,Leve o cristal até a EXTRAÇÃO,,,,,,
-OVERLAY_RESPAWN,P{p}  {s}s,,,,,,
-M1_NAME,Queda Quente,,,,,,
-M1_BRIEF_1,"Comandante, seu módulo de pouso vai cair no meio de um combate.",,,,,,
-M1_BRIEF_2,Um pelotão já está segurando a linha nas Planícies de Varga.,,,,,,
-M1_BRIEF_3,"Assuma o esquadrão, limpe a área e destrua os dois ninhos a leste.",,,,,,
-M1_BRIEF_4,"Enquanto os ninhos viverem, hordas vão chegar pelo leste e pelo norte.",,,,,,
-M1_OBJ,Destrua os ninhos e elimine todos os aracnídeos,,,,,,
-M2_NAME,Sinal Perdido,,,,,,
-M2_BRIEF_1,Os relés de comunicação do Cânion Rubro pararam de responder.,,,,,,
-M2_BRIEF_2,"Sem eles, não há reforço orbital no setor.",,,,,,
-M2_BRIEF_3,Chegue a cada relé e fique PARADO sobre ele até religar.,,,,,,
-M2_BRIEF_4,Três ninhos e hordas pelas bordas do cânion. Seja rápido.,,,,,,
-M2_OBJ,Religue os 3 relés de comunicação,,,,,,
-M3_NAME,Posto Avançado Eco,,,,,,
-M3_BRIEF_1,O Posto Eco guarda o gerador que mantém o escudo do vale ligado.,,,,,,
-M3_BRIEF_2,"Agora com dois anéis: sacos de areia por fora, muralha por dentro.",,,,,,
-M3_BRIEF_3,Hordas vão chegar por todos os lados até a evacuação.,,,,,,
-M3_BRIEF_4,"Os portões só deixam humanos passar. Se o gerador cair, perdemos o setor.",,,,,,
-M3_OBJ,Proteja o gerador até a evacuação,,,,,,
-M4_NAME,Linha de Trincheiras,,,,,,
-M4_BRIEF_1,A colmeia do norte está empurrando um exército contra a Linha Vega.,,,,,,
-M4_BRIEF_2,Duas trincheiras com metralhadoras de ponto protegem o bunker do gerador.,,,,,,
-M4_BRIEF_3,Soldados em NORMAL ou DEFENDER assumem as metralhadoras livres sozinhos.,,,,,,
-M4_BRIEF_4,Você também pode operar uma: fique parado em cima dela.,,,,,,
-M4_BRIEF_5,Segure a linha até abater o exército inteiro.,,,,,,
-M4_OBJ,Abata o exército inimigo e proteja o gerador,,,,,,
-M5_NAME,Fortaleza Bastião,,,,,,
-M5_BRIEF_1,"O Bastião é a última fortaleza do vale: muralha, pátio, muralha interna e a torre.",,,,,,
-M5_BRIEF_2,Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.,,,,,,
-M5_BRIEF_3,Os portões internos ficam desalinhados com os externos: o enxame tem de serpentear.,,,,,,
-M5_BRIEF_4,Guarnição nas metralhadoras de ponto. Recue camada por camada se for preciso.,,,,,,
-M5_BRIEF_5,Resista até a frota chegar.,,,,,,
-M5_OBJ,Defenda a torre do gerador até a frota chegar,,,,,,
-M6_NAME,Coração da Colmeia,,,,,,
-M6_BRIEF_1,A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma,,,,,,
-M6_BRIEF_2,"está dentro do Coração da Colmeia, no fundo da instalação.",,,,,,
-M6_BRIEF_3,"Destrua o Coração, pegue o cristal e leve-o até a extração.",,,,,,
-M6_BRIEF_4,Carregando o cristal você fica mais lento. Proteja-se com o esquadrão.,,,,,,
-M6_OBJ,Destrua o Coração da Colmeia e recupere o cristal,,,,,,
-MANUAL_PAGE_1,"BEM-VINDO, COMANDANTE",,,,,,
-MANUAL_PAGE_2,CONTROLES,,,,,,
-MANUAL_PAGE_3,JOGANDO EM GRUPO,,,,,,
-MANUAL_PAGE_4,CONHEÇA O INIMIGO,,,,,,
-MANUAL_PAGE_5,APOIO E DICAS,,,,,,
-MANUAL_CLOSE,FECHAR,,,,,,
-MANUAL_MANUAL_DE_CAMPO,MANUAL DE CAMPO,,,,,,
-MANUAL_PULAR,PULAR,,,,,,
-MANUAL_ANTERIOR,◀ ANTERIOR,,,,,,
-MANUAL_PROXIMO,PRÓXIMO ▶,,,,,,
-MANUAL_UM_PLANETA_DESERTICO_FOI,"Um planeta desértico foi tomado por um enxame de aracnídeos. Você comanda um pelotão: lute ao lado dos seus soldados, dê ordens e cumpra o objetivo de cada missão.",,,,,,
-MANUAL_TROPAS_VIDAS,TROPAS = VIDAS,,,,,,
-MANUAL_CADA_SOLDADO_OU_COMANDANTE,Cada soldado ou comandante que cai custa 1 tropa. O contador fica no canto de cima da tela.,,,,,,
-MANUAL_O_COMANDANTE_VOLTA,O COMANDANTE VOLTA,,,,,,
-MANUAL_SE_VOCE_CAIR_RENASCE,"Se você cair, renasce em 10 s na zona de pouso, enquanto houver tropas.",,,,,,
-MANUAL_DERROTA,DERROTA,,,,,,
-MANUAL_SEM_TROPAS_E_SEM,"Sem tropas e sem comandante vivo, ou se o objetivo falhar (por exemplo, o gerador destruído).",,,,,,
-MANUAL_OBJETIVO,OBJETIVO,,,,,,
-MANUAL_APARECE_NO_RODAPE_DESTRUIR,"Aparece no rodapé: destruir ninhos, religar relés, defender o gerador até a evacuação…",,,,,,
-MANUAL_USE_AS_SETAS_OU,Use as setas ou o direcional para virar as páginas.,,,,,,
-MANUAL_TECLADO,TECLADO,,,,,,
-MANUAL_MOVER_EM_8_DIRECOES,mover em 8 direções,,,,,,
-MANUAL_ESPACO,ESPAÇO,,,,,,
-MANUAL_ATIRAR_PARA_ONDE_ESTA,atirar para onde está virado,,,,,,
-MANUAL_TRAVAR_A_MIRA_RECUAR,travar a mira (recuar atirando),,,,,,
-MANUAL_GRANADA_COMECA_COM_3,"granada (começa com 3, até 9)",,,,,,
-MANUAL_TROCAR_A_ORDEM_DO,trocar a ordem do pelotão,,,,,,
-MANUAL_ORDEM_DIRETA,ordem direta,,,,,,
-MANUAL_CONTROLE,CONTROLE,,,,,,
-MANUAL_ANALOGICO,ANALÓGICO,,,,,,
-MANUAL_TRAVAR_A_MIRA,travar a mira,,,,,,
-MANUAL_TROCAR_A_ORDEM,trocar a ordem,,,,,,
-MANUAL_ORDENS_DO_PELOTAO_Q,ORDENS DO PELOTÃO  (Q / X troca · 1-4 escolhe direto),,,,,,
-MANUAL_NORMAL,NORMAL,,,,,,
-MANUAL_PATRULHAM_POR_PERTO_E,patrulham por perto e atiram no mais próximo,,,,,,
-MANUAL_ATACAR,ATACAR,,,,,,
-MANUAL_AVANCAM_ATE_OS_INSETOS,avançam até os insetos e os ninhos,,,,,,
-MANUAL_DEFENDER,DEFENDER,,,,,,
-MANUAL_SEGURAM_O_PONTO_ONDE,seguram o ponto onde receberam a ordem,,,,,,
-MANUAL_SEGUIR,SEGUIR,,,,,,
-MANUAL_ANDAM_EM_FORMACAO_EM,andam em formação em volta de você,,,,,,
-MANUAL_ATE_4_JOGADORES_NO,ATÉ 4 JOGADORES NO MESMO PC,,,,,,
-MANUAL_ESCOLHA_JOGADORES_NESTE_PC,Escolha JOGADORES NESTE PC no menu. Cada jogador tem uma cor e o próprio pelotão; as tropas são compartilhadas.,,,,,,
-MANUAL_TECLADO_WASD_OU_CONTROLE,"Teclado WASD — e um controle, se sobrar",,,,,,
-MANUAL_SETAS_NUM0_ATIRA_NUM1,"Setas · Num0 atira · Num1 ordem · Num2 granada (e um controle, se sobrar)",,,,,,
-MANUAL_CONTROLE_1_COM_3,Um controle,,,,,,
-MANUAL_CONTROLE_2,Um controle,,,,,,
-MANUAL_COM_1_JOGADOR_QUALQUER,"Sozinho no PC (ou em rede), você usa teclado OU qualquer controle. Com mais gente, os controles vão para P3 e P4 e os que sobram para P1 e P2; se faltar controle, o P1 pega o primeiro. O briefing mostra quem ficou com o quê.",,,,,,
-MANUAL_JOGAR_EM_REDE,JOGAR EM REDE,,,,,,
-MANUAL_ATE_4_PCS_NA,"Até 4 PCs na mesma rede: um jogador HOSPEDA (o PC dele roda a partida) e os outros ENTRAM pelo IP mostrado no lobby. Pela internet, use uma rede virtual como o Tailscale.",,,,,,
-MANUAL_ARACNIDEO,ARACNÍDEO,,,,,,
-MANUAL_CORRE_EM_BANDO_CERCA,"Corre em bando, cerca pelos lados e morde de perto. Perto de você, dá um bote.",,,,,,
-MANUAL_ATAQUE_MORDIDA_E_BOTE,ATAQUE: mordida e bote · rói muros,,,,,,
-MANUAL_CUSPIDOR,CUSPIDOR,,,,,,
-MANUAL_ESVERDEADO_FICA_LONGE_E,Esverdeado. Fica longe e cospe ácido. Muros e portões bloqueiam o cuspe.,,,,,,
-MANUAL_ATAQUE_CUSPE_DE_ACIDO,ATAQUE: cuspe de ácido à distância,,,,,,
-MANUAL_MATRIARCA,MATRIARCA,,,,,,
-MANUAL_NASCE_QUANDO_UM_ARACNIDEO,Nasce quando um aracnídeo toca uma flor aberta. Fica atrás da ninhada e investe em quem chega perto.,,,,,,
-MANUAL_ATAQUE_ACIDO_EM_ARCO,ATAQUE: ácido em arco (saia do anel verde!) · investida · filhotes,,,,,,
-MANUAL_FILHOTE,FILHOTE,,,,,,
-MANUAL_PEQUENO_E_RAPIDO_MORRE,Pequeno e rápido; morre com um tiro. Sai da matriarca quando ela é ferida ou morre.,,,,,,
-MANUAL_ATAQUE_MORDIDA,ATAQUE: mordida,,,,,,
-MANUAL_NINHO,NINHO,,,,,,
-MANUAL_GERA_ARACNIDEOS_SEM_PARAR,"Gera aracnídeos sem parar, cada vez mais rápido. Destrua para cortar o fluxo.",,,,,,
-MANUAL_NAO_ATACA_PRIORIDADE_NAS,NÃO ATACA · prioridade nas missões de limpeza,,,,,,
-MANUAL_FLOR,FLOR,,,,,,
-MANUAL_ABRE_DEPOIS_DE_ALGUNS,Abre depois de alguns segundos. Pise nela para arrancar antes que um aracnídeo a toque.,,,,,,
-MANUAL_PERIGO_ARACNIDEO_FLOR_ABERTA,PERIGO: aracnídeo + flor aberta = matriarca,,,,,,
-MANUAL_REFORCOS,REFORÇOS,,,,,,
-MANUAL_BUGGIES_ATROPELAM_INSETOS_E,buggies atropelam insetos e trazem +6 tropas,,,,,,
-MANUAL_ATAQUE_AEREO,ATAQUE AÉREO,,,,,,
-MANUAL_NAVE_SOLTA_SOLDADOS_E,nave solta soldados e bombardeia o enxame,,,,,,
-MANUAL_APOIO_BLINDADO,APOIO BLINDADO,,,,,,
-MANUAL_UM_ROBO_ALIADO_COM,um robô aliado com canhão luta ao seu lado,,,,,,
-MANUAL_LANCA_CHAMAS,LANÇA-CHAMAS,,,,,,
-MANUAL_CONE_CURTO_QUE_ATRAVESSA,cone curto que atravessa vários insetos,,,,,,
-MANUAL_CANHAO_DE_PLASMA,CANHÃO DE PLASMA,,,,,,
-MANUAL_TIROS_PERFURANTES_QUE_EXPLODEM,tiros perfurantes que explodem,,,,,,
-MANUAL_3_GRANADAS,+3 GRANADAS,,,,,,
-MANUAL_ATE_9_NO_TOTAL,até 9 no total,,,,,,
-MANUAL_SO_O_COMANDANTE_PEGA,Só o comandante pega os itens que aparecem no chão.,,,,,,
-MANUAL_DICAS_DE_CAMPO,DICAS DE CAMPO,,,,,,
-MANUAL_METRALHADORA_DE_PONTO,METRALHADORA DE PONTO,,,,,,
-MANUAL_PARE_AO_LADO_DE,Pare ao lado de uma para operar; soldados em NORMAL ou DEFENDER assumem as livres sozinhos.,,,,,,
-MANUAL_MUROS_E_PORTOES,MUROS E PORTÕES,,,,,,
-MANUAL_SEGURAM_O_ENXAME_MAS,"Seguram o enxame, mas os insetos roem. Recue camada por camada.",,,,,,
-MANUAL_ANEL_VERMELHO_NA_BORDA,ANEL VERMELHO NA BORDA,,,,,,
-MANUAL_HORDA_CHEGANDO_POR_ALI,Horda chegando por ali. Anel laranja perto de você: emboscada saindo do chão.,,,,,,
-MANUAL_REVER_ESTE_MANUAL,REVER ESTE MANUAL,,,,,,
-MANUAL_ELE_FICA_NO_MENU,"Ele fica no menu principal, em MANUAL DE CAMPO.",,,,,,
-MANUAL_,▸ ,,,,,,
-MANUAL_PAUSA,pausa,,,,,,
-MANUAL_ATIRAR,atirar,,,,,,
-MANUAL_GRANADA,granada,,,,,,
-MANUAL_MOVER,mover,,,,,,
-NET_VERSION_MISMATCH,O host está com outra versão do jogo ({host}; a sua é {mine}). Usem o mesmo build nos dois PCs.,,,,,,
+GAME_TITLE,ENXAME 2199,ENXAME 2199,ENXAME 2199,ENXAME 2199,ENXAME 2199,ENXAME 2199,ENXAME 2199
+MENU_TAGLINE,"UM COMANDANTE, UM PELOTÃO, UM PLANETA INFESTADO","ONE COMMANDER, ONE SQUAD, ONE INFESTED PLANET","UN COMANDANTE, UN PELOTÓN, UN PLANETA INFESTADO","UM COMANDANTE, UM PELOTÃO, UM PLANETA INFESTADO","EIN KOMMANDANT, EIN TRUPP, EIN VERSEUCHTER PLANET",ひとりの指揮官、ひとつの分隊、虫に侵された惑星,一名指挥官，一支小队，一颗虫灾肆虐的星球
+MENU_PLAY,JOGAR,PLAY,JUGAR,JOGAR,SPIELEN,プレイ,开始游戏
+MENU_NET,JOGAR EM REDE,NETWORK PLAY,JUGAR EN RED,JOGAR EM REDE,NETZWERKSPIEL,ネットワークプレイ,联机游戏
+MENU_PLAYERS,JOGADORES NESTE PC: {n},PLAYERS ON THIS PC: {n},JUGADORES EN ESTA PC: {n},JOGADORES NESTE PC: {n},SPIELER AN DIESEM PC: {n},このPCのプレイヤー：{n},本机玩家：{n}
+MENU_DIFFICULTY,DIFICULDADE: {d},DIFFICULTY: {d},DIFICULTAD: {d},DIFICULDADE: {d},SCHWIERIGKEIT: {d},難易度：{d},难度：{d}
+MENU_GFX,GRÁFICOS: {g},GRAPHICS: {g},GRÁFICOS: {g},GRÁFICOS: {g},GRAFIK: {g},グラフィック：{g},画质：{g}
+MENU_MANUAL,MANUAL DE CAMPO,FIELD MANUAL,MANUAL DE CAMPO,MANUAL DE CAMPO,FELDHANDBUCH,野戦マニュアル,野战手册
+MENU_QUIT,SAIR,QUIT,SALIR,SAIR,BEENDEN,終了,退出
+MENU_FOOTER,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.,Merits: {m}   ·   Inspired by the gameplay of 2000s tactical action classics. Original art and names.,Méritos: {m}   ·   Inspirado en la jugabilidad de clásicos de acción táctica de los años 2000. Arte y nombres originales.,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.,Verdienst: {m}   ·   Inspiriert vom Gameplay taktischer Action-Klassiker der 2000er. Eigene Grafik und Namen.,功績：{m}   ·   2000年代の戦術アクションの名作にインスパイアされたゲームプレイ。アートと名称はオリジナル。,功勋：{m}   ·   玩法灵感来自2000年代的经典战术动作游戏。美术与名称均为原创。
+MANUAL_BACK_TO_MENU,VOLTAR AO MENU,BACK TO MENU,VOLVER AL MENÚ,VOLTAR AO MENU,ZUM MENÜ,メニューに戻る,返回菜单
+MANUAL_START_MISSION,COMEÇAR MISSÃO,START MISSION,INICIAR MISIÓN,COMEÇAR MISSÃO,MISSION STARTEN,ミッション開始,开始任务
+SELECT_TITLE,ESCOLHA A MISSÃO,CHOOSE A MISSION,ELIGE LA MISIÓN,ESCOLHE A MISSÃO,MISSION WÄHLEN,ミッション選択,选择任务
+SELECT_MERIT,Méritos: {m},Merits: {m},Méritos: {m},Méritos: {m},Verdienst: {m},功績：{m},功勋：{m}
+SELECT_ITEM,{n}. {name},{n}. {name},{n}. {name},{n}. {name},{n}. {name},{n}. {name},{n}. {name}
+BACK,VOLTAR,BACK,VOLVER,VOLTAR,ZURÜCK,戻る,返回
+BRIEF_TITLE,MISSÃO {n} — {name},MISSION {n} — {name},MISIÓN {n} — {name},MISSÃO {n} — {name},MISSION {n} — {name},ミッション{n} — {name},任务 {n} — {name}
+BRIEF_OBJECTIVE,OBJETIVO: {text},OBJECTIVE: {text},OBJETIVO: {text},OBJETIVO: {text},ZIEL: {text},目標：{text},目标：{text}
+BRIEF_FOOTER,Tropas: {t}   ·   Dificuldade: {d}   ·   Jogadores: {p},Troops: {t}   ·   Difficulty: {d}   ·   Players: {p},Tropas: {t}   ·   Dificultad: {d}   ·   Jugadores: {p},Tropas: {t}   ·   Dificuldade: {d}   ·   Jogadores: {p},Truppen: {t}   ·   Schwierigkeit: {d}   ·   Spieler: {p},部隊：{t}   ·   難易度：{d}   ·   プレイヤー：{p},兵力：{t}   ·   难度：{d}   ·   玩家：{p}
+BRIEF_START,COMEÇAR,START,INICIAR,COMEÇAR,START,開始,开始
+NET_TITLE,JOGAR EM REDE,NETWORK PLAY,JUGAR EN RED,JOGAR EM REDE,NETZWERKSPIEL,ネットワークプレイ,联机游戏
+NET_HELP_1,Um jogador hospeda (o PC dele roda a partida); os outros entram pelo IP.,One player hosts (their PC runs the match); the others join by IP.,Un jugador crea la partida (su PC la ejecuta); los demás se unen por IP.,Um jogador aloja a partida (corre no PC dele); os outros entram pelo IP.,Ein Spieler hostet (das Spiel läuft auf seinem PC); die anderen treten per IP bei.,1人がホストになり（そのPCで試合を動かす）、他のプレイヤーはIPで参加する。,一名玩家创建对局（由他的电脑运行），其他人通过IP加入。
+NET_HELP_2,Rede local ou internet via rede virtual (ex.: Tailscale). Porta UDP {port}.,"Local network, or the internet through a virtual network (e.g. Tailscale). UDP port {port}.","Red local o internet mediante una red virtual (p. ej., Tailscale). Puerto UDP {port}.",Rede local ou internet através de uma rede virtual (ex.: Tailscale). Porta UDP {port}.,Lokales Netz oder Internet über ein virtuelles Netz (z. B. Tailscale). UDP-Port {port}.,ローカルネットワーク、または仮想ネットワーク経由のインターネット（例：Tailscale）。UDPポート {port}。,局域网，或通过虚拟网络（如Tailscale）连接互联网。UDP端口 {port}。
+NET_HOST,HOSPEDAR PARTIDA,HOST MATCH,CREAR PARTIDA,ALOJAR PARTIDA,SPIEL HOSTEN,ホストする,创建对局
+NET_IP_HINT,IP do host (ex.: 192.168.0.10),Host IP (e.g. 192.168.0.10),"IP del anfitrión (p. ej., 192.168.0.10)",IP do anfitrião (ex.: 192.168.0.10),IP des Hosts (z. B. 192.168.0.10),ホストのIP（例：192.168.0.10）,主机IP（例如：192.168.0.10）
+NET_JOIN,ENTRAR,JOIN,UNIRSE,ENTRAR,BEITRETEN,参加,加入
+NET_HOST_FAILED,Não foi possível hospedar (erro {err}). A porta {port} pode estar em uso.,Could not host (error {err}). Port {port} may be in use.,No se pudo crear la partida (error {err}). Puede que el puerto {port} esté en uso.,Não foi possível alojar a partida (erro {err}). A porta {port} pode estar em uso.,Hosten fehlgeschlagen (Fehler {err}). Port {port} ist evtl. belegt.,ホストできませんでした（エラー {err}）。ポート {port} は使用中かもしれません。,无法创建对局（错误 {err}）。端口 {port} 可能已被占用。
+NET_BAD_ADDRESS,Endereço inválido ou erro {err}.,Invalid address or error {err}.,Dirección no válida o error {err}.,Endereço inválido ou erro {err}.,Ungültige Adresse oder Fehler {err}.,無効なアドレス、またはエラー {err}。,地址无效或出现错误 {err}。
+LOBBY_TITLE_HOST,LOBBY — VOCÊ HOSPEDA,LOBBY — YOU ARE HOSTING,SALA — TÚ ERES EL ANFITRIÓN,LOBBY — ÉS O ANFITRIÃO,LOBBY — DU BIST HOST,ロビー — あなたがホスト,大厅 — 你是主机
+LOBBY_TITLE,LOBBY,LOBBY,SALA,LOBBY,LOBBY,ロビー,大厅
+LOBBY_NO_LAN,(sem rede local),(no local network),(sin red local),(sem rede local),(kein lokales Netz),（ローカルネットワークなし）,（无局域网）
+LOBBY_MY_IP,Seu IP: {ip}   ·   porta {port},Your IP: {ip}   ·   port {port},Tu IP: {ip}   ·   puerto {port},O teu IP: {ip}   ·   porta {port},Deine IP: {ip}   ·   Port {port},あなたのIP：{ip}   ·   ポート {port},你的IP：{ip}   ·   端口 {port}
+LOBBY_SLOT,P{p}  —  ,P{p}  —,P{p}  —,P{p}  —,P{p}  —,P{p}  —,P{p}  —
+LOBBY_HOST,host,host,anfitrión,anfitrião,Host,ホスト,主机
+LOBBY_PLAYER,jogador conectado,player connected,jugador conectado,jogador ligado,Spieler verbunden,接続中のプレイヤー,已连接玩家
+LOBBY_YOU,  (você),(you),(tú),(tu),(du),（あなた）,（你）
+LOBBY_FREE,vago,open,libre,livre,frei,空き,空位
+LOBBY_CONNECTING,Conectando…,Connecting…,Conectando…,A ligar…,Verbinde…,接続中…,正在连接…
+LOBBY_NEXT_MISSION,TROCAR MISSÃO,CHANGE MISSION,CAMBIAR MISIÓN,MUDAR MISSÃO,MISSION WECHSELN,ミッション変更,切换任务
+LOBBY_NEXT_DIFF,TROCAR DIFICULDADE,CHANGE DIFFICULTY,CAMBIAR DIFICULTAD,MUDAR DIFICULDADE,SCHWIERIGKEIT WECHSELN,難易度変更,切换难度
+LOBBY_START_ONE,COMEÇAR (1 jogador),START (1 player),INICIAR (1 jugador),COMEÇAR (1 jogador),START (1 Spieler),開始（1人）,开始（1名玩家）
+LOBBY_START_MANY,COMEÇAR ({n} jogadores),START ({n} players),INICIAR ({n} jugadores),COMEÇAR ({n} jogadores),START ({n} Spieler),開始（{n}人）,开始（{n}名玩家）
+LOBBY_WAIT_HOST,Aguardando o host começar a partida…,Waiting for the host to start the match…,Esperando a que el anfitrión inicie la partida…,À espera que o anfitrião comece a partida…,Warte auf den Start durch den Host…,ホストが試合を開始するのを待っています…,等待主机开始对局…
+LOBBY_LEAVE,SAIR DO LOBBY,LEAVE LOBBY,SALIR DE LA SALA,SAIR DO LOBBY,LOBBY VERLASSEN,ロビーを出る,离开大厅
+PAUSE_TITLE,PAUSA,PAUSED,PAUSA,PAUSA,PAUSE,ポーズ,暂停
+PAUSE_RESUME,CONTINUAR,RESUME,CONTINUAR,CONTINUAR,WEITER,再開,继续
+PAUSE_RESTART,REINICIAR MISSÃO,RESTART MISSION,REINICIAR MISIÓN,REINICIAR MISSÃO,MISSION NEU STARTEN,ミッションをやり直す,重新开始任务
+PAUSE_MAIN_MENU,MENU PRINCIPAL,MAIN MENU,MENÚ PRINCIPAL,MENU PRINCIPAL,HAUPTMENÜ,メインメニュー,主菜单
+NETPAUSE_TITLE,A PARTIDA CONTINUA (REDE),THE MATCH GOES ON (NETWORK),LA PARTIDA SIGUE (RED),A PARTIDA CONTINUA (REDE),DAS SPIEL LÄUFT WEITER (NETZWERK),試合は続行中（ネットワーク）,对局仍在进行（联机）
+NETPAUSE_BACK,VOLTAR AO JOGO,BACK TO GAME,VOLVER AL JUEGO,VOLTAR AO JOGO,ZURÜCK ZUM SPIEL,ゲームに戻る,返回游戏
+NETPAUSE_END,ENCERRAR E VOLTAR AO LOBBY,END AND RETURN TO LOBBY,TERMINAR Y VOLVER A LA SALA,TERMINAR E VOLTAR AO LOBBY,"BEENDEN, ZUR LOBBY",終了してロビーに戻る,结束并返回大厅
+NETPAUSE_LEAVE,SAIR DA PARTIDA,LEAVE MATCH,SALIR DE LA PARTIDA,SAIR DA PARTIDA,SPIEL VERLASSEN,試合から抜ける,退出对局
+RESULT_WIN,MISSÃO CUMPRIDA!,MISSION ACCOMPLISHED!,¡MISIÓN CUMPLIDA!,MISSÃO CUMPRIDA!,MISSION ERFÜLLT!,ミッション成功！,任务完成！
+RESULT_LOSE,MISSÃO FRACASSADA,MISSION FAILED,MISIÓN FALLIDA,MISSÃO FALHADA,MISSION GESCHEITERT,ミッション失敗,任务失败
+RESULT_TIME,Tempo: {time},Time: {time},Tiempo: {time},Tempo: {time},Zeit: {time},タイム：{time},用时：{time}
+RESULT_KILLS,Aracnídeos abatidos: {k}   ·   Matriarcas: {m},Arachnids killed: {k}   ·   Matriarchs: {m},Arácnidos abatidos: {k}   ·   Matriarcas: {m},Aracnídeos abatidos: {k}   ·   Matriarcas: {m},Arachniden getötet: {k}   ·   Matriarchinnen: {m},撃破したアラクニド：{k}   ·   マトリアーク：{m},击杀蛛形虫：{k}   ·   母巢虫：{m}
+RESULT_NESTS,Ninhos destruídos: {n}   ·   Flores arrancadas: {f},Nests destroyed: {n}   ·   Flowers uprooted: {f},Nidos destruidos: {n}   ·   Flores arrancadas: {f},Ninhos destruídos: {n}   ·   Flores arrancadas: {f},Nester zerstört: {n}   ·   Blumen ausgerissen: {f},破壊した巣：{n}   ·   引き抜いた花：{f},摧毁虫巢：{n}   ·   拔除花朵：{f}
+RESULT_LOSSES,Tropas perdidas: {t}   ·   Comandantes abatidos: {c},Troops lost: {t}   ·   Commanders down: {c},Tropas perdidas: {t}   ·   Comandantes caídos: {c},Tropas perdidas: {t}   ·   Comandantes abatidos: {c},Truppen verloren: {t}   ·   Kommandanten gefallen: {c},失った部隊：{t}   ·   倒れた指揮官：{c},损失兵力：{t}   ·   阵亡指挥官：{c}
+RESULT_MERIT_WIN,Mérito ganho: {m}   ·   Total: {total},Merit earned: {m}   ·   Total: {total},Mérito ganado: {m}   ·   Total: {total},Mérito ganho: {m}   ·   Total: {total},Verdienst erhalten: {m}   ·   Gesamt: {total},獲得功績：{m}   ·   合計：{total},获得功勋：{m}   ·   总计：{total}
+RESULT_MERIT_LOSE,Mérito ganho: {m} (metade)   ·   Total: {total},Merit earned: {m} (half)   ·   Total: {total},Mérito ganado: {m} (la mitad)   ·   Total: {total},Mérito ganho: {m} (metade)   ·   Total: {total},Verdienst erhalten: {m} (halbiert)   ·   Gesamt: {total},獲得功績：{m}（半分）   ·   合計：{total},获得功勋：{m}（减半）   ·   总计：{total}
+RESULT_NEXT,PRÓXIMA MISSÃO,NEXT MISSION,SIGUIENTE MISIÓN,PRÓXIMA MISSÃO,NÄCHSTE MISSION,次のミッション,下一个任务
+RESULT_CONTINUE,CONTINUAR ({c} méritos),CONTINUE ({c} merits),CONTINUAR ({c} méritos),CONTINUAR ({c} méritos),WEITER ({c} Verdienst),コンティニュー（功績{c}）,继续（{c}功勋）
+RESULT_RETRY,TENTAR DE NOVO,TRY AGAIN,REINTENTAR,TENTAR DE NOVO,NOCHMAL,リトライ,重试
+RESULT_NEXT_ALL,PRÓXIMA MISSÃO (TODOS),NEXT MISSION (ALL),SIGUIENTE MISIÓN (TODOS),PRÓXIMA MISSÃO (TODOS),NÄCHSTE MISSION (ALLE),次のミッション（全員）,下一个任务（全员）
+RESULT_RETRY_ALL,TENTAR DE NOVO (TODOS),TRY AGAIN (ALL),REINTENTAR (TODOS),TENTAR DE NOVO (TODOS),NOCHMAL (ALLE),リトライ（全員）,重试（全员）
+RESULT_BACK_LOBBY,VOLTAR AO LOBBY,BACK TO LOBBY,VOLVER A LA SALA,VOLTAR AO LOBBY,ZUR LOBBY,ロビーに戻る,返回大厅
+RESULT_WAIT_HOST,Aguardando o host escolher a próxima missão…,Waiting for the host to pick the next mission…,Esperando a que el anfitrión elija la siguiente misión…,À espera que o anfitrião escolha a próxima missão…,"Warte, bis der Host die nächste Mission wählt…",ホストが次のミッションを選ぶのを待っています…,等待主机选择下一个任务…
+TOAST_CONTINUE,REFORÇOS ORBITAIS — CONTINUE A MISSÃO!,ORBITAL REINFORCEMENTS — CONTINUE THE MISSION!,REFUERZOS ORBITALES — ¡CONTINÚA LA MISIÓN!,REFORÇOS ORBITAIS — CONTINUA A MISSÃO!,ORBITALE VERSTÄRKUNG — WEITER MIT DER MISSION!,軌道増援到着 — ミッションを続行せよ！,轨道增援抵达 — 继续任务！
+HUD_TROOPS,TROPAS,TROOPS,TROPAS,TROPAS,TRUPPEN,部隊,兵力
+HUD_RESPAWN,VOLTA EM {s}s,BACK IN {s}s,VUELVE EN {s}s,VOLTA EM {s}s,ZURÜCK IN {s}s,復帰まで{s}秒,{s}秒后复活
+HUD_NO_TROOPS,SEM TROPAS,NO TROOPS,SIN TROPAS,SEM TROPAS,KEINE TRUPPEN,部隊なし,兵力耗尽
+HUD_DISCONNECTED,DESCONECTADO,DISCONNECTED,DESCONECTADO,DESLIGADO,GETRENNT,切断,已断开
+HUD_NO_GRENADES,sem granadas,no grenades,sin granadas,sem granadas,keine Granaten,手榴弾なし,无手雷
+HUD_MERIT,MÉRITO,MERIT,MÉRITO,MÉRITO,VERDIENST,功績,功勋
+HUD_OBJECTIVE,OBJETIVO: {text},OBJECTIVE: {text},OBJETIVO: {text},OBJETIVO: {text},ZIEL: {text},目標：{text},目标：{text}
+WEAPON_MG,Metralhadora,Machine gun,Ametralladora,Metralhadora,Maschinengewehr,機関銃,机枪
+WEAPON_FLAME,Lança-chamas,Flamethrower,Lanzallamas,Lança-chamas,Flammenwerfer,火炎放射器,火焰喷射器
+WEAPON_PLASMA,Plasma,Plasma,Plasma,Plasma,Plasma,プラズマ,等离子
+WEAPON_RIFLE,Fuzil,Rifle,Fusil,Espingarda,Gewehr,ライフル,步枪
+WEAPON_CANNON,Canhão,Cannon,Cañón,Canhão,Kanone,キャノン,加农炮
+WEAPON_TURRET,Metralhadora fixa,Emplaced gun,Ametralladora fija,Metralhadora fixa,Geschützstellung,据え置き機銃,固定机枪
+DIFF_FACIL,Recruta,Recruit,Recluta,Recruta,Rekrut,新兵,新兵
+DIFF_NORMAL,Soldado,Soldier,Soldado,Soldado,Soldat,兵士,士兵
+DIFF_DIFICIL,Veterano,Veteran,Veterano,Veterano,Veteran,古参兵,老兵
+ORDER_NORMAL,Normal,Normal,Normal,Normal,Normal,通常,常规
+ORDER_ATACAR,Atacar,Attack,Atacar,Atacar,Angriff,攻撃,进攻
+ORDER_DEFENDER,Defender,Defend,Defender,Defender,Verteidigen,防御,防守
+ORDER_SEGUIR,Seguir,Follow,Seguir,Seguir,Folgen,追従,跟随
+GFX_LOW,BAIXO,LOW,BAJO,BAIXO,NIEDRIG,低,低
+GFX_MEDIUM,MÉDIO,MEDIUM,MEDIO,MÉDIO,MITTEL,中,中
+GFX_HIGH,ALTO,HIGH,ALTO,ALTO,HOCH,高,高
+NET_STATUS_HOSTING,Hospedando na porta {port},Hosting on port {port},Partida creada en el puerto {port},A alojar na porta {port},Hoste auf Port {port},ポート {port} でホスト中,正在端口 {port} 上主持对局
+NET_STATUS_CONNECTING,Conectando a {addr}:{port}…,Connecting to {addr}:{port}…,Conectando a {addr}:{port}…,A ligar a {addr}:{port}…,Verbinde mit {addr}:{port}…,{addr}:{port} に接続中…,正在连接 {addr}:{port}…
+NET_STATUS_CONNECTED,Conectado. Aguardando o host…,Connected. Waiting for the host…,Conectado. Esperando al anfitrión…,Ligado. À espera do anfitrião…,Verbunden. Warte auf den Host…,接続しました。ホストを待っています…,已连接。等待主机…
+NET_CANT_CONNECT,Não foi possível conectar.,Could not connect.,No se pudo conectar.,Não foi possível ligar.,Verbindung fehlgeschlagen.,接続できませんでした。,无法连接。
+NET_HOST_LOST,A conexão com o host foi perdida.,Connection to the host was lost.,Se perdió la conexión con el anfitrión.,Perdeu-se a ligação ao anfitrião.,Verbindung zum Host verloren.,ホストとの接続が切れました。,与主机的连接已断开。
+PICK_REINFORCE,REFORÇOS!,REINFORCEMENTS!,¡REFUERZOS!,REFORÇOS!,VERSTÄRKUNG!,増援！,增援！
+PICK_AIRSTRIKE,ATAQUE AÉREO!,AIRSTRIKE!,¡ATAQUE AÉREO!,ATAQUE AÉREO!,LUFTSCHLAG!,空爆！,空袭！
+PICK_ROBOT,APOIO BLINDADO!,ARMORED SUPPORT!,¡APOYO BLINDADO!,APOIO BLINDADO!,PANZERUNTERSTÜTZUNG!,装甲支援！,装甲支援！
+PICK_FLAME,LANÇA-CHAMAS,FLAMETHROWER,LANZALLAMAS,LANÇA-CHAMAS,FLAMMENWERFER,火炎放射器,火焰喷射器
+PICK_PLASMA,CANHÃO DE PLASMA,PLASMA CANNON,CAÑÓN DE PLASMA,CANHÃO DE PLASMA,PLASMAKANONE,プラズマ砲,等离子炮
+PICK_GRENADES,+3 GRANADAS,+3 GRENADES,+3 GRANADAS,+3 GRANADAS,+3 GRANATEN,手榴弾 +3,手雷 +3
+TOAST_ORDER,P{p} · ORDEM: {order},P{p} · ORDER: {order},P{p} · ORDEN: {order},P{p} · ORDEM: {order},P{p} · BEFEHL: {order},P{p} · 命令：{order},P{p} · 命令：{order}
+TOAST_HEART_DOWN,CORAÇÃO DA COLMEIA DESTRUÍDO! PEGUE O CRISTAL,HIVE HEART DESTROYED! GRAB THE CRYSTAL,¡CORAZÓN DE LA COLMENA DESTRUIDO! TOMA EL CRISTAL,CORAÇÃO DA COLMEIA DESTRUÍDO! APANHA O CRISTAL,HERZ DES STOCKS ZERSTÖRT! HOL DEN KRISTALL,ハイヴの心臓を破壊！クリスタルを確保せよ,蜂巢之心已摧毁！拿取水晶
+TOAST_NEST_DOWN,NINHO DESTRUÍDO,NEST DESTROYED,NIDO DESTRUIDO,NINHO DESTRUÍDO,NEST ZERSTÖRT,巣を破壊,虫巢已摧毁
+TOAST_ROBOT_DOWN,BLINDADO DESTRUÍDO,ARMOR DESTROYED,BLINDADO DESTRUIDO,BLINDADO DESTRUÍDO,PANZER ZERSTÖRT,装甲支援がやられた,装甲支援被摧毁
+TOAST_PLAYER_DOWN,P{p} ABATIDO — VOLTA EM 10 s,P{p} DOWN — BACK IN 10 s,P{p} CAÍDO — VUELVE EN 10 s,P{p} ABATIDO — VOLTA EM 10 s,P{p} GEFALLEN — ZURÜCK IN 10 s,P{p} ダウン — 10秒後に復帰,P{p} 倒下 — 10秒后复活
+TOAST_PLAYER_DOWN_NO_TROOPS,P{p} ABATIDO — SEM TROPAS!,P{p} DOWN — NO TROOPS!,P{p} CAÍDO — ¡SIN TROPAS!,P{p} ABATIDO — SEM TROPAS!,P{p} GEFALLEN — KEINE TRUPPEN!,P{p} ダウン — 部隊なし！,P{p} 倒下 — 兵力耗尽！
+TOAST_GATE_BROKEN,PORTÃO ROMPIDO!,GATE BREACHED!,¡PORTÓN DERRIBADO!,PORTÃO ROMPIDO!,TOR DURCHBROCHEN!,ゲートが破られた！,闸门被攻破！
+TOAST_WALL_BROKEN,MURO ROMPIDO!,WALL BREACHED!,¡MURO DERRIBADO!,MURO ROMPIDO!,MAUER DURCHBROCHEN!,壁が破られた！,城墙被攻破！
+TOAST_FLOWER_PULLED,FLOR ARRANCADA,FLOWER UPROOTED,FLOR ARRANCADA,FLOR ARRANCADA,BLUME AUSGERISSEN,花を引き抜いた,花已拔除
+TOAST_MOTHER_BORN,UM ARACNÍDEO TOCOU UMA FLOR — MATRIARCA!,AN ARACHNID TOUCHED A FLOWER — MATRIARCH!,UN ARÁCNIDO TOCÓ UNA FLOR — ¡MATRIARCA!,UM ARACNÍDEO TOCOU NUMA FLOR — MATRIARCA!,EIN ARACHNIDE HAT EINE BLUME BERÜHRT — MATRIARCHIN!,アラクニドが花に触れた — マトリアーク誕生！,蛛形虫碰到了花 — 母巢虫诞生！
+TOAST_PICKUP,P{p} · {item},P{p} · {item},P{p} · {item},P{p} · {item},P{p} · {item},P{p} · {item},P{p} · {item}
+TOAST_PLAYER_BACK,P{p} DE VOLTA AO CAMPO,P{p} BACK IN THE FIELD,P{p} DE VUELTA EN EL CAMPO,P{p} DE VOLTA AO TERRENO,P{p} WIEDER IM EINSATZ,P{p} 戦線復帰,P{p} 重返战场
+TOAST_AMBUSH,EMBOSCADA! O CHÃO ESTÁ TREMENDO,AMBUSH! THE GROUND IS SHAKING,¡EMBOSCADA! EL SUELO ESTÁ TEMBLANDO,EMBOSCADA! O CHÃO ESTÁ A TREMER,HINTERHALT! DER BODEN BEBT,待ち伏せ！地面が揺れている,伏击！地面在震动
+TOAST_HORDE,HORDA SE APROXIMANDO!,HORDE INCOMING!,¡SE ACERCA UNA HORDA!,HORDA A APROXIMAR-SE!,HORDE IM ANMARSCH!,大群が接近中！,虫潮逼近！
+TOAST_RELAY_ON,RELÉ RELIGADO,RELAY BACK ONLINE,RELÉ REACTIVADO,RELÉ RELIGADO,RELAIS WIEDER AKTIV,中継器を再起動,中继站已重启
+TOAST_CRYSTAL_TAKEN,P{p} PEGOU O CRISTAL — VÁ PARA A EXTRAÇÃO,P{p} HAS THE CRYSTAL — HEAD TO EXTRACTION,P{p} TOMÓ EL CRISTAL — VE A LA EXTRACCIÓN,P{p} APANHOU O CRISTAL — VAI PARA A EXTRAÇÃO,P{p} HAT DEN KRISTALL — AB ZUM EVAKUIERUNGSPUNKT,P{p}がクリスタルを確保 — 回収地点へ向かえ,P{p}拿到了水晶 — 前往撤离点
+TOAST_PLAYER_LEFT,P{p} SAIU DA PARTIDA,P{p} LEFT THE MATCH,P{p} SALIÓ DE LA PARTIDA,P{p} SAIU DA PARTIDA,P{p} HAT DAS SPIEL VERLASSEN,P{p}が試合から抜けました,P{p}已离开对局
+END_OBJECTIVE_DONE,Objetivo cumprido,Objective complete,Objetivo cumplido,Objetivo cumprido,Ziel erfüllt,目標達成,目标完成
+END_NO_TROOPS,Sem tropas e sem comandantes,No troops and no commanders left,Sin tropas y sin comandantes,Sem tropas e sem comandantes,Keine Truppen und keine Kommandanten,部隊も指揮官も尽きた,兵力耗尽，指挥官全部阵亡
+END_AREA_SECURE,Área segura — nenhum inimigo restante,Area secure — no enemies left,Área asegurada — no quedan enemigos,Área segura — nenhum inimigo restante,Gebiet gesichert — keine Feinde mehr,エリア確保 — 敵は残っていない,区域安全 — 已无残敌
+END_GENERATOR_LOST,O gerador foi destruído,The generator was destroyed,El generador fue destruido,O gerador foi destruído,Der Generator wurde zerstört,発電機が破壊された,发电机被摧毁
+OBJ_NESTS_AND_BUGS,Ninhos restantes: {left}/{total}  ·  Aracnídeos: {bugs},Nests left: {left}/{total}  ·  Arachnids: {bugs},Nidos restantes: {left}/{total}  ·  Arácnidos: {bugs},Ninhos restantes: {left}/{total}  ·  Aracnídeos: {bugs},Nester übrig: {left}/{total}  ·  Arachniden: {bugs},残りの巣：{left}/{total}  ·  アラクニド：{bugs},剩余虫巢：{left}/{total}  ·  蛛形虫：{bugs}
+OBJ_BUGS_LEFT,Elimine os aracnídeos restantes: {bugs},Eliminate the remaining arachnids: {bugs},Elimina los arácnidos restantes: {bugs},Elimina os aracnídeos restantes: {bugs},Vernichte die restlichen Arachniden: {bugs},残りのアラクニドを殲滅せよ：{bugs},消灭剩余的蛛形虫：{bugs}
+OBJ_NESTS_DESTROYED,Ninhos destruídos: {done}/{total},Nests destroyed: {done}/{total},Nidos destruidos: {done}/{total},Ninhos destruídos: {done}/{total},Nester zerstört: {done}/{total},破壊した巣：{done}/{total},已摧毁虫巢：{done}/{total}
+OBJ_RELAYS,Relés religados: {on}/{total}  —  fique parado sobre o relé,Relays back online: {on}/{total}  —  stand still on the relay,Relés reactivados: {on}/{total}  —  quédate quieto sobre el relé,Relés religados: {on}/{total}  —  fica parado em cima do relé,Relais aktiv: {on}/{total}  —  bleib still auf dem Relais stehen,再起動した中継器：{on}/{total}  —  中継器の上で静止せよ,已重启中继站：{on}/{total}  —  站在中继站上不要动
+OBJ_SURVIVE,Evacuação em {time}  ·  Gerador {gen}%,Evacuation in {time}  ·  Generator {gen}%,Evacuación en {time}  ·  Generador {gen}%,Evacuação em {time}  ·  Gerador {gen}%,Evakuierung in {time}  ·  Generator {gen}%,撤収まで{time}  ·  発電機 {gen}%,距撤离 {time}  ·  发电机 {gen}%
+OBJ_HOLD,Abates: {kills}/{goal}  ·  Gerador {gen}%,Kills: {kills}/{goal}  ·  Generator {gen}%,Bajas: {kills}/{goal}  ·  Generador {gen}%,Abates: {kills}/{goal}  ·  Gerador {gen}%,Abschüsse: {kills}/{goal}  ·  Generator {gen}%,撃破：{kills}/{goal}  ·  発電機 {gen}%,击杀：{kills}/{goal}  ·  发电机 {gen}%
+OBJ_HEART_HP,Destrua o Coração da Colmeia ({hp} PV),Destroy the Hive Heart ({hp} HP),Destruye el Corazón de la Colmena ({hp} PV),Destrói o Coração da Colmeia ({hp} PV),Zerstöre das Herz des Stocks ({hp} TP),ハイヴの心臓を破壊せよ（HP {hp}）,摧毁蜂巢之心（生命值 {hp}）
+OBJ_HEART,Destrua o Coração da Colmeia,Destroy the Hive Heart,Destruye el Corazón de la Colmena,Destrói o Coração da Colmeia,Zerstöre das Herz des Stocks,ハイヴの心臓を破壊せよ,摧毁蜂巢之心
+OBJ_TAKE_CRYSTAL,Pegue o Cristal Prisma,Grab the Prism Crystal,Toma el Cristal Prisma,Apanha o Cristal Prisma,Hol den Prisma-Kristall,プリズム・クリスタルを確保せよ,拿取棱镜水晶
+OBJ_CARRY_CRYSTAL,Leve o cristal até a EXTRAÇÃO,Carry the crystal to EXTRACTION,Lleva el cristal a la EXTRACCIÓN,Leva o cristal até à EXTRAÇÃO,Bring den Kristall zum EVAKUIERUNGSPUNKT,クリスタルを回収地点まで運べ,将水晶带到撤离点
+OVERLAY_RESPAWN,P{p}  {s}s,P{p}  {s}s,P{p}  {s}s,P{p}  {s}s,P{p}  {s}s,P{p}  {s}秒,P{p}  {s}秒
+M1_NAME,Queda Quente,Hot Drop,Descenso en Caliente,Queda Quente,Heiße Landung,強行降下,热区空降
+M1_BRIEF_1,"Comandante, seu módulo de pouso vai cair no meio de um combate.","Commander, your drop pod is coming down in the middle of a firefight.","Comandante, tu módulo de descenso va a caer en pleno combate.","Comandante, o teu módulo de aterragem vai cair no meio de um combate.","Kommandant, deine Landekapsel geht mitten in einem Gefecht nieder.",指揮官、君の降下ポッドは戦闘のど真ん中に落ちる。,指挥官，你的着陆舱将坠落在交战区中央。
+M1_BRIEF_2,Um pelotão já está segurando a linha nas Planícies de Varga.,A squad is already holding the line on the Varga Plains.,Un pelotón ya está sosteniendo la línea en las Llanuras de Varga.,Um pelotão já está a aguentar a linha nas Planícies de Varga.,Ein Trupp hält bereits die Linie in den Varga-Ebenen.,ヴァルガ平原では、すでに一個分隊が戦線を維持している。,一支小队已在瓦尔加平原坚守防线。
+M1_BRIEF_3,"Assuma o esquadrão, limpe a área e destrua os dois ninhos a leste.","Take command, clear the area and destroy the two nests to the east.","Toma el mando, limpia la zona y destruye los dos nidos al este.","Assume o esquadrão, limpa a área e destrói os dois ninhos a leste.","Übernimm den Trupp, säubere das Gebiet und zerstöre die zwei Nester im Osten.",分隊の指揮を執り、エリアを掃討し、東にある2つの巣を破壊せよ。,接管小队，清理区域，摧毁东边的两个虫巢。
+M1_BRIEF_4,"Enquanto os ninhos viverem, hordas vão chegar pelo leste e pelo norte.","As long as the nests stand, hordes will keep coming from the east and north.","Mientras los nidos sigan en pie, llegarán hordas por el este y el norte.","Enquanto os ninhos viverem, vão chegar hordas de leste e de norte.","Solange die Nester leben, kommen Horden aus Osten und Norden.",巣が残っている限り、大群が東と北から押し寄せる。,只要虫巢还在，虫潮就会从东面和北面涌来。
+M1_OBJ,Destrua os ninhos e elimine todos os aracnídeos,Destroy the nests and eliminate every arachnid,Destruye los nidos y elimina a todos los arácnidos,Destrói os ninhos e elimina todos os aracnídeos,Zerstöre die Nester und vernichte alle Arachniden,巣を破壊し、アラクニドを全滅させよ,摧毁虫巢并消灭所有蛛形虫
+M2_NAME,Sinal Perdido,Lost Signal,Señal Perdida,Sinal Perdido,Signal verloren,途絶えた信号,信号中断
+M2_BRIEF_1,Os relés de comunicação do Cânion Rubro pararam de responder.,The comm relays in Rubro Canyon have stopped responding.,Los relés de comunicación del Cañón Rubro dejaron de responder.,Os relés de comunicação do Desfiladeiro Rubro deixaram de responder.,Die Funkrelais im Rubro-Canyon antworten nicht mehr.,ルブロ渓谷の通信中継器が応答しなくなった。,鲁布罗峡谷的通讯中继站已失去响应。
+M2_BRIEF_2,"Sem eles, não há reforço orbital no setor.","Without them, there are no orbital reinforcements in this sector.","Sin ellos, no hay refuerzos orbitales en el sector.","Sem eles, não há reforços orbitais no setor.",Ohne sie gibt es keine orbitale Verstärkung im Sektor.,中継器がなければ、この区域に軌道増援は来ない。,没有它们，本区域就得不到轨道增援。
+M2_BRIEF_3,Chegue a cada relé e fique PARADO sobre ele até religar.,Reach each relay and stand STILL on it until it comes back online.,Llega a cada relé y quédate QUIETO sobre él hasta reactivarlo.,Chega a cada relé e fica PARADO em cima dele até religar.,"Geh zu jedem Relais und bleib STILL darauf stehen, bis es wieder läuft.",各中継器へ向かい、再起動するまでその上で「静止」せよ。,抵达每座中继站，站在上面“保持不动”，直到重启。
+M2_BRIEF_4,Três ninhos e hordas pelas bordas do cânion. Seja rápido.,"Three nests, and hordes along the canyon rims. Be quick.",Tres nidos y hordas por los bordes del cañón. Sé rápido.,Três ninhos e hordas pelas margens do desfiladeiro. Sê rápido.,Drei Nester und Horden von den Canyonrändern. Beeil dich.,巣が3つ、渓谷の縁からは大群。急げ。,三个虫巢，峡谷边缘还有虫潮。动作要快。
+M2_OBJ,Religue os 3 relés de comunicação,Bring the 3 comm relays back online,Reactiva los 3 relés de comunicación,Religa os 3 relés de comunicação,Reaktiviere die 3 Funkrelais,通信中継器3基を再起動せよ,重启3座通讯中继站
+M3_NAME,Posto Avançado Eco,Outpost Eco,Puesto Avanzado Eco,Posto Avançado Eco,Außenposten Eco,エコー前哨基地,回声前哨站
+M3_BRIEF_1,O Posto Eco guarda o gerador que mantém o escudo do vale ligado.,Outpost Eco guards the generator that keeps the valley shield running.,El Puesto Eco protege el generador que mantiene activo el escudo del valle.,O Posto Eco guarda o gerador que mantém ligado o escudo do vale.,"Posten Eco schützt den Generator, der den Schild des Tals am Laufen hält.",エコー基地は、谷のシールドを維持する発電機を守っている。,回声哨站守护着维持山谷护盾的发电机。
+M3_BRIEF_2,"Agora com dois anéis: sacos de areia por fora, muralha por dentro.","Now with two rings: sandbags outside, a wall inside.","Ahora con dos anillos: sacos de arena por fuera, muralla por dentro.","Agora com dois anéis: sacos de areia por fora, muralha por dentro.","Jetzt mit zwei Ringen: außen Sandsäcke, innen eine Mauer.",今回は防衛線が二重だ：外側に土嚢、内側に城壁。,现在有两道防线：外圈是沙袋，内圈是城墙。
+M3_BRIEF_3,Hordas vão chegar por todos os lados até a evacuação.,Hordes will come from every side until the evacuation.,Llegarán hordas por todos los lados hasta la evacuación.,Vão chegar hordas de todos os lados até à evacuação.,Bis zur Evakuierung kommen Horden von allen Seiten.,撤収まで、大群があらゆる方向から押し寄せる。,直到撤离前，虫潮会从四面八方涌来。
+M3_BRIEF_4,"Os portões só deixam humanos passar. Se o gerador cair, perdemos o setor.","The gates only let humans through. If the generator falls, we lose the sector.","Los portones solo dejan pasar a humanos. Si cae el generador, perdemos el sector.","Os portões só deixam passar humanos. Se o gerador cair, perdemos o setor.","Die Tore lassen nur Menschen durch. Fällt der Generator, verlieren wir den Sektor.",ゲートは人間しか通さない。発電機が落ちれば、この区域を失う。,闸门只放人类通过。发电机一旦失守，我们就会失去这个区域。
+M3_OBJ,Proteja o gerador até a evacuação,Protect the generator until the evacuation,Protege el generador hasta la evacuación,Protege o gerador até à evacuação,Schütze den Generator bis zur Evakuierung,撤収まで発電機を守り抜け,保护发电机直到撤离
+M4_NAME,Linha de Trincheiras,Trench Line,Línea de Trincheras,Linha de Trincheiras,Grabenlinie,塹壕線,堑壕防线
+M4_BRIEF_1,A colmeia do norte está empurrando um exército contra a Linha Vega.,The northern hive is pushing an army against the Vega Line.,La colmena del norte está lanzando un ejército contra la Línea Vega.,A colmeia do norte está a empurrar um exército contra a Linha Vega.,Der Stock im Norden treibt eine Armee gegen die Vega-Linie.,北のハイヴが、ヴェガ線に向けて大軍を押し出している。,北方的蜂巢正驱使一支大军压向维加防线。
+M4_BRIEF_2,Duas trincheiras com metralhadoras de ponto protegem o bunker do gerador.,Two trenches with emplaced guns protect the generator bunker.,Dos trincheras con ametralladoras fijas protegen el búnker del generador.,Duas trincheiras com metralhadoras fixas protegem o bunker do gerador.,Zwei Gräben mit Geschützstellungen schützen den Generatorbunker.,据え置き機銃を備えた2本の塹壕が、発電機のバンカーを守っている。,两道配备固定机枪的堑壕保护着发电机地堡。
+M4_BRIEF_3,Soldados em NORMAL ou DEFENDER assumem as metralhadoras livres sozinhos.,Soldiers on NORMAL or DEFEND man free guns on their own.,Los soldados en NORMAL o DEFENDER toman solos las ametralladoras libres.,Soldados em NORMAL ou DEFENDER ocupam sozinhos as metralhadoras livres.,Soldaten auf NORMAL oder VERTEIDIGEN besetzen freie Geschütze von selbst.,「通常」か「防御」の兵士は、空いた機銃に自分から就く。,处于“常规”或“防守”命令的士兵会自动操作空闲的机枪。
+M4_BRIEF_4,Você também pode operar uma: fique parado em cima dela.,You can man one too: stand still on top of it.,Tú también puedes operar una: quédate quieto encima de ella.,Também podes operar uma: fica parado em cima dela.,Du kannst auch eins bedienen: bleib still darauf stehen.,君も操作できる：機銃の上で静止せよ。,你也可以操作机枪：站在上面不要动。
+M4_BRIEF_5,Segure a linha até abater o exército inteiro.,Hold the line until the whole army is down.,Sostén la línea hasta abatir a todo el ejército.,Aguenta a linha até abateres o exército inteiro.,"Halte die Linie, bis die ganze Armee vernichtet ist.",敵軍を全滅させるまで戦線を維持せよ。,坚守防线，直到全歼敌军。
+M4_OBJ,Abata o exército inimigo e proteja o gerador,Wipe out the enemy army and protect the generator,Abate al ejército enemigo y protege el generador,Abate o exército inimigo e protege o gerador,Vernichte die feindliche Armee und schütze den Generator,敵軍を撃破し、発電機を守れ,歼灭敌军并保护发电机
+M5_NAME,Fortaleza Bastião,Bastião Fortress,Fortaleza Bastião,Fortaleza Bastião,Festung Bastião,バスティオン要塞,巴斯蒂昂要塞
+M5_BRIEF_1,"O Bastião é a última fortaleza do vale: muralha, pátio, muralha interna e a torre.","Bastião is the valley's last fortress: outer wall, courtyard, inner wall and the tower.","El Bastião es la última fortaleza del valle: muralla, patio, muralla interna y la torre.","O Bastião é a última fortaleza do vale: muralha, pátio, muralha interior e a torre.","Bastião ist die letzte Festung des Tals: Mauer, Hof, innere Mauer und der Turm.",バスティオンは谷の最後の要塞だ：外壁、中庭、内壁、そして塔。,巴斯蒂昂是山谷中最后的要塞：外墙、庭院、内墙和高塔。
+M5_BRIEF_2,Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.,An acid moat guards part of the walls; the hordes come from every side.,Un foso de ácido protege parte de las murallas; las hordas vienen de todos los lados.,Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.,Ein Säuregraben schützt Teile der Mauern; die Horden kommen von allen Seiten.,酸の堀が城壁の一部を守っている。大群はあらゆる方向から来る。,一道酸液护城河保护着部分城墙；虫潮会从四面八方袭来。
+M5_BRIEF_3,Os portões internos ficam desalinhados com os externos: o enxame tem de serpentear.,The inner gates are offset from the outer ones: the swarm has to snake through.,Los portones internos no están alineados con los externos: el enjambre tiene que serpentear.,Os portões interiores estão desalinhados com os exteriores: o enxame tem de serpentear.,Die inneren Tore liegen versetzt zu den äußeren: Der Schwarm muss sich durchschlängeln.,内側のゲートは外側とずれている：群れは蛇行するしかない。,内侧闸门与外侧闸门错开：虫群只能蜿蜒前进。
+M5_BRIEF_4,Guarnição nas metralhadoras de ponto. Recue camada por camada se for preciso.,Man the emplaced guns. Fall back layer by layer if you have to.,Guarnición en las ametralladoras fijas. Retrocede capa por capa si es necesario.,Guarnece as metralhadoras fixas. Recua camada a camada se for preciso.,Besetze die Geschützstellungen. Zieh dich notfalls Ring für Ring zurück.,据え置き機銃に兵を配置せよ。必要なら一層ずつ後退せよ。,派人驻守固定机枪。必要时逐层后撤。
+M5_BRIEF_5,Resista até a frota chegar.,Hold out until the fleet arrives.,Resiste hasta que llegue la flota.,Resiste até a frota chegar.,"Halte durch, bis die Flotte eintrifft.",艦隊の到着まで耐え抜け。,坚持到舰队抵达。
+M5_OBJ,Defenda a torre do gerador até a frota chegar,Defend the generator tower until the fleet arrives,Defiende la torre del generador hasta que llegue la flota,Defende a torre do gerador até a frota chegar,"Verteidige den Generatorturm, bis die Flotte eintrifft",艦隊の到着まで発電機の塔を守れ,守住发电机塔，直到舰队抵达
+M6_NAME,Coração da Colmeia,Hive Heart,Corazón de la Colmena,Coração da Colmeia,Herz des Stocks,ハイヴの心臓,蜂巢之心
+M6_BRIEF_1,A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma,Orbe-7 Station has been overrun. The plasma cannon's Prism Crystal,La Estación Orbe-7 fue tomada. El Cristal Prisma del cañón de plasma,A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma,Station Orbe-7 ist gefallen. Der Prisma-Kristall der Plasmakanone,オルベ7ステーションが陥落した。プラズマ砲のプリズム・クリスタルは,奥贝-7空间站已经失守。等离子炮的棱镜水晶
+M6_BRIEF_2,"está dentro do Coração da Colmeia, no fundo da instalação.","is inside the Hive Heart, deep in the facility.","está dentro del Corazón de la Colmena, en el fondo de la instalación.","está dentro do Coração da Colmeia, no fundo da instalação.","liegt im Herzen des Stocks, tief in der Anlage.",施設の最深部、ハイヴの心臓の中にある。,就在设施最深处的蜂巢之心里。
+M6_BRIEF_3,"Destrua o Coração, pegue o cristal e leve-o até a extração.","Destroy the Heart, grab the crystal and carry it to extraction.","Destruye el Corazón, toma el cristal y llévalo a la extracción.","Destrói o Coração, apanha o cristal e leva-o até à extração.","Zerstöre das Herz, hol den Kristall und bring ihn zum Evakuierungspunkt.",心臓を破壊し、クリスタルを確保して回収地点まで運べ。,摧毁蜂巢之心，拿到水晶并把它带到撤离点。
+M6_BRIEF_4,Carregando o cristal você fica mais lento. Proteja-se com o esquadrão.,Carrying the crystal slows you down. Stay covered by your squad.,Cargar el cristal te vuelve más lento. Protégete con tu pelotón.,Com o cristal ficas mais lento. Protege-te com o esquadrão.,Mit dem Kristall bist du langsamer. Lass dich vom Trupp decken.,クリスタルを運んでいる間は動きが遅くなる。分隊に守ってもらえ。,携带水晶时你会变慢。让小队掩护你。
+M6_OBJ,Destrua o Coração da Colmeia e recupere o cristal,Destroy the Hive Heart and recover the crystal,Destruye el Corazón de la Colmena y recupera el cristal,Destrói o Coração da Colmeia e recupera o cristal,Zerstöre das Herz des Stocks und birg den Kristall,ハイヴの心臓を破壊し、クリスタルを回収せよ,摧毁蜂巢之心并夺回水晶
+MANUAL_PAGE_1,"BEM-VINDO, COMANDANTE","WELCOME, COMMANDER","BIENVENIDO, COMANDANTE","BEM-VINDO, COMANDANTE","WILLKOMMEN, KOMMANDANT",ようこそ、指揮官,欢迎你，指挥官
+MANUAL_PAGE_2,CONTROLES,CONTROLS,CONTROLES,CONTROLOS,STEUERUNG,操作方法,操作
+MANUAL_PAGE_3,JOGANDO EM GRUPO,PLAYING TOGETHER,JUGAR EN GRUPO,JOGAR EM GRUPO,GEMEINSAM SPIELEN,みんなでプレイ,多人游戏
+MANUAL_PAGE_4,CONHEÇA O INIMIGO,KNOW YOUR ENEMY,CONOCE AL ENEMIGO,CONHECE O INIMIGO,KENNE DEINEN FEIND,敵を知れ,了解敌人
+MANUAL_PAGE_5,APOIO E DICAS,SUPPORT AND TIPS,APOYO Y CONSEJOS,APOIO E DICAS,UNTERSTÜTZUNG UND TIPPS,支援とヒント,支援与提示
+MANUAL_CLOSE,FECHAR,CLOSE,CERRAR,FECHAR,SCHLIESSEN,閉じる,关闭
+MANUAL_MANUAL_DE_CAMPO,MANUAL DE CAMPO,FIELD MANUAL,MANUAL DE CAMPO,MANUAL DE CAMPO,FELDHANDBUCH,野戦マニュアル,野战手册
+MANUAL_PULAR,PULAR,SKIP,SALTAR,SALTAR,ÜBERSPRINGEN,スキップ,跳过
+MANUAL_ANTERIOR,◀ ANTERIOR,◀ PREVIOUS,◀ ANTERIOR,◀ ANTERIOR,◀ ZURÜCK,◀ 前へ,◀ 上一页
+MANUAL_PROXIMO,PRÓXIMO ▶,NEXT ▶,SIGUIENTE ▶,SEGUINTE ▶,WEITER ▶,次へ ▶,下一页 ▶
+MANUAL_UM_PLANETA_DESERTICO_FOI,"Um planeta desértico foi tomado por um enxame de aracnídeos. Você comanda um pelotão: lute ao lado dos seus soldados, dê ordens e cumpra o objetivo de cada missão.","A desert planet has been overrun by a swarm of arachnids. You command a squad: fight alongside your soldiers, give orders and complete each mission's objective.","Un planeta desértico fue tomado por un enjambre de arácnidos. Comandas un pelotón: lucha junto a tus soldados, da órdenes y cumple el objetivo de cada misión.","Um planeta desértico foi tomado por um enxame de aracnídeos. Comandas um pelotão: luta ao lado dos teus soldados, dá ordens e cumpre o objetivo de cada missão.","Ein Wüstenplanet wurde von einem Schwarm Arachniden überrannt. Du führst einen Trupp: Kämpfe an der Seite deiner Soldaten, gib Befehle und erfülle das Ziel jeder Mission.",砂漠の惑星がアラクニドの群れに占拠された。君は分隊を指揮する：兵士と共に戦い、命令を出し、各ミッションの目標を達成せよ。,一颗沙漠星球被蛛形虫的虫群占领了。你指挥一支小队：与士兵并肩作战，下达命令，完成每个任务的目标。
+MANUAL_TROPAS_VIDAS,TROPAS = VIDAS,TROOPS = LIVES,TROPAS = VIDAS,TROPAS = VIDAS,TRUPPEN = LEBEN,部隊＝残機,兵力＝生命
+MANUAL_CADA_SOLDADO_OU_COMANDANTE,Cada soldado ou comandante que cai custa 1 tropa. O contador fica no canto de cima da tela.,Every soldier or commander who falls costs 1 troop. The counter is at the top of the screen.,Cada soldado o comandante que cae cuesta 1 tropa. El contador está en la parte superior de la pantalla.,Cada soldado ou comandante que cai custa 1 tropa. O contador fica no canto superior do ecrã.,Jeder gefallene Soldat oder Kommandant kostet 1 Truppe. Der Zähler steht oben am Bildschirmrand.,兵士か指揮官が倒れるたびに部隊が1減る。残数は画面上部の隅に表示される。,每有一名士兵或指挥官倒下，就消耗1点兵力。计数显示在屏幕上方的角落。
+MANUAL_O_COMANDANTE_VOLTA,O COMANDANTE VOLTA,THE COMMANDER COMES BACK,EL COMANDANTE REGRESA,O COMANDANTE VOLTA,DER KOMMANDANT KEHRT ZURÜCK,指揮官は復帰する,指挥官会复活
+MANUAL_SE_VOCE_CAIR_RENASCE,"Se você cair, renasce em 10 s na zona de pouso, enquanto houver tropas.","If you fall, you respawn in 10 s at the landing zone, as long as there are troops left.","Si caes, reapareces en 10 s en la zona de aterrizaje, mientras queden tropas.","Se caíres, renasces em 10 s na zona de aterragem, enquanto houver tropas.","Fällst du, kehrst du nach 10 s in der Landezone zurück, solange es noch Truppen gibt.",倒れても、部隊が残っていれば10秒後に降下地点で復活する。,如果你倒下，只要还有兵力，就会在10秒后于着陆区复活。
+MANUAL_DERROTA,DERROTA,DEFEAT,DERROTA,DERROTA,NIEDERLAGE,敗北,失败
+MANUAL_SEM_TROPAS_E_SEM,"Sem tropas e sem comandante vivo, ou se o objetivo falhar (por exemplo, o gerador destruído).","No troops and no commander alive, or the objective fails (for example, the generator is destroyed).","Sin tropas y sin comandante vivo, o si el objetivo falla (por ejemplo, si destruyen el generador).","Sem tropas e sem comandante vivo, ou se o objetivo falhar (por exemplo, o gerador destruído).","Keine Truppen und kein lebender Kommandant mehr, oder das Ziel scheitert (z. B. Generator zerstört).",部隊が尽きて生き残った指揮官もいない場合、または目標に失敗した場合（例：発電機の破壊）。,兵力耗尽且没有存活的指挥官，或目标失败（例如发电机被摧毁）。
+MANUAL_OBJETIVO,OBJETIVO,OBJECTIVE,OBJETIVO,OBJETIVO,ZIEL,目標,目标
+MANUAL_APARECE_NO_RODAPE_DESTRUIR,"Aparece no rodapé: destruir ninhos, religar relés, defender o gerador até a evacuação…","Shown in the footer: destroy nests, bring relays back online, defend the generator until evacuation…","Aparece en la parte inferior: destruir nidos, reactivar relés, defender el generador hasta la evacuación…","Aparece no rodapé: destruir ninhos, religar relés, defender o gerador até à evacuação…","Steht in der Fußzeile: Nester zerstören, Relais reaktivieren, den Generator bis zur Evakuierung verteidigen…",画面下部に表示される：巣の破壊、中継器の再起動、撤収までの発電機防衛…,显示在屏幕底部：摧毁虫巢、重启中继站、保护发电机直到撤离…
+MANUAL_USE_AS_SETAS_OU,Use as setas ou o direcional para virar as páginas.,Use the arrow keys or the D-pad to turn the pages.,Usa las flechas o la cruceta para pasar las páginas.,Usa as setas ou a cruzeta para mudar de página.,Blättere mit den Pfeiltasten oder dem Steuerkreuz.,矢印キーか十字キーでページをめくる。,使用方向键或十字键翻页。
+MANUAL_TECLADO,TECLADO,KEYBOARD,TECLADO,TECLADO,TASTATUR,キーボード,键盘
+MANUAL_MOVER_EM_8_DIRECOES,mover em 8 direções,move in 8 directions,moverse en 8 direcciones,mover em 8 direções,in 8 Richtungen bewegen,8方向に移動,8方向移动
+MANUAL_ESPACO,ESPAÇO,SPACE,ESPACIO,ESPAÇO,LEERTASTE,スペース,空格
+MANUAL_ATIRAR_PARA_ONDE_ESTA,atirar para onde está virado,shoot where you're facing,disparar hacia donde miras,disparar para onde estás virado,in Blickrichtung schießen,向いている方向に射撃,朝面对的方向射击
+MANUAL_TRAVAR_A_MIRA_RECUAR,travar a mira (recuar atirando),lock aim (fall back while firing),fijar la mira (retroceder disparando),fixar a mira (recuar a disparar),Ziel fixieren (schießend zurückweichen),照準を固定（撃ちながら後退）,锁定瞄准（边射击边后退）
+MANUAL_GRANADA_COMECA_COM_3,"granada (começa com 3, até 9)","grenade (start with 3, up to 9)","granada (empiezas con 3, hasta 9)","granada (começas com 3, até 9)","Granate (Start mit 3, max. 9)",手榴弾（初期3個、最大9個）,手雷（初始3枚，最多9枚）
+MANUAL_TROCAR_A_ORDEM_DO,trocar a ordem do pelotão,change squad order,cambiar la orden del pelotón,mudar a ordem do pelotão,Trupp-Befehl wechseln,分隊の命令を切り替え,切换小队命令
+MANUAL_ORDEM_DIRETA,ordem direta,direct order,orden directa,ordem direta,Direktbefehl,命令を直接選択,直接选择命令
+MANUAL_CONTROLE,CONTROLE,CONTROLLER,CONTROL,COMANDO,CONTROLLER,コントローラー,手柄
+MANUAL_ANALOGICO,ANALÓGICO,STICK,ANALÓGICO,ANALÓGICO,ANALOGSTICK,アナログスティック,摇杆
+MANUAL_TRAVAR_A_MIRA,travar a mira,lock aim,fijar la mira,fixar a mira,Ziel fixieren,照準を固定,锁定瞄准
+MANUAL_TROCAR_A_ORDEM,trocar a ordem,change order,cambiar la orden,mudar a ordem,Befehl wechseln,命令を切り替え,切换命令
+MANUAL_ORDENS_DO_PELOTAO_Q,ORDENS DO PELOTÃO  (Q / LB troca · 1-4 escolhe direto),SQUAD ORDERS  (Q / LB cycles · 1-4 picks directly),ÓRDENES DEL PELOTÓN  (Q / LB cambia · 1-4 elige directo),ORDENS DO PELOTÃO  (Q / LB muda · 1-4 escolhe diretamente),TRUPP-BEFEHLE  (Q / LB wechselt · 1-4 wählt direkt),分隊への命令  （Q / LB で切替 · 1-4 で直接選択）,小队命令  （Q / LB 切换 · 1-4 直接选择）
+MANUAL_NORMAL,NORMAL,NORMAL,NORMAL,NORMAL,NORMAL,通常,常规
+MANUAL_PATRULHAM_POR_PERTO_E,patrulham por perto e atiram no mais próximo,patrol nearby and shoot the closest target,patrullan cerca y disparan al más cercano,patrulham por perto e disparam contra o mais próximo,patrouillieren in der Nähe und schießen auf den nächsten Feind,近くを巡回し、最も近い敵を撃つ,在附近巡逻，射击最近的敌人
+MANUAL_ATACAR,ATACAR,ATTACK,ATACAR,ATACAR,ANGRIFF,攻撃,进攻
+MANUAL_AVANCAM_ATE_OS_INSETOS,avançam até os insetos e os ninhos,advance on the bugs and the nests,avanzan hacia los insectos y los nidos,avançam até aos insetos e aos ninhos,rücken zu den Insekten und Nestern vor,虫と巣に向かって前進する,向虫子和虫巢推进
+MANUAL_DEFENDER,DEFENDER,DEFEND,DEFENDER,DEFENDER,VERTEIDIGEN,防御,防守
+MANUAL_SEGURAM_O_PONTO_ONDE,seguram o ponto onde receberam a ordem,hold the spot where they got the order,sostienen el punto donde recibieron la orden,aguentam a posição onde receberam a ordem,"halten die Stelle, an der sie den Befehl bekamen",命令を受けた地点を守る,坚守接到命令时的位置
+MANUAL_SEGUIR,SEGUIR,FOLLOW,SEGUIR,SEGUIR,FOLGEN,追従,跟随
+MANUAL_ANDAM_EM_FORMACAO_EM,andam em formação em volta de você,move in formation around you,avanzan en formación a tu alrededor,andam em formação à tua volta,bewegen sich in Formation um dich herum,君の周りで隊形を組んで移動する,在你周围列队行进
+MANUAL_ATE_4_JOGADORES_NO,ATÉ 4 JOGADORES NO MESMO PC,UP TO 4 PLAYERS ON ONE PC,HASTA 4 JUGADORES EN LA MISMA PC,ATÉ 4 JOGADORES NO MESMO PC,BIS ZU 4 SPIELER AN EINEM PC,1台のPCで最大4人,同一台电脑最多4人
+MANUAL_ESCOLHA_JOGADORES_NESTE_PC,Escolha JOGADORES NESTE PC no menu. Cada jogador tem uma cor e o próprio pelotão; as tropas são compartilhadas.,Choose PLAYERS ON THIS PC in the menu. Each player has a color and their own squad; troops are shared.,Elige JUGADORES EN ESTA PC en el menú. Cada jugador tiene un color y su propio pelotón; las tropas son compartidas.,Escolhe JOGADORES NESTE PC no menu. Cada jogador tem uma cor e o seu próprio pelotão; as tropas são partilhadas.,Wähle im Menü SPIELER AN DIESEM PC. Jeder Spieler hat eine Farbe und einen eigenen Trupp; die Truppen werden geteilt.,メニューで「このPCのプレイヤー」を選ぶ。各プレイヤーは固有の色と自分の分隊を持ち、部隊は共有される。,在菜单中选择“本机玩家”。每名玩家有自己的颜色和小队；兵力共享。
+MANUAL_TECLADO_WASD_OU_CONTROLE,"Teclado WASD — e um controle, se sobrar","WASD keyboard — plus a controller, if there's one spare","Teclado WASD — y un control, si sobra","Teclado WASD — e um comando, se sobrar","Tastatur WASD — plus ein Controller, falls übrig",キーボード WASD — 余ればコントローラーも,WASD 键盘 — 有多余手柄也可用
+MANUAL_SETAS_NUM0_ATIRA_NUM1,"Setas · Num0 atira · Num1 ordem · Num2 granada (e um controle, se sobrar)","Arrows · Num0 shoots · Num1 order · Num2 grenade (plus a controller, if there's one spare)","Flechas · Num0 dispara · Num1 orden · Num2 granada (y un control, si sobra)","Setas · Num0 dispara · Num1 ordem · Num2 granada (e um comando, se sobrar)","Pfeiltasten · Num0 schießt · Num1 Befehl · Num2 Granate (plus ein Controller, falls übrig)",矢印キー · Num0 射撃 · Num1 命令 · Num2 手榴弾（余ればコントローラーも）,方向键 · Num0 射击 · Num1 命令 · Num2 手雷（有多余手柄也可用）
+MANUAL_CONTROLE_1_COM_3,Um controle,A controller,Un control,Um comando,Ein Controller,コントローラー1台,一个手柄
+MANUAL_CONTROLE_2,Um controle,A controller,Un control,Um comando,Ein Controller,コントローラー1台,一个手柄
+MANUAL_COM_1_JOGADOR_QUALQUER,"Sozinho no PC (ou em rede), você usa teclado OU qualquer controle. Com mais gente, os controles vão para P3 e P4 e os que sobram para P1 e P2; se faltar controle, o P1 pega o primeiro. O briefing mostra quem ficou com o quê.","Alone on the PC (or on a network), you use the keyboard OR any controller. With more people, controllers go to P3 and P4 and any spares to P1 and P2; if there aren't enough, P1 gets the first one. The briefing shows who got what.","Solo en la PC (o en red), usas el teclado O cualquier control. Con más gente, los controles van a P3 y P4 y los que sobran a P1 y P2; si faltan controles, el P1 toma el primero. El briefing muestra quién usa qué.","Sozinho no PC (ou em rede), usas o teclado OU qualquer comando. Com mais gente, os comandos vão para P3 e P4 e os que sobram para P1 e P2; se faltarem comandos, o P1 fica com o primeiro. O briefing mostra quem ficou com o quê.","Allein am PC (oder im Netzwerk) nutzt du Tastatur ODER einen beliebigen Controller. Mit mehr Spielern gehen die Controller an P3 und P4, übrige an P1 und P2; fehlen Controller, bekommt P1 den ersten. Das Briefing zeigt, wer was hat.",PCで1人なら（またはネットワークプレイなら）、キーボードかどのコントローラーでも使える。人数が増えると、コントローラーはP3とP4に、余りはP1とP2に割り当てられる。足りない場合はP1が最初の1台を使う。誰が何を使うかはブリーフィングに表示される。,单人使用电脑（或联机）时，可以用键盘或任意手柄。人数更多时，手柄先分配给P3和P4，剩下的给P1和P2；手柄不够时，P1使用第一个。简报会显示每人分到的设备。
+MANUAL_JOGAR_EM_REDE,JOGAR EM REDE,NETWORK PLAY,JUGAR EN RED,JOGAR EM REDE,NETZWERKSPIEL,ネットワークプレイ,联机游戏
+MANUAL_ATE_4_PCS_NA,"Até 4 PCs na mesma rede: um jogador HOSPEDA (o PC dele roda a partida) e os outros ENTRAM pelo IP mostrado no lobby. Pela internet, use uma rede virtual como o Tailscale.","Up to 4 PCs on the same network: one player HOSTS (their PC runs the match) and the others JOIN using the IP shown in the lobby. Over the internet, use a virtual network such as Tailscale.","Hasta 4 PC en la misma red: un jugador CREA la partida (su PC la ejecuta) y los demás se UNEN con la IP que aparece en la sala. Por internet, usa una red virtual como Tailscale.","Até 4 PCs na mesma rede: um jogador ALOJA (a partida corre no PC dele) e os outros ENTRAM pelo IP mostrado no lobby. Pela internet, usa uma rede virtual como o Tailscale.","Bis zu 4 PCs im selben Netz: Ein Spieler HOSTET (das Spiel läuft auf seinem PC), die anderen TRETEN über die IP aus der Lobby BEI. Übers Internet nutze ein virtuelles Netz wie Tailscale.",同じネットワーク上の最大4台のPCで遊べる：1人が「ホスト」となり（そのPCで試合を動かす）、他のプレイヤーはロビーに表示されたIPで「参加」する。インターネット越しなら、Tailscaleなどの仮想ネットワークを使う。,同一网络中最多4台电脑：一名玩家“创建”对局（由他的电脑运行），其他人通过大厅中显示的IP“加入”。通过互联网游玩时，请使用Tailscale等虚拟网络。
+MANUAL_ARACNIDEO,ARACNÍDEO,ARACHNID,ARÁCNIDO,ARACNÍDEO,ARACHNIDE,アラクニド,蛛形虫
+MANUAL_CORRE_EM_BANDO_CERCA,"Corre em bando, cerca pelos lados e morde de perto. Perto de você, dá um bote.","Runs in packs, flanks from the sides and bites up close. Near you, it lunges.","Corre en manada, rodea por los lados y muerde de cerca. Cerca de ti, se abalanza.","Corre em bando, cerca pelos lados e morde de perto. Perto de ti, dá um salto.","Rennt im Rudel, kreist von den Seiten ein und beißt aus nächster Nähe. Ist er dir nah, springt er dich an.",群れで走り、側面から囲んで至近距離で噛みつく。近づくと飛びかかってくる。,成群奔袭，从侧面包抄，近身撕咬。靠近你时会猛扑。
+MANUAL_ATAQUE_MORDIDA_E_BOTE,ATAQUE: mordida e bote · rói muros,ATTACK: bite and lunge · gnaws walls,ATAQUE: mordida y embestida · roe muros,ATAQUE: mordida e salto · rói muros,ANGRIFF: Biss und Sprung · nagt an Mauern,攻撃：噛みつき・飛びかかり · 壁をかじる,攻击：撕咬与猛扑 · 啃咬城墙
+MANUAL_CUSPIDOR,CUSPIDOR,SPITTER,ESCUPIDOR,CUSPIDOR,SPUCKER,スピッター,喷吐虫
+MANUAL_ESVERDEADO_FICA_LONGE_E,Esverdeado. Fica longe e cospe ácido. Muros e portões bloqueiam o cuspe.,Greenish. Keeps its distance and spits acid. Walls and gates block the spit.,Verdoso. Se mantiene lejos y escupe ácido. Los muros y portones bloquean el escupitajo.,Esverdeado. Fica longe e cospe ácido. Muros e portões bloqueiam o cuspo.,Grünlich. Bleibt auf Abstand und spuckt Säure. Mauern und Tore halten die Spucke auf.,緑がかった体。距離を取って酸を吐く。壁とゲートで防げる。,体色泛绿。保持距离喷吐酸液。城墙和闸门能挡住酸液。
+MANUAL_ATAQUE_CUSPE_DE_ACIDO,ATAQUE: cuspe de ácido à distância,ATTACK: ranged acid spit,ATAQUE: escupitajo de ácido a distancia,ATAQUE: cuspo de ácido à distância,ANGRIFF: Säurespucke auf Distanz,攻撃：遠距離からの酸吐き,攻击：远程喷吐酸液
+MANUAL_MATRIARCA,MATRIARCA,MATRIARCH,MATRIARCA,MATRIARCA,MATRIARCHIN,マトリアーク,母巢虫
+MANUAL_NASCE_QUANDO_UM_ARACNIDEO,Nasce quando um aracnídeo toca uma flor aberta. Fica atrás da ninhada e investe em quem chega perto.,Born when an arachnid touches an open flower. Stays behind the brood and charges anyone who gets close.,Nace cuando un arácnido toca una flor abierta. Se queda detrás de la camada y embiste a quien se acerca.,Nasce quando um aracnídeo toca numa flor aberta. Fica atrás da ninhada e investe contra quem se aproxima.,"Entsteht, wenn ein Arachnide eine offene Blume berührt. Bleibt hinter ihrer Brut und stürmt auf jeden los, der ihr zu nahe kommt.",アラクニドが開いた花に触れると誕生する。幼体の後ろに控え、近づく者に突進する。,蛛形虫碰到盛开的花时诞生。躲在幼虫后方，向靠近的人发起冲锋。
+MANUAL_ATAQUE_ACIDO_EM_ARCO,ATAQUE: ácido em arco (saia do anel verde!) · investida · filhotes,ATTACK: arcing acid (get out of the green ring!) · charge · hatchlings,ATAQUE: ácido en arco (¡sal del anillo verde!) · embestida · crías,ATAQUE: ácido em arco (sai do anel verde!) · investida · crias,ANGRIFF: Säure im Bogen (raus aus dem grünen Ring!) · Ansturm · Brut,攻撃：弧を描く酸（緑の輪から出ろ！）· 突進 · 幼体,攻击：弧形酸液（离开绿圈！）· 冲锋 · 幼虫
+MANUAL_FILHOTE,FILHOTE,HATCHLING,CRÍA,CRIA,BRUT,幼体,幼虫
+MANUAL_PEQUENO_E_RAPIDO_MORRE,Pequeno e rápido; morre com um tiro. Sai da matriarca quando ela é ferida ou morre.,Small and fast; dies in one shot. Bursts out of the matriarch when she is wounded or dies.,Pequeña y rápida; muere de un disparo. Sale de la matriarca cuando está herida o muere.,Pequena e rápida; morre com um tiro. Sai da matriarca quando ela é ferida ou morre.,"Klein und schnell; stirbt mit einem Schuss. Schlüpft aus der Matriarchin, wenn sie verletzt wird oder stirbt.",小さく素早いが、一発で倒れる。マトリアークが傷つくか死ぬと出てくる。,体型小、速度快，一枪就死。母巢虫受伤或死亡时会钻出来。
+MANUAL_ATAQUE_MORDIDA,ATAQUE: mordida,ATTACK: bite,ATAQUE: mordida,ATAQUE: mordida,ANGRIFF: Biss,攻撃：噛みつき,攻击：撕咬
+MANUAL_NINHO,NINHO,NEST,NIDO,NINHO,NEST,巣,虫巢
+MANUAL_GERA_ARACNIDEOS_SEM_PARAR,"Gera aracnídeos sem parar, cada vez mais rápido. Destrua para cortar o fluxo.","Spawns arachnids nonstop, faster and faster. Destroy it to cut off the flow.","Genera arácnidos sin parar, cada vez más rápido. Destrúyelo para cortar el flujo.","Gera aracnídeos sem parar, cada vez mais depressa. Destrói-o para cortar o fluxo.","Erzeugt pausenlos Arachniden, immer schneller. Zerstöre es, um den Nachschub zu stoppen.",アラクニドを絶え間なく、しだいに速く生み出す。破壊して流れを断て。,不断孵化蛛形虫，而且越来越快。摧毁它来切断源头。
+MANUAL_NAO_ATACA_PRIORIDADE_NAS,NÃO ATACA · prioridade nas missões de limpeza,DOESN'T ATTACK · priority in clearing missions,NO ATACA · prioridad en las misiones de limpieza,NÃO ATACA · prioridade nas missões de limpeza,GREIFT NICHT AN · Priorität bei Säuberungsmissionen,攻撃しない · 掃討ミッションの優先目標,不会攻击 · 清剿任务的优先目标
+MANUAL_FLOR,FLOR,FLOWER,FLOR,FLOR,BLUME,花,花
+MANUAL_ABRE_DEPOIS_DE_ALGUNS,Abre depois de alguns segundos. Pise nela para arrancar antes que um aracnídeo a toque.,Opens after a few seconds. Step on it to uproot it before an arachnid touches it.,Se abre después de unos segundos. Písala para arrancarla antes de que un arácnido la toque.,Abre ao fim de alguns segundos. Pisa-a para a arrancar antes que um aracnídeo lhe toque.,"Öffnet sich nach ein paar Sekunden. Tritt darauf, um sie auszureißen, bevor ein Arachnide sie berührt.",数秒後に開く。アラクニドが触れる前に踏んで引き抜け。,几秒后绽放。在蛛形虫碰到之前踩上去把它拔掉。
+MANUAL_PERIGO_ARACNIDEO_FLOR_ABERTA,PERIGO: aracnídeo + flor aberta = matriarca,DANGER: arachnid + open flower = matriarch,PELIGRO: arácnido + flor abierta = matriarca,PERIGO: aracnídeo + flor aberta = matriarca,GEFAHR: Arachnide + offene Blume = Matriarchin,危険：アラクニド＋開いた花＝マトリアーク,危险：蛛形虫＋盛开的花＝母巢虫
+MANUAL_REFORCOS,REFORÇOS,REINFORCEMENTS,REFUERZOS,REFORÇOS,VERSTÄRKUNG,増援,增援
+MANUAL_BUGGIES_ATROPELAM_INSETOS_E,buggies atropelam insetos e trazem +6 tropas,buggies run over bugs and bring +6 troops,los buggies atropellan insectos y traen +6 tropas,buggies atropelam insetos e trazem +6 tropas,Buggys überfahren Insekten und bringen +6 Truppen,バギーが虫を轢き、部隊+6を運んでくる,越野车碾压虫子，并带来+6兵力
+MANUAL_ATAQUE_AEREO,ATAQUE AÉREO,AIRSTRIKE,ATAQUE AÉREO,ATAQUE AÉREO,LUFTSCHLAG,空爆,空袭
+MANUAL_NAVE_SOLTA_SOLDADOS_E,nave solta soldados e bombardeia o enxame,a dropship drops soldiers and bombs the swarm,una nave suelta soldados y bombardea el enjambre,nave larga soldados e bombardeia o enxame,Schiff setzt Soldaten ab und bombardiert den Schwarm,輸送機が兵士を降ろし、群れを爆撃する,飞船投放士兵并轰炸虫群
+MANUAL_APOIO_BLINDADO,APOIO BLINDADO,ARMORED SUPPORT,APOYO BLINDADO,APOIO BLINDADO,PANZERUNTERSTÜTZUNG,装甲支援,装甲支援
+MANUAL_UM_ROBO_ALIADO_COM,um robô aliado com canhão luta ao seu lado,an allied cannon robot fights at your side,un robot aliado con cañón lucha a tu lado,um robô aliado com canhão luta ao teu lado,ein verbündeter Roboter mit Kanone kämpft an deiner Seite,砲を備えた味方ロボットが共に戦う,一台装备火炮的友军机器人与你并肩作战
+MANUAL_LANCA_CHAMAS,LANÇA-CHAMAS,FLAMETHROWER,LANZALLAMAS,LANÇA-CHAMAS,FLAMMENWERFER,火炎放射器,火焰喷射器
+MANUAL_CONE_CURTO_QUE_ATRAVESSA,cone curto que atravessa vários insetos,short cone that burns through several bugs,cono corto que atraviesa varios insectos,cone curto que atravessa vários insetos,"kurzer Kegel, der mehrere Insekten durchdringt",複数の虫を貫く、短い円錐状の炎,短程锥形火焰，可穿透多只虫子
+MANUAL_CANHAO_DE_PLASMA,CANHÃO DE PLASMA,PLASMA CANNON,CAÑÓN DE PLASMA,CANHÃO DE PLASMA,PLASMAKANONE,プラズマ砲,等离子炮
+MANUAL_TIROS_PERFURANTES_QUE_EXPLODEM,tiros perfurantes que explodem,piercing shots that explode,disparos perforantes que explotan,tiros perfurantes que explodem,"durchschlagende Schüsse, die explodieren",貫通して爆発する弾,穿透并爆炸的弹丸
+MANUAL_3_GRANADAS,+3 GRANADAS,+3 GRENADES,+3 GRANADAS,+3 GRANADAS,+3 GRANATEN,手榴弾 +3,手雷 +3
+MANUAL_ATE_9_NO_TOTAL,até 9 no total,up to 9 total,hasta 9 en total,até 9 no total,bis zu 9 insgesamt,最大9個まで,最多9枚
+MANUAL_SO_O_COMANDANTE_PEGA,Só o comandante pega os itens que aparecem no chão.,Only the commander picks up items that show up on the ground.,Solo el comandante recoge los objetos que aparecen en el suelo.,Só o comandante apanha os itens que aparecem no chão.,Nur der Kommandant sammelt Gegenstände vom Boden auf.,地面に現れたアイテムを拾えるのは指揮官だけ。,只有指挥官能拾取地上出现的道具。
+MANUAL_DICAS_DE_CAMPO,DICAS DE CAMPO,FIELD TIPS,CONSEJOS DE CAMPO,DICAS DE CAMPO,FELDTIPPS,戦場のヒント,战场提示
+MANUAL_METRALHADORA_DE_PONTO,METRALHADORA DE PONTO,EMPLACED GUN,AMETRALLADORA FIJA,METRALHADORA FIXA,GESCHÜTZSTELLUNG,据え置き機銃,固定机枪
+MANUAL_PARE_AO_LADO_DE,Pare ao lado de uma para operar; soldados em NORMAL ou DEFENDER assumem as livres sozinhos.,Stop next to one to man it; soldiers on NORMAL or DEFEND man free ones on their own.,Detente junto a una para operarla; los soldados en NORMAL o DEFENDER toman solos las libres.,Para ao lado de uma para a operar; soldados em NORMAL ou DEFENDER ocupam sozinhos as livres.,"Bleib daneben stehen, um sie zu bedienen; Soldaten auf NORMAL oder VERTEIDIGEN besetzen freie von selbst.",横で止まれば操作できる。「通常」か「防御」の兵士は空いた機銃に自分から就く。,停在机枪旁即可操作；处于“常规”或“防守”的士兵会自动操作空闲的机枪。
+MANUAL_MUROS_E_PORTOES,MUROS E PORTÕES,WALLS AND GATES,MUROS Y PORTONES,MUROS E PORTÕES,MAUERN UND TORE,壁とゲート,城墙与闸门
+MANUAL_SEGURAM_O_ENXAME_MAS,"Seguram o enxame, mas os insetos roem. Recue camada por camada.","They hold back the swarm, but the bugs gnaw through. Fall back layer by layer.","Contienen al enjambre, pero los insectos los roen. Retrocede capa por capa.","Travam o enxame, mas os insetos roem-nos. Recua camada a camada.","Halten den Schwarm auf, doch die Insekten nagen daran. Zieh dich Ring für Ring zurück.",群れを食い止めるが、虫にかじられる。一層ずつ後退せよ。,能挡住虫群，但虫子会啃咬。逐层后撤。
+MANUAL_ANEL_VERMELHO_NA_BORDA,ANEL VERMELHO NA BORDA,RED RING AT THE EDGE,ANILLO ROJO EN EL BORDE,ANEL VERMELHO NA BORDA,ROTER RING AM RAND,画面端の赤い輪,边缘的红圈
+MANUAL_HORDA_CHEGANDO_POR_ALI,Horda chegando por ali. Anel laranja perto de você: emboscada saindo do chão.,A horde is coming from there. Orange ring near you: an ambush bursting out of the ground.,Una horda llega por ahí. Anillo naranja cerca de ti: emboscada saliendo del suelo.,Horda a chegar por ali. Anel laranja perto de ti: emboscada a sair do chão.,Dort kommt eine Horde. Oranger Ring bei dir: Hinterhalt aus dem Boden.,そこから大群が来る。近くにオレンジの輪：地面から待ち伏せが出てくる。,虫潮将从那里来袭。你附近出现橙圈：伏击将从地下冒出。
+MANUAL_REVER_ESTE_MANUAL,REVER ESTE MANUAL,REVIEW THIS MANUAL,VOLVER A VER ESTE MANUAL,REVER ESTE MANUAL,HANDBUCH NOCHMAL LESEN,このマニュアルを見直す,重温本手册
+MANUAL_ELE_FICA_NO_MENU,"Ele fica no menu principal, em MANUAL DE CAMPO.","It's in the main menu, under FIELD MANUAL.","Está en el menú principal, en MANUAL DE CAMPO.","Está no menu principal, em MANUAL DE CAMPO.",Es ist im Hauptmenü unter FELDHANDBUCH.,メインメニューの「野戦マニュアル」から開ける。,可在主菜单的“野战手册”中找到。
+MANUAL_,▸ ,▸,▸,▸,▸,▸,▸
+MANUAL_PAUSA,pausa,pause,pausa,pausa,Pause,ポーズ,暂停
+MANUAL_ATIRAR,atirar,shoot,disparar,disparar,schießen,射撃,射击
+MANUAL_GRANADA,granada,grenade,granada,granada,Granate,手榴弾,手雷
+MANUAL_MOVER,mover,move,moverse,mover,bewegen,移動,移动
+NET_VERSION_MISMATCH,O host está com outra versão do jogo ({host}; a sua é {mine}). Usem o mesmo build nos dois PCs.,The host is running a different version of the game ({host}; yours is {mine}). Use the same build on both PCs.,El anfitrión tiene otra versión del juego ({host}; la tuya es {mine}). Usen la misma build en ambas PC.,O anfitrião tem outra versão do jogo ({host}; a tua é {mine}). Usem a mesma build nos dois PCs.,Der Host hat eine andere Spielversion ({host}; deine ist {mine}). Nutzt auf beiden PCs denselben Build.,ホストのゲームのバージョンが違います（ホスト：{host}、あなた：{mine}）。両方のPCで同じビルドを使ってください。,主机的游戏版本不同（主机：{host}；你的：{mine}）。请在两台电脑上使用相同的版本。
 MENU_LANGUAGE,IDIOMA: {name},LANGUAGE: {name},IDIOMA: {name},IDIOMA: {name},SPRACHE: {name},言語：{name},语言：{name}
-INPUT_KEYBOARD,teclado,,,,,,
-INPUT_WASD,teclado WASD,,,,,,
-INPUT_ARROWS,teclado (setas),,,,,,
-INPUT_PAD,controle {n},,,,,,
-INPUT_ANY_PAD,qualquer controle,,,,,,
-INPUT_NONE,SEM APARELHO — conecte mais um controle,,,,,,
-BRIEF_DEVICES,P{p}: {devices},,,,,,
+INPUT_KEYBOARD,teclado,keyboard,teclado,teclado,Tastatur,キーボード,键盘
+INPUT_WASD,teclado WASD,WASD keyboard,teclado WASD,teclado WASD,Tastatur WASD,キーボード（WASD）,键盘（WASD）
+INPUT_ARROWS,teclado (setas),keyboard (arrows),teclado (flechas),teclado (setas),Tastatur (Pfeile),キーボード（矢印キー）,键盘（方向键）
+INPUT_PAD,controle {n},controller {n},control {n},comando {n},Controller {n},コントローラー{n},手柄 {n}
+INPUT_ANY_PAD,qualquer controle,any controller,cualquier control,qualquer comando,beliebiger Controller,任意のコントローラー,任意手柄
+INPUT_NONE,SEM APARELHO — conecte mais um controle,NO DEVICE — connect another controller,SIN DISPOSITIVO — conecta otro control,SEM DISPOSITIVO — liga mais um comando,KEIN GERÄT — schließ noch einen Controller an,デバイスなし — コントローラーをもう1台接続してください,无设备 — 请再连接一个手柄
+BRIEF_DEVICES,P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}：{devices},P{p}：{devices}

@@ -37,6 +37,7 @@ func run(m: Node) -> void:
 	_test_effects_keep_sim()
 	_test_i18n_keys()
 	_test_input_assignments()
+	_test_stuck_bug()
 	if main.args.has("probe"):
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
@@ -467,6 +468,33 @@ func _sim_hash(w: World) -> String:
 	return "%d|%d|%d|%d|%.2f|%.2f" % [w.frame, w.troops, w.stats.kills, w.bugs.size(), acc, w.commanders[0].position.x]
 
 
+## Inseto que nasce dentro de uma rocha (ou é empurrado para dentro) sai ou se desfaz; não trava a missão.
+func _test_stuck_bug() -> void:
+	var w := _new_world(_idx("m1"), 1, "normal", 5)
+	var rock := -1
+	for i in w.grid.kind.size():
+		var cx := i % w.grid.cols
+		var cy := i / w.grid.cols
+		if w.grid.kind[i] == Grid.ROCK and cx > 1 and cy > 1 and cx < w.grid.cols - 2 and cy < w.grid.rows - 2:
+			var all_rock := true
+			for o in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+				if w.grid.kind[w.grid.idx(cx + o.x, cy + o.y)] != Grid.ROCK:
+					all_rock = false
+			rock = i
+			if all_rock:
+				break
+	check(rock >= 0, "preso: mapa sem rocha")
+	var b := w.spawn_bug("bug", w.grid.center_i(rock), 0.0)
+	var kills_before: int = w.stats.kills
+	for f in 60 * 5:
+		w.update(1.0 / 60.0)
+		if b.dead or not w.grid.overlaps_blocked(b.position, b.r, Grid.MODE_BUG):
+			break
+	check(b.dead or not w.grid.overlaps_blocked(b.position, b.r, Grid.MODE_BUG), "preso: inseto continuou dentro da rocha")
+	check(w.stats.kills == kills_before, "preso: autodestruição não conta abate")
+	w.queue_free()
+
+
 ## Quem usa qual aparelho: o jogador principal sempre pode usar controle quando há um sobrando.
 func _test_input_assignments() -> void:
 	var I := InputSetup
@@ -522,8 +550,29 @@ func _test_i18n_keys() -> void:
 	check(missing.is_empty(), "i18n: chaves sem texto: %s" % str(missing))
 	check(L.t("TOAST_ORDER", {p = 2, order = "@ORDER_ATACAR"}) == "P2 · ORDEM: Atacar", "i18n: parâmetros e chave aninhada")
 	check(L.tp(JSON.parse_string(JSON.stringify(["HUD_RESPAWN", {s = 7}]))) == "VOLTA EM 7s", "i18n: número que passou pela rede")
+	# cada idioma: mesmos {valores} que o pt-BR em todas as frases
+	var ph := RegEx.create_from_string("[{]([a-z_]+)[}]")
+	var bad: Array = []
+	var pt_obj := TranslationServer.get_translation_object("pt_BR")
+	for code in Game.LANGUAGES:
+		var tro := TranslationServer.get_translation_object(code)
+		for key in keys:
+			var pt := String(pt_obj.get_message(key)) if pt_obj != null else ""
+			var tx := String(tro.get_message(key)) if tro != null else ""
+			if tx == "" or pt == "":
+				continue
+			var a1: Array = []
+			var a2: Array = []
+			for m in ph.search_all(pt):
+				a1.append(m.get_string(1))
+			for m in ph.search_all(tx):
+				a2.append(m.get_string(1))
+			a1.sort()
+			a2.sort()
+			if a1 != a2:
+				bad.append("%s/%s" % [code, key])
+	check(bad.is_empty(), "i18n: {valores} diferentes do pt-BR: %s" % str(bad))
 	TranslationServer.set_locale("en_US")
-	check(L.t("MENU_PLAY") == "JOGAR", "i18n: frase sem tradução deveria cair no pt-BR")
 	check(L.t("MENU_LANGUAGE", {name = "English"}) == "LANGUAGE: English", "i18n: troca de idioma")
 	check(Game.system_language() in Game.LANGUAGES, "i18n: idioma do sistema fora da lista")
 	TranslationServer.set_locale(prev)

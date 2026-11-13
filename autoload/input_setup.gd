@@ -103,9 +103,10 @@ func _pad(s: int, device: int) -> void:
 	_add("s%d_left" % s, [_joy_axis(JOY_AXIS_LEFT_X, -1.0, device), _joy_btn(JOY_BUTTON_DPAD_LEFT, device)], 0.35)
 	_add("s%d_right" % s, [_joy_axis(JOY_AXIS_LEFT_X, 1.0, device), _joy_btn(JOY_BUTTON_DPAD_RIGHT, device)], 0.35)
 	_add("s%d_fire" % s, [_joy_btn(JOY_BUTTON_A, device), _joy_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0, device)], 0.5)
-	_add("s%d_order" % s, [_joy_btn(JOY_BUTTON_X, device), _joy_btn(JOY_BUTTON_Y, device)])
-	_add("s%d_grenade" % s, [_joy_btn(JOY_BUTTON_B, device), _joy_axis(JOY_AXIS_TRIGGER_LEFT, 1.0, device)], 0.5)
-	_add("s%d_strafe" % s, [_joy_btn(JOY_BUTTON_LEFT_SHOULDER, device), _joy_btn(JOY_BUTTON_RIGHT_SHOULDER, device)])
+	# LB troca a ordem (atacar/seguir…), RB joga granada, LT trava a mira; X/Y e B continuam como atalho
+	_add("s%d_order" % s, [_joy_btn(JOY_BUTTON_LEFT_SHOULDER, device), _joy_btn(JOY_BUTTON_X, device), _joy_btn(JOY_BUTTON_Y, device)])
+	_add("s%d_grenade" % s, [_joy_btn(JOY_BUTTON_RIGHT_SHOULDER, device), _joy_btn(JOY_BUTTON_B, device)])
+	_add("s%d_strafe" % s, [_joy_axis(JOY_AXIS_TRIGGER_LEFT, 1.0, device)], 0.5)
 
 
 ## Esquemas de cada jogador do PC, para `players` jogadores e `n_pads` controles conectados.

@@ -213,8 +213,8 @@ primeiro. O briefing mostra quem ficou com o quê.
 |---|---|---|---|---|---|
 | P1 | W A S D | Espaço / J | Q / K | E / L | Shift esq. |
 | P2 | Setas | Numpad 0 | Numpad 1 | Numpad 2 | Numpad 3 |
-| P3 | Controle 1 | A / RT | X | B / LT | LB/RB |
-| P4 | Controle 2 | A / RT | X | B / LT | LB/RB |
+| P3 | Controle 1 | A / RT | LB (ou X) | RB (ou B) | LT |
+| P4 | Controle 2 | A / RT | LB (ou X) | RB (ou B) | LT |
 
 Com 1 jogador, o controle 1 também comanda o P1. Teclas 1–4 escolhem a ordem direto. Esc/Start pausa.
 

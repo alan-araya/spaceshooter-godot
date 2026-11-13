@@ -53,6 +53,9 @@ var _near = null # humano percebido (recalculado a cada 3 quadros)
 var _spd := 0.0
 var _dodge := Vector2.ZERO
 var _dodge_t := 0.0
+var _inside_t := 0.0 # tempo dentro de rocha/muro
+var _idle_t := 0.0 # tempo caçando sem sair do lugar
+var _idle_from := Vector2.ZERO
 
 
 func setup(w: World, type: String, x: Vector2, emerge_time: float) -> void:
@@ -129,6 +132,9 @@ func tick(dt: float) -> void:
 	else:
 		dir = _bug_intent(dt)
 	_move(dir, _spd, dt)
+	_check_stuck(dt)
+	if dead:
+		return
 	if kind == "bug":
 		_touch_flower()
 	if dead:
@@ -301,6 +307,32 @@ func _mother_intent() -> Vector2:
 		_spd = speed * 0.5
 		return nd.orthogonal() * signf(flank)
 	return _flow_dir(false)
+
+
+## Inseto preso: nasceu ou foi empurrado para dentro de rocha/muro (o movimento normal não o tira de lá,
+## e o tiro não chega), ou ficou caçando parado sem conseguir sair do lugar. Primeiro tenta escorregar
+## para a casa livre mais próxima; se não der, se autodestrói (sem mérito).
+func _check_stuck(dt: float) -> void:
+	var g := world.grid
+	if g.overlaps_blocked(position, r, Grid.MODE_BUG):
+		_inside_t += dt
+		var c := g.nearest_walkable(g.cell_of(position), Grid.MODE_BUG)
+		position = position.move_toward(g.center(c.x, c.y), 90.0 * dt)
+		if _inside_t > Bal.BUG.stuck_free:
+			world.self_destruct(self)
+		return
+	_inside_t = 0.0
+	if state != State.HUNT or bite_cd > 0.0 or attacking > 0.0 or kind == "mother":
+		_idle_t = 0.0
+		_idle_from = position
+		return
+	if position.distance_squared_to(_idle_from) > 12.0 * 12.0:
+		_idle_t = 0.0
+		_idle_from = position
+		return
+	_idle_t += dt
+	if _idle_t > Bal.BUG.idle_destroy and (_near == null or not Unit.ok(_near) or _near.position.distance_to(position) > 120.0):
+		world.self_destruct(self)
 
 
 func _move(dir: Vector2, spd: float, dt: float) -> void:

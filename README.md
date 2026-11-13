@@ -43,7 +43,7 @@ Sai com código 1 se algo falhar.
 |---|---|---|---|---|---|
 | P1 | WASD | Espaço / J | Q / K | E / L | Shift |
 | P2 | Setas | / ou Num0 | . ou Num1 | , ou Num2 | Ctrl ou Num3 |
-| P3, P4 | Controle 1, 2 | A / RT | X | B / LT | LB / RB |
+| P3, P4 | Controle 1, 2 | A / RT | LB (ou X) | RB (ou B) | LT |
 
 Com 1 jogador, qualquer teclado ou controle comanda o P1. Teclas 1–4: ordem direta. Esc/Start: pausa.
 

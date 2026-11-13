@@ -11,7 +11,12 @@ chinês.
   **Fontes**: no Windows o japonês e o chinês já aparecem, porque o Godot usa as fontes do sistema quando a dele
   não tem o caractere. Embutir a Noto Sans JP/SC fica para antes de um lançamento em Linux/Steam Deck, onde
   essas fontes podem faltar.
-- Etapas 3 e 4 pendentes (dependem das decisões da seção 4).
+- Etapa 3 feita (2026-11-13): as 276 frases traduzidas para en_US, es (latino-americano), pt_PT, de, ja e
+  zh_CN (simplificado), seguindo `i18n/GLOSSARY.md`; nome do jogo mantido. Rascunho feito por IA: **ja, zh_CN e de
+  ficam como tradução preliminar até revisão nativa**. Para juntar um rascunho novo:
+  `python -I -X utf8 tools/merge_translations.py` (recusa idioma com frase faltando ou `{valor}` diferente).
+- Etapa 4 feita em parte: teste confere os `{valores}` dos 7 idiomas; screenshots do menu, briefing, manual e HUD
+  em todos os idiomas sem texto cortado. Falta revisão nativa e conferir as telas de rede e de resultado.
 
 ## 1. Situação atual
 
@@ -84,7 +89,7 @@ TOAST_WALL_BROKEN,MURO ROMPIDO!,WALL BREACHED!,¡MURO ROTO!,MURO ROMPIDO!,MAUER 
 **Glossário** (decidir uma vez, antes da etapa 3): Enxame, aracnídeo, matriarca, ninho, flor, tropas,
 comandante, pelotão, ordens (Normal/Atacar/Defender/Seguir), relé, gerador, mérito, Recruta/Soldado/Veterano.
 
-## 4. Decisões que são suas
+## 4. Decisões (respondidas em 2026-11-13: espanhol latino, chinês simplificado, nome mantido)
 
 1. **Espanhol**: neutro latino-americano ou da Espanha? (Sugestão: neutro latino-americano, que serve
    melhor a maioria dos jogadores.)

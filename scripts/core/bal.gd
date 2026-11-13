@@ -67,6 +67,8 @@ const BUG := {
 	flank = 0.55, # força do desvio lateral (cerco em vez de fila indiana)
 	lunge_dist = 52.0, lunge_boost = 1.55, lunge_time = 0.35, lunge_cd = 1.6,
 	sense = 112.0, # distância em que o inseto vê um humano e parte direto para ele
+	stuck_free = 3.0, # s dentro de rocha/muro tentando sair antes de se autodestruir
+	idle_destroy = 14.0, # s caçando sem sair do lugar (e longe de humanos) antes de se autodestruir
 	dodge_chance = 0.5, # fração "esperta" que foge do ponto de queda de granadas (× agressividade)
 }
 
