@@ -18,6 +18,8 @@ signal events_received(events: Array)
 const DEFAULT_PORT := 24565
 const MAX_PLAYERS := 4
 const SNAPSHOT_EVERY := 2 # quadros de física entre snapshots (60/2 = 30 Hz)
+## Sobe quando o formato de comandos, snapshots ou eventos muda.
+const PROTOCOL := 3
 
 enum Mode { OFFLINE, HOST, CLIENT }
 
@@ -30,9 +32,15 @@ var lobby_difficulty := "normal"
 var remote_inputs := {} # pid -> CmdInput mais recente (host)
 var _applied := {} # pid -> último CmdInput aplicado (host)
 var stats := { snapshots_out = 0, snapshots_in = 0, bytes_out = 0, inputs_in = 0 }
+## Versão para a conferência na entrada: protocolo + impressão digital dos mapas e dados das missões.
+## O cliente monta o mundo com o próprio missions.gd; se o do host for outro, muros e unidades não batem
+## (ex.: muros sumindo). Host e cliente precisam do mesmo valor.
+var version := ""
+var _pending := {} # peer_id conectado que ainda não mandou a versão (host)
 
 
 func _ready() -> void:
+	version = "%d-%x" % [PROTOCOL, hash(var_to_str(Missions.LIST))]
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected)
@@ -111,6 +119,7 @@ func leave() -> void:
 	roster = {}
 	my_pid = 0
 	in_game = false
+	_pending = {}
 	_reset_inputs()
 
 
@@ -131,6 +140,25 @@ func _on_peer_connected(id: int) -> void:
 	if in_game or roster.size() >= MAX_PLAYERS:
 		multiplayer.multiplayer_peer.disconnect_peer(id)
 		return
+	_pending[id] = true # entra no lobby só depois de conferir a versão (_rpc_version)
+
+
+## Cliente → host, logo ao conectar.
+@rpc("any_peer", "call_remote", "reliable")
+func _rpc_version(v: String) -> void:
+	if not is_host():
+		return
+	var id := multiplayer.get_remote_sender_id()
+	if not _pending.has(id):
+		return
+	_pending.erase(id)
+	if v != version:
+		_rpc_rejected.rpc_id(id, version)
+		get_tree().create_timer(0.5).timeout.connect(_drop_peer.bind(id)) # dá tempo da recusa chegar
+		return
+	if in_game or roster.size() >= MAX_PLAYERS:
+		multiplayer.multiplayer_peer.disconnect_peer(id)
+		return
 	var used := roster.values()
 	var pid := 1
 	while used.has(pid):
@@ -139,7 +167,21 @@ func _on_peer_connected(id: int) -> void:
 	_broadcast_lobby()
 
 
+func _drop_peer(id: int) -> void:
+	var peer := multiplayer.multiplayer_peer
+	if is_host() and peer != null and id in multiplayer.get_peers():
+		peer.disconnect_peer(id)
+
+
+## Host → cliente com versão diferente.
+@rpc("authority", "call_remote", "reliable")
+func _rpc_rejected(host_version: String) -> void:
+	leave()
+	host_left.emit(L.t("NET_VERSION_MISMATCH", {mine = version, host = host_version}))
+
+
 func _on_peer_disconnected(id: int) -> void:
+	_pending.erase(id)
 	if not is_host() or not roster.has(id):
 		return
 	var pid: int = roster[id]
@@ -154,6 +196,7 @@ func _on_peer_disconnected(id: int) -> void:
 
 func _on_connected() -> void:
 	status_changed.emit(L.t("NET_STATUS_CONNECTED"))
+	_rpc_version.rpc_id(1, version)
 
 
 func _on_connection_failed() -> void:

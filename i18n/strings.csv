@@ -266,3 +266,4 @@ MANUAL_PAUSA,pausa
 MANUAL_ATIRAR,atirar
 MANUAL_GRANADA,granada
 MANUAL_MOVER,mover
+NET_VERSION_MISMATCH,O host está com outra versão do jogo ({host}; a sua é {mine}). Usem o mesmo build nos dois PCs.

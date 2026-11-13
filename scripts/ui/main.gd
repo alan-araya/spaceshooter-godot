@@ -16,6 +16,7 @@ extends Node
 ##   --loopback   jogo local desenhado por um mundo-réplica alimentado por snapshots (fase 0)
 ##   --net-host [--net-start-when=N]   hospeda e começa sozinho quando houver N jogadores
 ##   --net-join=IP [--net-bot]   entra; --net-bot manda comandos sintéticos (andar em círculo e atirar)
+##   --net-port=N   porta UDP (testes com outro jogo aberto na máquina) · --net-version=X finge outra versão
 ##   --net-log   imprime estatísticas de rede a cada 2 s · --quit-after=SEG
 
 enum Screen { MENU, SELECT, BRIEFING, PLAYING, PAUSED, RESULT, NET_MENU, LOBBY }
@@ -79,6 +80,8 @@ func _ready() -> void:
 		add_child(tests)
 		tests.run.call_deferred(self)
 		return
+	if args.has("net-version"): # depuração: finge outra versão para testar a recusa
+		Net.version = args["net-version"]
 	if args.has("net-host"):
 		_host()
 		return
@@ -356,7 +359,7 @@ func show_net_menu(message: String = "") -> void:
 
 
 func _host() -> void:
-	var err := Net.host_game()
+	var err := Net.host_game(int(args.get("net-port", Net.DEFAULT_PORT)))
 	if err != OK:
 		show_net_menu(L.t("NET_HOST_FAILED", {err = err, port = Net.DEFAULT_PORT}))
 		return
@@ -368,7 +371,7 @@ func _join(address: String) -> void:
 	if address == "":
 		return
 	_last_ip = address
-	var err := Net.join_game(address)
+	var err := Net.join_game(address, int(args.get("net-port", Net.DEFAULT_PORT)))
 	if err != OK:
 		show_net_menu(L.t("NET_BAD_ADDRESS", {err = err}))
 		return

@@ -304,6 +304,10 @@ recebem estado. Transporte ENet/UDP pela API de multiplayer do Godot (`autoload/
 | Réplica | `scripts/net/replica.gd` | o cliente monta a mesma missão com a mesma semente (mesmos `uid` iniciais), desenha ~100 ms no passado interpolando entre 2 snapshots e dispara os eventos no quadro certo |
 | Lobby | `scripts/ui/main.gd` | hospedar/entrar por IP, slots P1–P4, host escolhe missão e dificuldade; resultado e "próxima missão" decididos pelo host |
 
+**Versão**: ao conectar, o cliente manda `Net.version` (protocolo + impressão digital de `Missions.LIST`); o host
+recusa versões diferentes com uma mensagem, porque o cliente monta o mapa com o próprio `missions.gd` (com mapas
+diferentes, muros e unidades não batem). `-- --net-port=N` e `-- --net-version=X` servem para testar.
+
 Regras: a simulação nunca chama `Sfx`, `Fx`, decalques ou o HUD direto — usa `world.sfx()`, `world.fx.*`,
 `world.decal_layer.*`, `world.toast()` e `world.shake()`, que gravam o evento. Jogador que cai sai de campo sem
 custar tropa; o pelotão dele passa para o P1. Em rede a partida não pausa.
