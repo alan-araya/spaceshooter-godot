@@ -47,6 +47,7 @@ var hazards: Array = [] # Dictionary: p, r, t, tick (poças de ácido da matriar
 var mothers: Array = [] # matriarcas vivas (reconstruída a cada quadro)
 var horde_timer := 0.0
 var horde_count := 0
+var horde_toast_at := -99.0
 var clear_timer := 0.0
 var generator: Prop = null
 var crystal = null # Dictionary: p, carried, carrier
@@ -1431,7 +1432,8 @@ func _update_hordes(dt: float) -> void:
 	if horde_timer > 0.0:
 		return
 	var growth: float = 1.0 + (time / 60.0) * float(hz.get("growth", Bal.HORDES.growth_per_min))
-	horde_timer = maxf(Bal.HORDES.min_interval, hz.interval / (diff.spawn * growth)) * rng.randf_range(0.85, 1.15)
+	var min_iv: float = hz.get("min_interval", Bal.HORDES.min_interval)
+	horde_timer = maxf(min_iv, hz.interval / (diff.spawn * growth)) * rng.randf_range(0.85, 1.15)
 	var n := roundi(rng.randi_range(hz.size_min, hz.size_max) * sqrt(growth))
 	var p := _edge_spawn_point(hz.edges)
 	if p == Vector2.INF:
@@ -1439,7 +1441,8 @@ func _update_hordes(dt: float) -> void:
 	var with_mother: bool = time > 60.0 and rng.randf() < float(hz.get("mother_chance", 0.0))
 	ambushes.append({ p = p, t = Bal.HORDES.warn_time, n = n, done = false, edge = true, mother = with_mother })
 	horde_count += 1
-	if horde_count % 4 == 1:
+	if time - horde_toast_at > 30.0: # com hordas contínuas, avisar a cada 30 s e não a cada horda
+		horde_toast_at = time
 		toast("HORDA SE APROXIMANDO!", Color("ff9f43"))
 
 

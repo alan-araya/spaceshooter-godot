@@ -372,7 +372,7 @@ func _probe_defense(id: String, dk: String = "normal", seed_v: int = 21) -> void
 func _timeline(id: String) -> void:
 	var w := _new_world(_idx(id), 1, "normal", 21)
 	var c: Commander = w.commanders[0]
-	for f in 60 * 60:
+	for f in 60 * 300: # até o fim da missão (para no resultado)
 		var t = w.pick_target(c, 400.0)
 		c.in_move = Vector2.ZERO
 		c.in_strafe = true

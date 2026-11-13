@@ -202,6 +202,7 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 		gl.append({ a = gr.a, b = gr.b, T = T, t = minf(gr.frac * T + since, T * 0.999), bomb = gr.bomb, acid = gr.acid })
 	w.projectiles.grenades = gl
 	w.projectiles.queue_redraw()
+	w.projectiles.bullets.queue_redraw()
 
 	w._sync_visuals()
 	w.fx.tick(dt)

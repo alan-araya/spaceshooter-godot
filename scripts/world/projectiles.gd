@@ -8,10 +8,29 @@ var grenades: Array = [] # Dictionary: a, b, t, T, bomb
 var _near: Array = []
 
 
+var bullets: Node2D # balas e obuses: luz própria, mas SEM halo (eram muitos e ofuscavam)
+
+
 func _ready() -> void:
-	# tiros, plasma e chamas têm luz própria: não escurecem e entram no buffer de brilho
+	# plasma e chamas têm luz própria e halo (buffer de brilho); balas só não escurecem
 	visibility_layer = Stage.LAYER_BOTH
 	material = Art.unshaded()
+	bullets = Node2D.new()
+	bullets.name = "Bullets"
+	bullets.visibility_layer = Stage.LAYER_SCENE
+	bullets.use_parent_material = true
+	add_child(bullets)
+	bullets.draw.connect(_draw_bullets)
+
+
+func _draw_bullets() -> void:
+	for pr in list:
+		var p: Vector2 = pr.p
+		var v: Vector2 = pr.v
+		if pr.kind == "bullet":
+			bullets.draw_line(p - v.normalized() * 7.0, p, Color(1.0, 0.82, 0.4, 0.75), 1.5)
+		elif pr.kind == "shell":
+			bullets.draw_line(p - v.normalized() * 10.0, p, Color(1.0, 0.6, 0.25, 0.85), 2.5)
 
 
 func fire(weapon_key: String, from: Vector2, angle: float, target: Unit = null) -> void:
@@ -116,6 +135,7 @@ func tick(dt: float) -> void:
 			gkeep.append(gr)
 	grenades = gkeep
 	queue_redraw()
+	bullets.queue_redraw()
 
 
 ## Cuspe: atinge humanos e o gerador. Retorna true se o projétil acabou.
@@ -198,13 +218,6 @@ func _draw() -> void:
 		var p: Vector2 = pr.p
 		var v: Vector2 = pr.v
 		match pr.kind:
-			"bullet":
-				var tail := p - v.normalized() * 9.0
-				draw_line(tail, p, Color(1.0, 0.85, 0.35, 0.9), 2.0)
-				draw_rect(Rect2(p - Vector2(1, 1), Vector2(2, 2)), Color(1, 1, 0.8))
-			"shell":
-				var tail2 := p - v.normalized() * 12.0
-				draw_line(tail2, p, Color(1.0, 0.6, 0.2, 0.9), 3.0)
 			"flame":
 				var k: float = 1.0 - pr.life / pr.max
 				var col := Color(1.0, 0.9 - k * 0.6, 0.3 - k * 0.3, 0.85 - k * 0.6)

@@ -140,9 +140,8 @@ func muzzle(p: Vector2, angle: float) -> void:
 	if _rec("muzzle", [p, angle]):
 		return
 	var d := Vector2(cos(angle), sin(angle))
-	_add(p + d * 3.0, d * 40.0, 0.05, Color(1.0, 0.9, 0.5), 5.0, 0.0, true)
-	cones.append({ p = p, a = angle, life = 0.05 })
-	world.lights.flash(p + d * 10.0, Lighting.WARM, 84.0, 0.95, 0.07, "mz")
+	cones.append({ p = p, a = angle, life = 0.04 })
+	world.lights.flash(p + d * 8.0, Lighting.WARM, 46.0, 0.3, 0.05, "mz")
 	# cápsula ejetada para o lado (nem todo tiro: são muitos)
 	if drops.size() < 320 and rnd.randf() < 0.6:
 		var side := Vector2(-d.y, d.x)
@@ -332,5 +331,4 @@ func _draw_glow() -> void:
 		var d := Vector2(cos(a), sin(a))
 		var nrm := Vector2(-d.y, d.x)
 		var mp: Vector2 = o.p
-		glow_layer.draw_colored_polygon(PackedVector2Array([mp - nrm * 2.5, mp + d * 14.0, mp + nrm * 2.5]), Color(1.0, 0.88, 0.5, 0.9))
-		glow_layer.draw_colored_polygon(PackedVector2Array([mp + d * 2.0 - nrm * 6.0, mp + d * 5.0, mp + d * 2.0 + nrm * 6.0]), Color(1.0, 0.8, 0.4, 0.7))
+		glow_layer.draw_colored_polygon(PackedVector2Array([mp - nrm * 1.5, mp + d * 7.0, mp + nrm * 1.5]), Color(1.0, 0.85, 0.5, 0.45))

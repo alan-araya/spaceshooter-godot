@@ -159,7 +159,7 @@ func _wall_lamps() -> void:
 			continue
 		placed.append(wl.position)
 		wl.lamp = true
-		_fixed(wl, wl.position + Vector2(0, 26), LAMP, 150.0, 1.0, 54.0, "lamp", 13.0, wl.position + Vector2(0, -Prop.WALL_H - 15.0))
+		_fixed(wl, wl.position + Vector2(0, 26), LAMP, 110.0, 0.8, 54.0, "lamp", 8.0, wl.position + Vector2(0, -Prop.WALL_H - 15.0))
 
 
 func _is_wall(cx: int, cy: int) -> bool:

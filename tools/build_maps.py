@@ -134,22 +134,22 @@ def fortaleza():
     m.vline(0, 12, 16, "~")
     m.vline(39, 3, 7, "~")
     m.vline(39, 12, 16, "~")
-    # muralha externa + torres de canto
-    m.rect(2, 1, 37, 18)
-    for (x, y) in [(3, 2), (36, 2), (3, 17), (36, 17)]:
+    # muralha externa + torres de canto (2 casas para dentro de cada lado: espaço para o enxame se juntar)
+    m.rect(4, 1, 35, 18)
+    for (x, y) in [(5, 2), (34, 2), (5, 17), (34, 17)]:
         m.put(x, y, "=")
-    for (x, y) in [(19, 1), (20, 1), (19, 18), (20, 18), (2, 9), (2, 10), (37, 9), (37, 10)]:
+    for (x, y) in [(19, 1), (20, 1), (19, 18), (20, 18), (4, 9), (4, 10), (35, 9), (35, 10)]:
         m.put(x, y, "+")
-    for (x, y) in [(5, 3), (34, 3), (5, 16), (34, 16)]:
+    for (x, y) in [(7, 3), (32, 3), (7, 16), (32, 16)]:
         m.put(x, y, "T")
     # pátio: flores (perigo se os insetos entrarem)
-    m.flowers(5, 9)
-    m.flowers(34, 10)
+    m.flowers(6, 13)
+    m.flowers(33, 6)
     m.patch(11, 2, 4, 1)
     m.patch(25, 17, 4, 1)
     # muralha interna, portões desalinhados com os externos (caminho em zigue-zague)
-    m.rect(8, 4, 31, 15)
-    for (x, y) in [(14, 4), (25, 15), (8, 6), (31, 13)]:
+    m.rect(9, 4, 30, 15)
+    for (x, y) in [(14, 4), (25, 15), (9, 6), (30, 13)]:
         m.put(x, y, "+")
     for (x, y) in [(11, 9), (28, 10), (19, 6), (20, 13)]:
         m.put(x, y, "T")

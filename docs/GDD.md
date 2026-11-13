@@ -171,7 +171,7 @@ Rede de segurança: uma defesa sem hordas, sem ninhos e sem insetos por 3 s term
 | 2 | Sinal Perdido | switches | cânion, 3 ninhos, hordas por todos os lados |
 | 3 | Posto Avançado Eco | survive 210 s | dois anéis (sacos de areia + muralha), hordas a partir de 40 s |
 | 4 | Linha de Trincheiras | hold 400 abates | duas trincheiras com metralhadoras de ponto, hordas pelo norte e pelos flancos |
-| 5 | Fortaleza Bastião | survive 240 s | muralhas concêntricas, portões desalinhados, fosso de ácido, 8 metralhadoras |
+| 5 | Fortaleza Bastião | survive 240 s | muralhas concêntricas, portões desalinhados, fosso de ácido, 8 metralhadoras; faixa larga fora da muralha e enxame quase contínuo (grupos de 2–3 a cada ~2 s, crescendo +42%/min) |
 | 6 | Coração da Colmeia | retrieve | final: interior da estação, cristal e extração |
 
 Os mapas das defesas 3–5 são gerados por `tools/build_maps.py`.
@@ -312,7 +312,7 @@ e não entra nos snapshots. O teste `_test_visuals` confere que ligar a parte vi
 | Peça | Arquivo | O que faz |
 |---|---|---|
 | Palco | `scripts/world/stage.gd` | O mundo é desenhado num `SubViewport` fixo de 1280×640 e composto na tela por `shaders/composite.gdshader` (ampliação nítida, brilho, cor, vinheta). O HUD fica fora, na resolução da janela |
-| Clima | `scripts/world/ambience.gd` | Predefinições por hora do dia: luz ambiente, sol, sombras, postes, saturação do chão e cor final. A missão escolhe com `ambience = "..."`. A campanha é um dia: 1 amanhecer (`dawn`) · 2 meio-dia (`noon`) · 3 tarde (`afternoon`) · 4 tempestade de areia (`storm`) · 5 entardecer (`dusk`) · 6 interior escuro (`hive`) |
+| Clima | `scripts/world/ambience.gd` | Predefinições por hora do dia: luz ambiente, sol, sombras, postes, saturação do chão e cor final. A missão escolhe com `ambience = "..."`. A campanha é um dia: 1 amanhecer (`dawn`) · 2 meio-dia (`noon`) · 3 tarde (`afternoon`) · 4 céu encoberto de poeira (`storm`, sem névoa nem rajadas: atrapalhavam a leitura) · 5 entardecer (`dusk`) · 6 interior escuro (`hive`) |
 | Gosma | `Fx.hit`, `Fx.goo` | Tiro que acerta um inseto solta um estalo e poucas gotas no sentido do tiro (2 no filhote, 3 na aranha, 7 e maiores na matriarca); as gotas saltam, caem e deixam um respingo que some. De propósito discreto, para não poluir com dezenas de aranhas levando tiro. Luz própria, sem halo |
 | Luz | `scripts/world/lighting.gd` | `CanvasModulate` (ambiente) + `DirectionalLight2D` (sol) + luzes pontuais: fixas (gerador, postes nos cantos dos muros, portões, ácido, ninhos, relés), seguidoras (plasma, chamas, pickups, poças) e clarões (tiros, explosões), que nascem das chamadas de `Fx` |
 | Relevo | `tools/build_normals.py`, `Art.lit()` | Mapa de relevo (normal map) por sprite, gerado da silhueta e do brilho; o do terreno sai do brilho da textura em tempo de carga. Desenhos sem relevo usam `Art.flat_material()` para receber a mesma luz que o chão |
