@@ -6,10 +6,10 @@ uid="uid://17n5e34jek1o"
 
 [deps]
 
-files=["res://i18n/strings.pt_BR.translation"]
+files=["res://i18n/strings.pt_BR.translation", "res://i18n/strings.en_US.translation", "res://i18n/strings.es.translation", "res://i18n/strings.pt_PT.translation", "res://i18n/strings.de.translation", "res://i18n/strings.ja.translation", "res://i18n/strings.zh_CN.translation"]
 
 source_file="res://i18n/strings.csv"
-dest_files=["res://i18n/strings.pt_BR.translation"]
+dest_files=["res://i18n/strings.pt_BR.translation", "res://i18n/strings.en_US.translation", "res://i18n/strings.es.translation", "res://i18n/strings.pt_PT.translation", "res://i18n/strings.de.translation", "res://i18n/strings.ja.translation", "res://i18n/strings.zh_CN.translation"]
 
 [params]
 

@@ -3,8 +3,15 @@
 Idiomas: **português do Brasil (padrão)**, inglês (EUA), espanhol, português de Portugal, alemão, japonês e
 chinês.
 
-**Andamento**: etapa 1 feita (263 frases em `i18n/strings.csv`, coluna pt-BR; avisos, objetivo e motivo do fim
-de missão viajam na rede como chave + valores). Etapas 2 a 4 pendentes.
+**Andamento**
+- Etapa 1 feita: 264 frases em `i18n/strings.csv`; avisos, objetivo e motivo do fim de missão viajam na rede
+  como chave + valores.
+- Etapa 2 feita: 7 colunas no CSV, botão de idioma no menu (o próprio botão já traduzido em todas as línguas),
+  idioma do sistema na primeira execução, `--lang=xx`, frase sem tradução cai no pt-BR.
+  **Fontes**: no Windows o japonês e o chinês já aparecem, porque o Godot usa as fontes do sistema quando a dele
+  não tem o caractere. Embutir a Noto Sans JP/SC fica para antes de um lançamento em Linux/Steam Deck, onde
+  essas fontes podem faltar.
+- Etapas 3 e 4 pendentes (dependem das decisões da seção 4).
 
 ## 1. Situação atual
 

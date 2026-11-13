@@ -5,6 +5,7 @@ extends Node
 ## Argumentos de depuração (depois de "--"):
 ##   --mission=N --players=N --difficulty=facil|normal|dificil --autostart --unlockall
 ##   --gfx=alto|medio|baixo   qualidade gráfica só nesta execução
+##   --lang=pt_BR|en_US|es|pt_PT|de|ja|zh_CN   idioma só nesta execução
 ##   --manual[=PÁGINA]   abre direto o manual de campo (screenshots)
 ##   --seed=N   semente fixa da missão (screenshots e medições repetíveis)
 ##   --fx-demo=SEG   aos SEG segundos dispara efeitos de explosão ao lado do P1 (só visual, para screenshot)
@@ -69,6 +70,8 @@ func _ready() -> void:
 		Game.difficulty = args.difficulty
 	if args.has("gfx") and Game.GFX_KEYS.has(args.gfx):
 		Game.gfx = Game.GFX_KEYS[args.gfx]
+	if args.has("lang"): # só nesta execução (screenshots e testes); não grava
+		Game.set_language(args.lang)
 	if args.has("shot"):
 		_shot_timer = float(args.get("shot-after", "4"))
 	if args.has("quit-after"):
@@ -240,6 +243,11 @@ func show_menu() -> void:
 		_focus_index(4)
 	box.add_child(UiKit.button(L.t("MENU_GFX", {g = "@" + Game.GFX_LABELS[Game.gfx]}), cycle_gfx))
 	box.add_child(UiKit.button(L.t("MENU_MANUAL"), show_manual.bind(show_menu, L.t("MANUAL_BACK_TO_MENU"))))
+	var cycle_lang := func() -> void:
+		Game.cycle_language()
+		show_menu()
+		_focus_index(6)
+	box.add_child(UiKit.button(L.t("MENU_LANGUAGE", {name = Game.LANGUAGE_NAMES[Game.language]}), cycle_lang))
 	box.add_child(UiKit.button(L.t("MENU_QUIT"), func(): get_tree().quit()))
 	var foot := UiKit.label(L.t("MENU_FOOTER", {m = Game.merit_total}), 13, UiKit.DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	foot.position = Vector2(0, 690)

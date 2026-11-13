@@ -1,269 +1,270 @@
-keys,pt_BR
-GAME_TITLE,ENXAME 2199
-MENU_TAGLINE,"UM COMANDANTE, UM PELOTÃO, UM PLANETA INFESTADO"
-MENU_PLAY,JOGAR
-MENU_NET,JOGAR EM REDE
-MENU_PLAYERS,JOGADORES NESTE PC: {n}
-MENU_DIFFICULTY,DIFICULDADE: {d}
-MENU_GFX,GRÁFICOS: {g}
-MENU_MANUAL,MANUAL DE CAMPO
-MENU_QUIT,SAIR
-MENU_FOOTER,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.
-MANUAL_BACK_TO_MENU,VOLTAR AO MENU
-MANUAL_START_MISSION,COMEÇAR MISSÃO
-SELECT_TITLE,ESCOLHA A MISSÃO
-SELECT_MERIT,Méritos: {m}
-SELECT_ITEM,{n}. {name}
-BACK,VOLTAR
-BRIEF_TITLE,MISSÃO {n} — {name}
-BRIEF_OBJECTIVE,OBJETIVO: {text}
-BRIEF_FOOTER,Tropas: {t}   ·   Dificuldade: {d}   ·   Jogadores: {p}
-BRIEF_START,COMEÇAR
-NET_TITLE,JOGAR EM REDE
-NET_HELP_1,Um jogador hospeda (o PC dele roda a partida); os outros entram pelo IP.
-NET_HELP_2,Rede local ou internet via rede virtual (ex.: Tailscale). Porta UDP {port}.
-NET_HOST,HOSPEDAR PARTIDA
-NET_IP_HINT,IP do host (ex.: 192.168.0.10)
-NET_JOIN,ENTRAR
-NET_HOST_FAILED,Não foi possível hospedar (erro {err}). A porta {port} pode estar em uso.
-NET_BAD_ADDRESS,Endereço inválido ou erro {err}.
-LOBBY_TITLE_HOST,LOBBY — VOCÊ HOSPEDA
-LOBBY_TITLE,LOBBY
-LOBBY_NO_LAN,(sem rede local)
-LOBBY_MY_IP,Seu IP: {ip}   ·   porta {port}
-LOBBY_SLOT,P{p}  —  
-LOBBY_HOST,host
-LOBBY_PLAYER,jogador conectado
-LOBBY_YOU,  (você)
-LOBBY_FREE,vago
-LOBBY_CONNECTING,Conectando…
-LOBBY_NEXT_MISSION,TROCAR MISSÃO
-LOBBY_NEXT_DIFF,TROCAR DIFICULDADE
-LOBBY_START_ONE,COMEÇAR (1 jogador)
-LOBBY_START_MANY,COMEÇAR ({n} jogadores)
-LOBBY_WAIT_HOST,Aguardando o host começar a partida…
-LOBBY_LEAVE,SAIR DO LOBBY
-PAUSE_TITLE,PAUSA
-PAUSE_RESUME,CONTINUAR
-PAUSE_RESTART,REINICIAR MISSÃO
-PAUSE_MAIN_MENU,MENU PRINCIPAL
-NETPAUSE_TITLE,A PARTIDA CONTINUA (REDE)
-NETPAUSE_BACK,VOLTAR AO JOGO
-NETPAUSE_END,ENCERRAR E VOLTAR AO LOBBY
-NETPAUSE_LEAVE,SAIR DA PARTIDA
-RESULT_WIN,MISSÃO CUMPRIDA!
-RESULT_LOSE,MISSÃO FRACASSADA
-RESULT_TIME,Tempo: {time}
-RESULT_KILLS,Aracnídeos abatidos: {k}   ·   Matriarcas: {m}
-RESULT_NESTS,Ninhos destruídos: {n}   ·   Flores arrancadas: {f}
-RESULT_LOSSES,Tropas perdidas: {t}   ·   Comandantes abatidos: {c}
-RESULT_MERIT_WIN,Mérito ganho: {m}   ·   Total: {total}
-RESULT_MERIT_LOSE,Mérito ganho: {m} (metade)   ·   Total: {total}
-RESULT_NEXT,PRÓXIMA MISSÃO
-RESULT_CONTINUE,CONTINUAR ({c} méritos)
-RESULT_RETRY,TENTAR DE NOVO
-RESULT_NEXT_ALL,PRÓXIMA MISSÃO (TODOS)
-RESULT_RETRY_ALL,TENTAR DE NOVO (TODOS)
-RESULT_BACK_LOBBY,VOLTAR AO LOBBY
-RESULT_WAIT_HOST,Aguardando o host escolher a próxima missão…
-TOAST_CONTINUE,REFORÇOS ORBITAIS — CONTINUE A MISSÃO!
-HUD_TROOPS,TROPAS
-HUD_RESPAWN,VOLTA EM {s}s
-HUD_NO_TROOPS,SEM TROPAS
-HUD_DISCONNECTED,DESCONECTADO
-HUD_NO_GRENADES,sem granadas
-HUD_MERIT,MÉRITO
-HUD_OBJECTIVE,OBJETIVO: {text}
-WEAPON_MG,Metralhadora
-WEAPON_FLAME,Lança-chamas
-WEAPON_PLASMA,Plasma
-WEAPON_RIFLE,Fuzil
-WEAPON_CANNON,Canhão
-WEAPON_TURRET,Metralhadora fixa
-DIFF_FACIL,Recruta
-DIFF_NORMAL,Soldado
-DIFF_DIFICIL,Veterano
-ORDER_NORMAL,Normal
-ORDER_ATACAR,Atacar
-ORDER_DEFENDER,Defender
-ORDER_SEGUIR,Seguir
-GFX_LOW,BAIXO
-GFX_MEDIUM,MÉDIO
-GFX_HIGH,ALTO
-NET_STATUS_HOSTING,Hospedando na porta {port}
-NET_STATUS_CONNECTING,Conectando a {addr}:{port}…
-NET_STATUS_CONNECTED,Conectado. Aguardando o host…
-NET_CANT_CONNECT,Não foi possível conectar.
-NET_HOST_LOST,A conexão com o host foi perdida.
-PICK_REINFORCE,REFORÇOS!
-PICK_AIRSTRIKE,ATAQUE AÉREO!
-PICK_ROBOT,APOIO BLINDADO!
-PICK_FLAME,LANÇA-CHAMAS
-PICK_PLASMA,CANHÃO DE PLASMA
-PICK_GRENADES,+3 GRANADAS
-TOAST_ORDER,P{p} · ORDEM: {order}
-TOAST_HEART_DOWN,CORAÇÃO DA COLMEIA DESTRUÍDO! PEGUE O CRISTAL
-TOAST_NEST_DOWN,NINHO DESTRUÍDO
-TOAST_ROBOT_DOWN,BLINDADO DESTRUÍDO
-TOAST_PLAYER_DOWN,P{p} ABATIDO — VOLTA EM 10 s
-TOAST_PLAYER_DOWN_NO_TROOPS,P{p} ABATIDO — SEM TROPAS!
-TOAST_GATE_BROKEN,PORTÃO ROMPIDO!
-TOAST_WALL_BROKEN,MURO ROMPIDO!
-TOAST_FLOWER_PULLED,FLOR ARRANCADA
-TOAST_MOTHER_BORN,UM ARACNÍDEO TOCOU UMA FLOR — MATRIARCA!
-TOAST_PICKUP,P{p} · {item}
-TOAST_PLAYER_BACK,P{p} DE VOLTA AO CAMPO
-TOAST_AMBUSH,EMBOSCADA! O CHÃO ESTÁ TREMENDO
-TOAST_HORDE,HORDA SE APROXIMANDO!
-TOAST_RELAY_ON,RELÉ RELIGADO
-TOAST_CRYSTAL_TAKEN,P{p} PEGOU O CRISTAL — VÁ PARA A EXTRAÇÃO
-TOAST_PLAYER_LEFT,P{p} SAIU DA PARTIDA
-END_OBJECTIVE_DONE,Objetivo cumprido
-END_NO_TROOPS,Sem tropas e sem comandantes
-END_AREA_SECURE,Área segura — nenhum inimigo restante
-END_GENERATOR_LOST,O gerador foi destruído
-OBJ_NESTS_AND_BUGS,Ninhos restantes: {left}/{total}  ·  Aracnídeos: {bugs}
-OBJ_BUGS_LEFT,Elimine os aracnídeos restantes: {bugs}
-OBJ_NESTS_DESTROYED,Ninhos destruídos: {done}/{total}
-OBJ_RELAYS,Relés religados: {on}/{total}  —  fique parado sobre o relé
-OBJ_SURVIVE,Evacuação em {time}  ·  Gerador {gen}%
-OBJ_HOLD,Abates: {kills}/{goal}  ·  Gerador {gen}%
-OBJ_HEART_HP,Destrua o Coração da Colmeia ({hp} PV)
-OBJ_HEART,Destrua o Coração da Colmeia
-OBJ_TAKE_CRYSTAL,Pegue o Cristal Prisma
-OBJ_CARRY_CRYSTAL,Leve o cristal até a EXTRAÇÃO
-OVERLAY_RESPAWN,P{p}  {s}s
-M1_NAME,Queda Quente
-M1_BRIEF_1,"Comandante, seu módulo de pouso vai cair no meio de um combate."
-M1_BRIEF_2,Um pelotão já está segurando a linha nas Planícies de Varga.
-M1_BRIEF_3,"Assuma o esquadrão, limpe a área e destrua os dois ninhos a leste."
-M1_BRIEF_4,"Enquanto os ninhos viverem, hordas vão chegar pelo leste e pelo norte."
-M1_OBJ,Destrua os ninhos e elimine todos os aracnídeos
-M2_NAME,Sinal Perdido
-M2_BRIEF_1,Os relés de comunicação do Cânion Rubro pararam de responder.
-M2_BRIEF_2,"Sem eles, não há reforço orbital no setor."
-M2_BRIEF_3,Chegue a cada relé e fique PARADO sobre ele até religar.
-M2_BRIEF_4,Três ninhos e hordas pelas bordas do cânion. Seja rápido.
-M2_OBJ,Religue os 3 relés de comunicação
-M3_NAME,Posto Avançado Eco
-M3_BRIEF_1,O Posto Eco guarda o gerador que mantém o escudo do vale ligado.
-M3_BRIEF_2,"Agora com dois anéis: sacos de areia por fora, muralha por dentro."
-M3_BRIEF_3,Hordas vão chegar por todos os lados até a evacuação.
-M3_BRIEF_4,"Os portões só deixam humanos passar. Se o gerador cair, perdemos o setor."
-M3_OBJ,Proteja o gerador até a evacuação
-M4_NAME,Linha de Trincheiras
-M4_BRIEF_1,A colmeia do norte está empurrando um exército contra a Linha Vega.
-M4_BRIEF_2,Duas trincheiras com metralhadoras de ponto protegem o bunker do gerador.
-M4_BRIEF_3,Soldados em NORMAL ou DEFENDER assumem as metralhadoras livres sozinhos.
-M4_BRIEF_4,Você também pode operar uma: fique parado em cima dela.
-M4_BRIEF_5,Segure a linha até abater o exército inteiro.
-M4_OBJ,Abata o exército inimigo e proteja o gerador
-M5_NAME,Fortaleza Bastião
-M5_BRIEF_1,"O Bastião é a última fortaleza do vale: muralha, pátio, muralha interna e a torre."
-M5_BRIEF_2,Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.
-M5_BRIEF_3,Os portões internos ficam desalinhados com os externos: o enxame tem de serpentear.
-M5_BRIEF_4,Guarnição nas metralhadoras de ponto. Recue camada por camada se for preciso.
-M5_BRIEF_5,Resista até a frota chegar.
-M5_OBJ,Defenda a torre do gerador até a frota chegar
-M6_NAME,Coração da Colmeia
-M6_BRIEF_1,A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma
-M6_BRIEF_2,"está dentro do Coração da Colmeia, no fundo da instalação."
-M6_BRIEF_3,"Destrua o Coração, pegue o cristal e leve-o até a extração."
-M6_BRIEF_4,Carregando o cristal você fica mais lento. Proteja-se com o esquadrão.
-M6_OBJ,Destrua o Coração da Colmeia e recupere o cristal
-MANUAL_PAGE_1,"BEM-VINDO, COMANDANTE"
-MANUAL_PAGE_2,CONTROLES
-MANUAL_PAGE_3,JOGANDO EM GRUPO
-MANUAL_PAGE_4,CONHEÇA O INIMIGO
-MANUAL_PAGE_5,APOIO E DICAS
-MANUAL_CLOSE,FECHAR
-MANUAL_MANUAL_DE_CAMPO,MANUAL DE CAMPO
-MANUAL_PULAR,PULAR
-MANUAL_ANTERIOR,◀ ANTERIOR
-MANUAL_PROXIMO,PRÓXIMO ▶
-MANUAL_UM_PLANETA_DESERTICO_FOI,"Um planeta desértico foi tomado por um enxame de aracnídeos. Você comanda um pelotão: lute ao lado dos seus soldados, dê ordens e cumpra o objetivo de cada missão."
-MANUAL_TROPAS_VIDAS,TROPAS = VIDAS
-MANUAL_CADA_SOLDADO_OU_COMANDANTE,Cada soldado ou comandante que cai custa 1 tropa. O contador fica no canto de cima da tela.
-MANUAL_O_COMANDANTE_VOLTA,O COMANDANTE VOLTA
-MANUAL_SE_VOCE_CAIR_RENASCE,"Se você cair, renasce em 10 s na zona de pouso, enquanto houver tropas."
-MANUAL_DERROTA,DERROTA
-MANUAL_SEM_TROPAS_E_SEM,"Sem tropas e sem comandante vivo, ou se o objetivo falhar (por exemplo, o gerador destruído)."
-MANUAL_OBJETIVO,OBJETIVO
-MANUAL_APARECE_NO_RODAPE_DESTRUIR,"Aparece no rodapé: destruir ninhos, religar relés, defender o gerador até a evacuação…"
-MANUAL_USE_AS_SETAS_OU,Use as setas ou o direcional para virar as páginas.
-MANUAL_TECLADO,TECLADO
-MANUAL_MOVER_EM_8_DIRECOES,mover em 8 direções
-MANUAL_ESPACO,ESPAÇO
-MANUAL_ATIRAR_PARA_ONDE_ESTA,atirar para onde está virado
-MANUAL_TRAVAR_A_MIRA_RECUAR,travar a mira (recuar atirando)
-MANUAL_GRANADA_COMECA_COM_3,"granada (começa com 3, até 9)"
-MANUAL_TROCAR_A_ORDEM_DO,trocar a ordem do pelotão
-MANUAL_ORDEM_DIRETA,ordem direta
-MANUAL_CONTROLE,CONTROLE
-MANUAL_ANALOGICO,ANALÓGICO
-MANUAL_TRAVAR_A_MIRA,travar a mira
-MANUAL_TROCAR_A_ORDEM,trocar a ordem
-MANUAL_ORDENS_DO_PELOTAO_Q,ORDENS DO PELOTÃO  (Q / X troca · 1-4 escolhe direto)
-MANUAL_NORMAL,NORMAL
-MANUAL_PATRULHAM_POR_PERTO_E,patrulham por perto e atiram no mais próximo
-MANUAL_ATACAR,ATACAR
-MANUAL_AVANCAM_ATE_OS_INSETOS,avançam até os insetos e os ninhos
-MANUAL_DEFENDER,DEFENDER
-MANUAL_SEGURAM_O_PONTO_ONDE,seguram o ponto onde receberam a ordem
-MANUAL_SEGUIR,SEGUIR
-MANUAL_ANDAM_EM_FORMACAO_EM,andam em formação em volta de você
-MANUAL_ATE_4_JOGADORES_NO,ATÉ 4 JOGADORES NO MESMO PC
-MANUAL_ESCOLHA_JOGADORES_NESTE_PC,Escolha JOGADORES NESTE PC no menu. Cada jogador tem uma cor e o próprio pelotão; as tropas são compartilhadas.
-MANUAL_TECLADO_WASD_OU_CONTROLE,"Teclado WASD (ou Controle 1, com 2 jogadores)"
-MANUAL_SETAS_NUM0_ATIRA_NUM1,Setas · Num0 atira · Num1 ordem · Num2 granada (ou Controle 2)
-MANUAL_CONTROLE_1_COM_3,"Controle 1 (com 3 jogadores, também o Controle 2)"
-MANUAL_CONTROLE_2,Controle 2
-MANUAL_COM_1_JOGADOR_QUALQUER,"Com 1 jogador, qualquer teclado ou controle comanda o P1."
-MANUAL_JOGAR_EM_REDE,JOGAR EM REDE
-MANUAL_ATE_4_PCS_NA,"Até 4 PCs na mesma rede: um jogador HOSPEDA (o PC dele roda a partida) e os outros ENTRAM pelo IP mostrado no lobby. Pela internet, use uma rede virtual como o Tailscale."
-MANUAL_ARACNIDEO,ARACNÍDEO
-MANUAL_CORRE_EM_BANDO_CERCA,"Corre em bando, cerca pelos lados e morde de perto. Perto de você, dá um bote."
-MANUAL_ATAQUE_MORDIDA_E_BOTE,ATAQUE: mordida e bote · rói muros
-MANUAL_CUSPIDOR,CUSPIDOR
-MANUAL_ESVERDEADO_FICA_LONGE_E,Esverdeado. Fica longe e cospe ácido. Muros e portões bloqueiam o cuspe.
-MANUAL_ATAQUE_CUSPE_DE_ACIDO,ATAQUE: cuspe de ácido à distância
-MANUAL_MATRIARCA,MATRIARCA
-MANUAL_NASCE_QUANDO_UM_ARACNIDEO,Nasce quando um aracnídeo toca uma flor aberta. Fica atrás da ninhada e investe em quem chega perto.
-MANUAL_ATAQUE_ACIDO_EM_ARCO,ATAQUE: ácido em arco (saia do anel verde!) · investida · filhotes
-MANUAL_FILHOTE,FILHOTE
-MANUAL_PEQUENO_E_RAPIDO_MORRE,Pequeno e rápido; morre com um tiro. Sai da matriarca quando ela é ferida ou morre.
-MANUAL_ATAQUE_MORDIDA,ATAQUE: mordida
-MANUAL_NINHO,NINHO
-MANUAL_GERA_ARACNIDEOS_SEM_PARAR,"Gera aracnídeos sem parar, cada vez mais rápido. Destrua para cortar o fluxo."
-MANUAL_NAO_ATACA_PRIORIDADE_NAS,NÃO ATACA · prioridade nas missões de limpeza
-MANUAL_FLOR,FLOR
-MANUAL_ABRE_DEPOIS_DE_ALGUNS,Abre depois de alguns segundos. Pise nela para arrancar antes que um aracnídeo a toque.
-MANUAL_PERIGO_ARACNIDEO_FLOR_ABERTA,PERIGO: aracnídeo + flor aberta = matriarca
-MANUAL_REFORCOS,REFORÇOS
-MANUAL_BUGGIES_ATROPELAM_INSETOS_E,buggies atropelam insetos e trazem +6 tropas
-MANUAL_ATAQUE_AEREO,ATAQUE AÉREO
-MANUAL_NAVE_SOLTA_SOLDADOS_E,nave solta soldados e bombardeia o enxame
-MANUAL_APOIO_BLINDADO,APOIO BLINDADO
-MANUAL_UM_ROBO_ALIADO_COM,um robô aliado com canhão luta ao seu lado
-MANUAL_LANCA_CHAMAS,LANÇA-CHAMAS
-MANUAL_CONE_CURTO_QUE_ATRAVESSA,cone curto que atravessa vários insetos
-MANUAL_CANHAO_DE_PLASMA,CANHÃO DE PLASMA
-MANUAL_TIROS_PERFURANTES_QUE_EXPLODEM,tiros perfurantes que explodem
-MANUAL_3_GRANADAS,+3 GRANADAS
-MANUAL_ATE_9_NO_TOTAL,até 9 no total
-MANUAL_SO_O_COMANDANTE_PEGA,Só o comandante pega os itens que aparecem no chão.
-MANUAL_DICAS_DE_CAMPO,DICAS DE CAMPO
-MANUAL_METRALHADORA_DE_PONTO,METRALHADORA DE PONTO
-MANUAL_PARE_AO_LADO_DE,Pare ao lado de uma para operar; soldados em NORMAL ou DEFENDER assumem as livres sozinhos.
-MANUAL_MUROS_E_PORTOES,MUROS E PORTÕES
-MANUAL_SEGURAM_O_ENXAME_MAS,"Seguram o enxame, mas os insetos roem. Recue camada por camada."
-MANUAL_ANEL_VERMELHO_NA_BORDA,ANEL VERMELHO NA BORDA
-MANUAL_HORDA_CHEGANDO_POR_ALI,Horda chegando por ali. Anel laranja perto de você: emboscada saindo do chão.
-MANUAL_REVER_ESTE_MANUAL,REVER ESTE MANUAL
-MANUAL_ELE_FICA_NO_MENU,"Ele fica no menu principal, em MANUAL DE CAMPO."
-MANUAL_,▸ 
-MANUAL_PAUSA,pausa
-MANUAL_ATIRAR,atirar
-MANUAL_GRANADA,granada
-MANUAL_MOVER,mover
-NET_VERSION_MISMATCH,O host está com outra versão do jogo ({host}; a sua é {mine}). Usem o mesmo build nos dois PCs.
+keys,pt_BR,en_US,es,pt_PT,de,ja,zh_CN
+GAME_TITLE,ENXAME 2199,,,,,,
+MENU_TAGLINE,"UM COMANDANTE, UM PELOTÃO, UM PLANETA INFESTADO",,,,,,
+MENU_PLAY,JOGAR,,,,,,
+MENU_NET,JOGAR EM REDE,,,,,,
+MENU_PLAYERS,JOGADORES NESTE PC: {n},,,,,,
+MENU_DIFFICULTY,DIFICULDADE: {d},,,,,,
+MENU_GFX,GRÁFICOS: {g},,,,,,
+MENU_MANUAL,MANUAL DE CAMPO,,,,,,
+MENU_QUIT,SAIR,,,,,,
+MENU_FOOTER,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.,,,,,,
+MANUAL_BACK_TO_MENU,VOLTAR AO MENU,,,,,,
+MANUAL_START_MISSION,COMEÇAR MISSÃO,,,,,,
+SELECT_TITLE,ESCOLHA A MISSÃO,,,,,,
+SELECT_MERIT,Méritos: {m},,,,,,
+SELECT_ITEM,{n}. {name},,,,,,
+BACK,VOLTAR,,,,,,
+BRIEF_TITLE,MISSÃO {n} — {name},,,,,,
+BRIEF_OBJECTIVE,OBJETIVO: {text},,,,,,
+BRIEF_FOOTER,Tropas: {t}   ·   Dificuldade: {d}   ·   Jogadores: {p},,,,,,
+BRIEF_START,COMEÇAR,,,,,,
+NET_TITLE,JOGAR EM REDE,,,,,,
+NET_HELP_1,Um jogador hospeda (o PC dele roda a partida); os outros entram pelo IP.,,,,,,
+NET_HELP_2,Rede local ou internet via rede virtual (ex.: Tailscale). Porta UDP {port}.,,,,,,
+NET_HOST,HOSPEDAR PARTIDA,,,,,,
+NET_IP_HINT,IP do host (ex.: 192.168.0.10),,,,,,
+NET_JOIN,ENTRAR,,,,,,
+NET_HOST_FAILED,Não foi possível hospedar (erro {err}). A porta {port} pode estar em uso.,,,,,,
+NET_BAD_ADDRESS,Endereço inválido ou erro {err}.,,,,,,
+LOBBY_TITLE_HOST,LOBBY — VOCÊ HOSPEDA,,,,,,
+LOBBY_TITLE,LOBBY,,,,,,
+LOBBY_NO_LAN,(sem rede local),,,,,,
+LOBBY_MY_IP,Seu IP: {ip}   ·   porta {port},,,,,,
+LOBBY_SLOT,P{p}  —  ,,,,,,
+LOBBY_HOST,host,,,,,,
+LOBBY_PLAYER,jogador conectado,,,,,,
+LOBBY_YOU,  (você),,,,,,
+LOBBY_FREE,vago,,,,,,
+LOBBY_CONNECTING,Conectando…,,,,,,
+LOBBY_NEXT_MISSION,TROCAR MISSÃO,,,,,,
+LOBBY_NEXT_DIFF,TROCAR DIFICULDADE,,,,,,
+LOBBY_START_ONE,COMEÇAR (1 jogador),,,,,,
+LOBBY_START_MANY,COMEÇAR ({n} jogadores),,,,,,
+LOBBY_WAIT_HOST,Aguardando o host começar a partida…,,,,,,
+LOBBY_LEAVE,SAIR DO LOBBY,,,,,,
+PAUSE_TITLE,PAUSA,,,,,,
+PAUSE_RESUME,CONTINUAR,,,,,,
+PAUSE_RESTART,REINICIAR MISSÃO,,,,,,
+PAUSE_MAIN_MENU,MENU PRINCIPAL,,,,,,
+NETPAUSE_TITLE,A PARTIDA CONTINUA (REDE),,,,,,
+NETPAUSE_BACK,VOLTAR AO JOGO,,,,,,
+NETPAUSE_END,ENCERRAR E VOLTAR AO LOBBY,,,,,,
+NETPAUSE_LEAVE,SAIR DA PARTIDA,,,,,,
+RESULT_WIN,MISSÃO CUMPRIDA!,,,,,,
+RESULT_LOSE,MISSÃO FRACASSADA,,,,,,
+RESULT_TIME,Tempo: {time},,,,,,
+RESULT_KILLS,Aracnídeos abatidos: {k}   ·   Matriarcas: {m},,,,,,
+RESULT_NESTS,Ninhos destruídos: {n}   ·   Flores arrancadas: {f},,,,,,
+RESULT_LOSSES,Tropas perdidas: {t}   ·   Comandantes abatidos: {c},,,,,,
+RESULT_MERIT_WIN,Mérito ganho: {m}   ·   Total: {total},,,,,,
+RESULT_MERIT_LOSE,Mérito ganho: {m} (metade)   ·   Total: {total},,,,,,
+RESULT_NEXT,PRÓXIMA MISSÃO,,,,,,
+RESULT_CONTINUE,CONTINUAR ({c} méritos),,,,,,
+RESULT_RETRY,TENTAR DE NOVO,,,,,,
+RESULT_NEXT_ALL,PRÓXIMA MISSÃO (TODOS),,,,,,
+RESULT_RETRY_ALL,TENTAR DE NOVO (TODOS),,,,,,
+RESULT_BACK_LOBBY,VOLTAR AO LOBBY,,,,,,
+RESULT_WAIT_HOST,Aguardando o host escolher a próxima missão…,,,,,,
+TOAST_CONTINUE,REFORÇOS ORBITAIS — CONTINUE A MISSÃO!,,,,,,
+HUD_TROOPS,TROPAS,,,,,,
+HUD_RESPAWN,VOLTA EM {s}s,,,,,,
+HUD_NO_TROOPS,SEM TROPAS,,,,,,
+HUD_DISCONNECTED,DESCONECTADO,,,,,,
+HUD_NO_GRENADES,sem granadas,,,,,,
+HUD_MERIT,MÉRITO,,,,,,
+HUD_OBJECTIVE,OBJETIVO: {text},,,,,,
+WEAPON_MG,Metralhadora,,,,,,
+WEAPON_FLAME,Lança-chamas,,,,,,
+WEAPON_PLASMA,Plasma,,,,,,
+WEAPON_RIFLE,Fuzil,,,,,,
+WEAPON_CANNON,Canhão,,,,,,
+WEAPON_TURRET,Metralhadora fixa,,,,,,
+DIFF_FACIL,Recruta,,,,,,
+DIFF_NORMAL,Soldado,,,,,,
+DIFF_DIFICIL,Veterano,,,,,,
+ORDER_NORMAL,Normal,,,,,,
+ORDER_ATACAR,Atacar,,,,,,
+ORDER_DEFENDER,Defender,,,,,,
+ORDER_SEGUIR,Seguir,,,,,,
+GFX_LOW,BAIXO,,,,,,
+GFX_MEDIUM,MÉDIO,,,,,,
+GFX_HIGH,ALTO,,,,,,
+NET_STATUS_HOSTING,Hospedando na porta {port},,,,,,
+NET_STATUS_CONNECTING,Conectando a {addr}:{port}…,,,,,,
+NET_STATUS_CONNECTED,Conectado. Aguardando o host…,,,,,,
+NET_CANT_CONNECT,Não foi possível conectar.,,,,,,
+NET_HOST_LOST,A conexão com o host foi perdida.,,,,,,
+PICK_REINFORCE,REFORÇOS!,,,,,,
+PICK_AIRSTRIKE,ATAQUE AÉREO!,,,,,,
+PICK_ROBOT,APOIO BLINDADO!,,,,,,
+PICK_FLAME,LANÇA-CHAMAS,,,,,,
+PICK_PLASMA,CANHÃO DE PLASMA,,,,,,
+PICK_GRENADES,+3 GRANADAS,,,,,,
+TOAST_ORDER,P{p} · ORDEM: {order},,,,,,
+TOAST_HEART_DOWN,CORAÇÃO DA COLMEIA DESTRUÍDO! PEGUE O CRISTAL,,,,,,
+TOAST_NEST_DOWN,NINHO DESTRUÍDO,,,,,,
+TOAST_ROBOT_DOWN,BLINDADO DESTRUÍDO,,,,,,
+TOAST_PLAYER_DOWN,P{p} ABATIDO — VOLTA EM 10 s,,,,,,
+TOAST_PLAYER_DOWN_NO_TROOPS,P{p} ABATIDO — SEM TROPAS!,,,,,,
+TOAST_GATE_BROKEN,PORTÃO ROMPIDO!,,,,,,
+TOAST_WALL_BROKEN,MURO ROMPIDO!,,,,,,
+TOAST_FLOWER_PULLED,FLOR ARRANCADA,,,,,,
+TOAST_MOTHER_BORN,UM ARACNÍDEO TOCOU UMA FLOR — MATRIARCA!,,,,,,
+TOAST_PICKUP,P{p} · {item},,,,,,
+TOAST_PLAYER_BACK,P{p} DE VOLTA AO CAMPO,,,,,,
+TOAST_AMBUSH,EMBOSCADA! O CHÃO ESTÁ TREMENDO,,,,,,
+TOAST_HORDE,HORDA SE APROXIMANDO!,,,,,,
+TOAST_RELAY_ON,RELÉ RELIGADO,,,,,,
+TOAST_CRYSTAL_TAKEN,P{p} PEGOU O CRISTAL — VÁ PARA A EXTRAÇÃO,,,,,,
+TOAST_PLAYER_LEFT,P{p} SAIU DA PARTIDA,,,,,,
+END_OBJECTIVE_DONE,Objetivo cumprido,,,,,,
+END_NO_TROOPS,Sem tropas e sem comandantes,,,,,,
+END_AREA_SECURE,Área segura — nenhum inimigo restante,,,,,,
+END_GENERATOR_LOST,O gerador foi destruído,,,,,,
+OBJ_NESTS_AND_BUGS,Ninhos restantes: {left}/{total}  ·  Aracnídeos: {bugs},,,,,,
+OBJ_BUGS_LEFT,Elimine os aracnídeos restantes: {bugs},,,,,,
+OBJ_NESTS_DESTROYED,Ninhos destruídos: {done}/{total},,,,,,
+OBJ_RELAYS,Relés religados: {on}/{total}  —  fique parado sobre o relé,,,,,,
+OBJ_SURVIVE,Evacuação em {time}  ·  Gerador {gen}%,,,,,,
+OBJ_HOLD,Abates: {kills}/{goal}  ·  Gerador {gen}%,,,,,,
+OBJ_HEART_HP,Destrua o Coração da Colmeia ({hp} PV),,,,,,
+OBJ_HEART,Destrua o Coração da Colmeia,,,,,,
+OBJ_TAKE_CRYSTAL,Pegue o Cristal Prisma,,,,,,
+OBJ_CARRY_CRYSTAL,Leve o cristal até a EXTRAÇÃO,,,,,,
+OVERLAY_RESPAWN,P{p}  {s}s,,,,,,
+M1_NAME,Queda Quente,,,,,,
+M1_BRIEF_1,"Comandante, seu módulo de pouso vai cair no meio de um combate.",,,,,,
+M1_BRIEF_2,Um pelotão já está segurando a linha nas Planícies de Varga.,,,,,,
+M1_BRIEF_3,"Assuma o esquadrão, limpe a área e destrua os dois ninhos a leste.",,,,,,
+M1_BRIEF_4,"Enquanto os ninhos viverem, hordas vão chegar pelo leste e pelo norte.",,,,,,
+M1_OBJ,Destrua os ninhos e elimine todos os aracnídeos,,,,,,
+M2_NAME,Sinal Perdido,,,,,,
+M2_BRIEF_1,Os relés de comunicação do Cânion Rubro pararam de responder.,,,,,,
+M2_BRIEF_2,"Sem eles, não há reforço orbital no setor.",,,,,,
+M2_BRIEF_3,Chegue a cada relé e fique PARADO sobre ele até religar.,,,,,,
+M2_BRIEF_4,Três ninhos e hordas pelas bordas do cânion. Seja rápido.,,,,,,
+M2_OBJ,Religue os 3 relés de comunicação,,,,,,
+M3_NAME,Posto Avançado Eco,,,,,,
+M3_BRIEF_1,O Posto Eco guarda o gerador que mantém o escudo do vale ligado.,,,,,,
+M3_BRIEF_2,"Agora com dois anéis: sacos de areia por fora, muralha por dentro.",,,,,,
+M3_BRIEF_3,Hordas vão chegar por todos os lados até a evacuação.,,,,,,
+M3_BRIEF_4,"Os portões só deixam humanos passar. Se o gerador cair, perdemos o setor.",,,,,,
+M3_OBJ,Proteja o gerador até a evacuação,,,,,,
+M4_NAME,Linha de Trincheiras,,,,,,
+M4_BRIEF_1,A colmeia do norte está empurrando um exército contra a Linha Vega.,,,,,,
+M4_BRIEF_2,Duas trincheiras com metralhadoras de ponto protegem o bunker do gerador.,,,,,,
+M4_BRIEF_3,Soldados em NORMAL ou DEFENDER assumem as metralhadoras livres sozinhos.,,,,,,
+M4_BRIEF_4,Você também pode operar uma: fique parado em cima dela.,,,,,,
+M4_BRIEF_5,Segure a linha até abater o exército inteiro.,,,,,,
+M4_OBJ,Abata o exército inimigo e proteja o gerador,,,,,,
+M5_NAME,Fortaleza Bastião,,,,,,
+M5_BRIEF_1,"O Bastião é a última fortaleza do vale: muralha, pátio, muralha interna e a torre.",,,,,,
+M5_BRIEF_2,Um fosso de ácido protege parte das muralhas; as hordas vêm de todos os lados.,,,,,,
+M5_BRIEF_3,Os portões internos ficam desalinhados com os externos: o enxame tem de serpentear.,,,,,,
+M5_BRIEF_4,Guarnição nas metralhadoras de ponto. Recue camada por camada se for preciso.,,,,,,
+M5_BRIEF_5,Resista até a frota chegar.,,,,,,
+M5_OBJ,Defenda a torre do gerador até a frota chegar,,,,,,
+M6_NAME,Coração da Colmeia,,,,,,
+M6_BRIEF_1,A Estação Orbe-7 foi tomada. O Cristal Prisma do canhão de plasma,,,,,,
+M6_BRIEF_2,"está dentro do Coração da Colmeia, no fundo da instalação.",,,,,,
+M6_BRIEF_3,"Destrua o Coração, pegue o cristal e leve-o até a extração.",,,,,,
+M6_BRIEF_4,Carregando o cristal você fica mais lento. Proteja-se com o esquadrão.,,,,,,
+M6_OBJ,Destrua o Coração da Colmeia e recupere o cristal,,,,,,
+MANUAL_PAGE_1,"BEM-VINDO, COMANDANTE",,,,,,
+MANUAL_PAGE_2,CONTROLES,,,,,,
+MANUAL_PAGE_3,JOGANDO EM GRUPO,,,,,,
+MANUAL_PAGE_4,CONHEÇA O INIMIGO,,,,,,
+MANUAL_PAGE_5,APOIO E DICAS,,,,,,
+MANUAL_CLOSE,FECHAR,,,,,,
+MANUAL_MANUAL_DE_CAMPO,MANUAL DE CAMPO,,,,,,
+MANUAL_PULAR,PULAR,,,,,,
+MANUAL_ANTERIOR,◀ ANTERIOR,,,,,,
+MANUAL_PROXIMO,PRÓXIMO ▶,,,,,,
+MANUAL_UM_PLANETA_DESERTICO_FOI,"Um planeta desértico foi tomado por um enxame de aracnídeos. Você comanda um pelotão: lute ao lado dos seus soldados, dê ordens e cumpra o objetivo de cada missão.",,,,,,
+MANUAL_TROPAS_VIDAS,TROPAS = VIDAS,,,,,,
+MANUAL_CADA_SOLDADO_OU_COMANDANTE,Cada soldado ou comandante que cai custa 1 tropa. O contador fica no canto de cima da tela.,,,,,,
+MANUAL_O_COMANDANTE_VOLTA,O COMANDANTE VOLTA,,,,,,
+MANUAL_SE_VOCE_CAIR_RENASCE,"Se você cair, renasce em 10 s na zona de pouso, enquanto houver tropas.",,,,,,
+MANUAL_DERROTA,DERROTA,,,,,,
+MANUAL_SEM_TROPAS_E_SEM,"Sem tropas e sem comandante vivo, ou se o objetivo falhar (por exemplo, o gerador destruído).",,,,,,
+MANUAL_OBJETIVO,OBJETIVO,,,,,,
+MANUAL_APARECE_NO_RODAPE_DESTRUIR,"Aparece no rodapé: destruir ninhos, religar relés, defender o gerador até a evacuação…",,,,,,
+MANUAL_USE_AS_SETAS_OU,Use as setas ou o direcional para virar as páginas.,,,,,,
+MANUAL_TECLADO,TECLADO,,,,,,
+MANUAL_MOVER_EM_8_DIRECOES,mover em 8 direções,,,,,,
+MANUAL_ESPACO,ESPAÇO,,,,,,
+MANUAL_ATIRAR_PARA_ONDE_ESTA,atirar para onde está virado,,,,,,
+MANUAL_TRAVAR_A_MIRA_RECUAR,travar a mira (recuar atirando),,,,,,
+MANUAL_GRANADA_COMECA_COM_3,"granada (começa com 3, até 9)",,,,,,
+MANUAL_TROCAR_A_ORDEM_DO,trocar a ordem do pelotão,,,,,,
+MANUAL_ORDEM_DIRETA,ordem direta,,,,,,
+MANUAL_CONTROLE,CONTROLE,,,,,,
+MANUAL_ANALOGICO,ANALÓGICO,,,,,,
+MANUAL_TRAVAR_A_MIRA,travar a mira,,,,,,
+MANUAL_TROCAR_A_ORDEM,trocar a ordem,,,,,,
+MANUAL_ORDENS_DO_PELOTAO_Q,ORDENS DO PELOTÃO  (Q / X troca · 1-4 escolhe direto),,,,,,
+MANUAL_NORMAL,NORMAL,,,,,,
+MANUAL_PATRULHAM_POR_PERTO_E,patrulham por perto e atiram no mais próximo,,,,,,
+MANUAL_ATACAR,ATACAR,,,,,,
+MANUAL_AVANCAM_ATE_OS_INSETOS,avançam até os insetos e os ninhos,,,,,,
+MANUAL_DEFENDER,DEFENDER,,,,,,
+MANUAL_SEGURAM_O_PONTO_ONDE,seguram o ponto onde receberam a ordem,,,,,,
+MANUAL_SEGUIR,SEGUIR,,,,,,
+MANUAL_ANDAM_EM_FORMACAO_EM,andam em formação em volta de você,,,,,,
+MANUAL_ATE_4_JOGADORES_NO,ATÉ 4 JOGADORES NO MESMO PC,,,,,,
+MANUAL_ESCOLHA_JOGADORES_NESTE_PC,Escolha JOGADORES NESTE PC no menu. Cada jogador tem uma cor e o próprio pelotão; as tropas são compartilhadas.,,,,,,
+MANUAL_TECLADO_WASD_OU_CONTROLE,"Teclado WASD (ou Controle 1, com 2 jogadores)",,,,,,
+MANUAL_SETAS_NUM0_ATIRA_NUM1,Setas · Num0 atira · Num1 ordem · Num2 granada (ou Controle 2),,,,,,
+MANUAL_CONTROLE_1_COM_3,"Controle 1 (com 3 jogadores, também o Controle 2)",,,,,,
+MANUAL_CONTROLE_2,Controle 2,,,,,,
+MANUAL_COM_1_JOGADOR_QUALQUER,"Com 1 jogador, qualquer teclado ou controle comanda o P1.",,,,,,
+MANUAL_JOGAR_EM_REDE,JOGAR EM REDE,,,,,,
+MANUAL_ATE_4_PCS_NA,"Até 4 PCs na mesma rede: um jogador HOSPEDA (o PC dele roda a partida) e os outros ENTRAM pelo IP mostrado no lobby. Pela internet, use uma rede virtual como o Tailscale.",,,,,,
+MANUAL_ARACNIDEO,ARACNÍDEO,,,,,,
+MANUAL_CORRE_EM_BANDO_CERCA,"Corre em bando, cerca pelos lados e morde de perto. Perto de você, dá um bote.",,,,,,
+MANUAL_ATAQUE_MORDIDA_E_BOTE,ATAQUE: mordida e bote · rói muros,,,,,,
+MANUAL_CUSPIDOR,CUSPIDOR,,,,,,
+MANUAL_ESVERDEADO_FICA_LONGE_E,Esverdeado. Fica longe e cospe ácido. Muros e portões bloqueiam o cuspe.,,,,,,
+MANUAL_ATAQUE_CUSPE_DE_ACIDO,ATAQUE: cuspe de ácido à distância,,,,,,
+MANUAL_MATRIARCA,MATRIARCA,,,,,,
+MANUAL_NASCE_QUANDO_UM_ARACNIDEO,Nasce quando um aracnídeo toca uma flor aberta. Fica atrás da ninhada e investe em quem chega perto.,,,,,,
+MANUAL_ATAQUE_ACIDO_EM_ARCO,ATAQUE: ácido em arco (saia do anel verde!) · investida · filhotes,,,,,,
+MANUAL_FILHOTE,FILHOTE,,,,,,
+MANUAL_PEQUENO_E_RAPIDO_MORRE,Pequeno e rápido; morre com um tiro. Sai da matriarca quando ela é ferida ou morre.,,,,,,
+MANUAL_ATAQUE_MORDIDA,ATAQUE: mordida,,,,,,
+MANUAL_NINHO,NINHO,,,,,,
+MANUAL_GERA_ARACNIDEOS_SEM_PARAR,"Gera aracnídeos sem parar, cada vez mais rápido. Destrua para cortar o fluxo.",,,,,,
+MANUAL_NAO_ATACA_PRIORIDADE_NAS,NÃO ATACA · prioridade nas missões de limpeza,,,,,,
+MANUAL_FLOR,FLOR,,,,,,
+MANUAL_ABRE_DEPOIS_DE_ALGUNS,Abre depois de alguns segundos. Pise nela para arrancar antes que um aracnídeo a toque.,,,,,,
+MANUAL_PERIGO_ARACNIDEO_FLOR_ABERTA,PERIGO: aracnídeo + flor aberta = matriarca,,,,,,
+MANUAL_REFORCOS,REFORÇOS,,,,,,
+MANUAL_BUGGIES_ATROPELAM_INSETOS_E,buggies atropelam insetos e trazem +6 tropas,,,,,,
+MANUAL_ATAQUE_AEREO,ATAQUE AÉREO,,,,,,
+MANUAL_NAVE_SOLTA_SOLDADOS_E,nave solta soldados e bombardeia o enxame,,,,,,
+MANUAL_APOIO_BLINDADO,APOIO BLINDADO,,,,,,
+MANUAL_UM_ROBO_ALIADO_COM,um robô aliado com canhão luta ao seu lado,,,,,,
+MANUAL_LANCA_CHAMAS,LANÇA-CHAMAS,,,,,,
+MANUAL_CONE_CURTO_QUE_ATRAVESSA,cone curto que atravessa vários insetos,,,,,,
+MANUAL_CANHAO_DE_PLASMA,CANHÃO DE PLASMA,,,,,,
+MANUAL_TIROS_PERFURANTES_QUE_EXPLODEM,tiros perfurantes que explodem,,,,,,
+MANUAL_3_GRANADAS,+3 GRANADAS,,,,,,
+MANUAL_ATE_9_NO_TOTAL,até 9 no total,,,,,,
+MANUAL_SO_O_COMANDANTE_PEGA,Só o comandante pega os itens que aparecem no chão.,,,,,,
+MANUAL_DICAS_DE_CAMPO,DICAS DE CAMPO,,,,,,
+MANUAL_METRALHADORA_DE_PONTO,METRALHADORA DE PONTO,,,,,,
+MANUAL_PARE_AO_LADO_DE,Pare ao lado de uma para operar; soldados em NORMAL ou DEFENDER assumem as livres sozinhos.,,,,,,
+MANUAL_MUROS_E_PORTOES,MUROS E PORTÕES,,,,,,
+MANUAL_SEGURAM_O_ENXAME_MAS,"Seguram o enxame, mas os insetos roem. Recue camada por camada.",,,,,,
+MANUAL_ANEL_VERMELHO_NA_BORDA,ANEL VERMELHO NA BORDA,,,,,,
+MANUAL_HORDA_CHEGANDO_POR_ALI,Horda chegando por ali. Anel laranja perto de você: emboscada saindo do chão.,,,,,,
+MANUAL_REVER_ESTE_MANUAL,REVER ESTE MANUAL,,,,,,
+MANUAL_ELE_FICA_NO_MENU,"Ele fica no menu principal, em MANUAL DE CAMPO.",,,,,,
+MANUAL_,▸ ,,,,,,
+MANUAL_PAUSA,pausa,,,,,,
+MANUAL_ATIRAR,atirar,,,,,,
+MANUAL_GRANADA,granada,,,,,,
+MANUAL_MOVER,mover,,,,,,
+NET_VERSION_MISMATCH,O host está com outra versão do jogo ({host}; a sua é {mine}). Usem o mesmo build nos dois PCs.,,,,,,
+MENU_LANGUAGE,IDIOMA: {name},LANGUAGE: {name},IDIOMA: {name},IDIOMA: {name},SPRACHE: {name},言語：{name},语言：{name}

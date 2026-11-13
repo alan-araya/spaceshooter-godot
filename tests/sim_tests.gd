@@ -469,6 +469,11 @@ func _sim_hash(w: World) -> String:
 ## Toda chave usada no código e nos dados tem texto no idioma ativo (i18n/strings.csv).
 ## Chave sem texto aparece na tela como "MENU_ALGUMA_COISA": o teste pega antes.
 func _test_i18n_keys() -> void:
+	var prev := TranslationServer.get_locale()
+	TranslationServer.set_locale("pt_BR")
+	var loaded := TranslationServer.get_loaded_locales()
+	for code in Game.LANGUAGES:
+		check(loaded.has(code), "i18n: tradução %s não carregada" % code)
 	var keys := {}
 	var re := RegEx.create_from_string('L[.]t[(]"([A-Z0-9_]+)"')
 	for dir in ["res://scripts", "res://autoload"]:
@@ -499,6 +504,11 @@ func _test_i18n_keys() -> void:
 	check(missing.is_empty(), "i18n: chaves sem texto: %s" % str(missing))
 	check(L.t("TOAST_ORDER", {p = 2, order = "@ORDER_ATACAR"}) == "P2 · ORDEM: Atacar", "i18n: parâmetros e chave aninhada")
 	check(L.tp(JSON.parse_string(JSON.stringify(["HUD_RESPAWN", {s = 7}]))) == "VOLTA EM 7s", "i18n: número que passou pela rede")
+	TranslationServer.set_locale("en_US")
+	check(L.t("MENU_PLAY") == "JOGAR", "i18n: frase sem tradução deveria cair no pt-BR")
+	check(L.t("MENU_LANGUAGE", {name = "English"}) == "LANGUAGE: English", "i18n: troca de idioma")
+	check(Game.system_language() in Game.LANGUAGES, "i18n: idioma do sistema fora da lista")
+	TranslationServer.set_locale(prev)
 
 
 func _collect_keys(dir: String, re: RegEx, keys: Dictionary) -> void:
