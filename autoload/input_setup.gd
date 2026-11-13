@@ -6,7 +6,8 @@ extends Node
 ## Quem usa o quê (assignments):
 ## - 1 jogador no PC (local ou em rede): tudo — os dois teclados e qualquer controle.
 ## - Vários jogadores no PC: P1 = WASD, P2 = setas, P3/P4 = controles. Controles que sobram vão
-##   primeiro para o P1 e depois para o P2, então o jogador principal pode usar teclado OU controle.
+##   primeiro para o P1 e depois para o P2. Se não há controles para todos, o P1 pega o primeiro.
+##   Assim o jogador principal sempre pode usar teclado OU controle.
 
 const SNAP8 := PI / 4.0
 const MAX_PADS := 4
@@ -122,12 +123,16 @@ static func assignments(players: int, n_pads: int) -> Array:
 	out[0].append(KB_WASD)
 	out[1].append(KB_ARROWS)
 	var next := 0
-	# primeiro quem não tem teclado (P3, P4); depois o P1; depois o P2
-	var order: Array = []
+	var pad_only: Array = []
 	for i in range(2, players):
-		order.append(i)
-	order.append(0)
-	order.append(1)
+		pad_only.append(i)
+	var order: Array = []
+	if n_pads >= pad_only.size():
+		# dá para todos: primeiro quem não tem teclado (P3, P4); o que sobrar vai para P1 e depois P2
+		order = pad_only + [0, 1]
+	else:
+		# não dá para todos (alguém fica sem aparelho de qualquer jeito): o jogador principal primeiro
+		order = [0] + pad_only + [1]
 	for i in order:
 		if next < n_pads:
 			out[i].append(PAD0 + next)
