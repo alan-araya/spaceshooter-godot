@@ -6,6 +6,7 @@ planeta desértico. Até 4 jogadores no mesmo PC. Mecânica inspirada em *Triump
 (`github.com/alan-araya/shootergame.mvp`).
 
 Design completo, fluxo de telas e contrato de assets: [docs/GDD.md](docs/GDD.md).
+Como o jogo foi feito (processo, IA, arte, imagens): [docs/DEVELOPMENT_JOURNEY.md](docs/DEVELOPMENT_JOURNEY.md).
 
 ## Rodar
 
