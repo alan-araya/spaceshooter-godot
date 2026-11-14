@@ -442,10 +442,11 @@ func _add_pickup(p: Vector2, which: String, lifetime: float) -> Prop:
 	return pk
 
 
+## Lugar de cada soldado na formação: conta só quem está em SEGUIR (formação compacta).
 func _reslot() -> void:
 	var counts := [0, 0, 0, 0]
 	for s in soldiers:
-		if s.dead:
+		if s.dead or s.order != "seguir":
 			continue
 		s.slot = counts[s.pid]
 		counts[s.pid] += 1
@@ -504,10 +505,16 @@ func set_order(cmd: Commander, order: String) -> void:
 	if not Bal.ORDERS.has(order):
 		return
 	cmd.order = order
+	# a ordem só alcança os soldados do jogador num raio em volta do comandante; os de longe (ex.: numa
+	# metralhadora do outro lado do mapa) continuam no que estavam fazendo
+	var rad: float = Bal.SOLDIER.order_radius
 	for s in soldiers:
-		if s.pid == cmd.pid:
+		if s.pid == cmd.pid and not s.dead and s.position.distance_to(cmd.position) <= rad:
+			s.order = order
 			s.anchor = s.position
 			s.wander = s.position
+	_reslot()
+	fx.order_ring(cmd.position, rad, Bal.PLAYER_COLORS[cmd.pid])
 	toast("TOAST_ORDER", Bal.PLAYER_COLORS[cmd.pid], {p = cmd.pid + 1, order = "@" + Bal.ORDER_LABELS[order]})
 	sfx("order", cmd.position.x)
 
@@ -1280,8 +1287,8 @@ func _step_flows() -> void:
 func _needs_enemy_flow() -> bool:
 	if not robots.is_empty():
 		return true
-	for c in commanders:
-		if c.order == "atacar":
+	for s in soldiers:
+		if s.order == "atacar":
 			return true
 	return false
 

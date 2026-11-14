@@ -8,7 +8,7 @@ MENU_DIFFICULTY,DIFICULDADE: {d},DIFFICULTY: {d},DIFICULTAD: {d},DIFICULDADE: {d
 MENU_GFX,GRÁFICOS: {g},GRAPHICS: {g},GRÁFICOS: {g},GRÁFICOS: {g},GRAFIK: {g},グラフィック：{g},画质：{g}
 MENU_MANUAL,MANUAL DE CAMPO,FIELD MANUAL,MANUAL DE CAMPO,MANUAL DE CAMPO,FELDHANDBUCH,野戦マニュアル,野战手册
 MENU_QUIT,SAIR,QUIT,SALIR,SAIR,BEENDEN,終了,退出
-MENU_FOOTER,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.,Merits: {m}   ·   Inspired by the gameplay of 2000s tactical action classics. Original art and names.,Méritos: {m}   ·   Inspirado en la jugabilidad de clásicos de acción táctica de los años 2000. Arte y nombres originales.,Méritos: {m}   ·   Inspirado na jogabilidade de clássicos de ação tática dos anos 2000. Arte e nomes originais.,Verdienst: {m}   ·   Inspiriert vom Gameplay taktischer Action-Klassiker der 2000er. Eigene Grafik und Namen.,功績：{m}   ·   2000年代の戦術アクションの名作にインスパイアされたゲームプレイ。アートと名称はオリジナル。,功勋：{m}   ·   玩法灵感来自2000年代的经典战术动作游戏。美术与名称均为原创。
+MENU_FOOTER,Méritos: {m},Merits: {m},Méritos: {m},Méritos: {m},Verdienst: {m},功績：{m},功勋：{m}
 MANUAL_BACK_TO_MENU,VOLTAR AO MENU,BACK TO MENU,VOLVER AL MENÚ,VOLTAR AO MENU,ZUM MENÜ,メニューに戻る,返回菜单
 MANUAL_START_MISSION,COMEÇAR MISSÃO,START MISSION,INICIAR MISIÓN,COMEÇAR MISSÃO,MISSION STARTEN,ミッション開始,开始任务
 SELECT_TITLE,ESCOLHA A MISSÃO,CHOOSE A MISSION,ELIGE LA MISIÓN,ESCOLHE A MISSÃO,MISSION WÄHLEN,ミッション選択,选择任务
@@ -275,3 +275,4 @@ INPUT_PAD,controle {n},controller {n},control {n},comando {n},Controller {n},コ
 INPUT_ANY_PAD,qualquer controle,any controller,cualquier control,qualquer comando,beliebiger Controller,任意のコントローラー,任意手柄
 INPUT_NONE,SEM APARELHO — conecte mais um controle,NO DEVICE — connect another controller,SIN DISPOSITIVO — conecta otro control,SEM DISPOSITIVO — liga mais um comando,KEIN GERÄT — schließ noch einen Controller an,デバイスなし — コントローラーをもう1台接続してください,无设备 — 请再连接一个手柄
 BRIEF_DEVICES,P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}：{devices},P{p}：{devices}
+MANUAL_ORDER_RADIUS,Só os soldados perto de você recebem a ordem (anel colorido).,Only soldiers near you hear the order (colored ring).,Solo los soldados cerca de ti reciben la orden (anillo de color).,Só os soldados perto de ti recebem a ordem (anel colorido).,Nur Soldaten in deiner Nähe hören den Befehl (farbiger Ring).,命令が届くのは近くの兵士だけ（色付きの輪）。,只有你附近的士兵会收到命令（彩色圆环）。

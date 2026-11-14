@@ -167,17 +167,20 @@ func _page_controls() -> void:
 	_key_row(kb, ["Q"], L.t("MANUAL_TROCAR_A_ORDEM_DO"))
 	_key_row(kb, ["1", "2", "3", "4"], L.t("MANUAL_ORDEM_DIRETA"))
 	_key_row(kb, ["ESC"], L.t("MANUAL_PAUSA"))
-	var pad := _column(Rect2(560, 0, W - 52 - 560, 300))
-	pad.add_child(UiKit.label(L.t("MANUAL_CONTROLE"), 18, UiKit.AMBER))
-	_key_row(pad, [L.t("MANUAL_ANALOGICO")], L.t("MANUAL_MOVER"))
-	_key_row(pad, ["A", "RT"], L.t("MANUAL_ATIRAR"))
-	_key_row(pad, ["LT"], L.t("MANUAL_TRAVAR_A_MIRA"))
-	_key_row(pad, ["RB", "B"], L.t("MANUAL_GRANADA"))
-	_key_row(pad, ["LB", "X"], L.t("MANUAL_TROCAR_A_ORDEM"))
-	_key_row(pad, ["START"], L.t("MANUAL_PAUSA"))
+	var ph := UiKit.label(L.t("MANUAL_CONTROLE"), 18, UiKit.AMBER)
+	ph.position = Vector2(560, 0)
+	_body.add_child(ph)
+	var pad := PadDiagram.new()
+	pad.position = Vector2(530, 22)
+	pad.size = Vector2(W - 52 - 530, 270)
+	_body.add_child(pad)
 	var oh := UiKit.label(L.t("MANUAL_ORDENS_DO_PELOTAO_Q"), 16, UiKit.AMBER)
 	oh.position = Vector2(0, 296)
 	_body.add_child(oh)
+	var rh := UiKit.label(L.t("MANUAL_ORDER_RADIUS"), 14, UiKit.DIM, HORIZONTAL_ALIGNMENT_RIGHT)
+	rh.position = Vector2(560, 298)
+	rh.size = Vector2(W - 52 - 560, 20)
+	_body.add_child(rh)
 	var orders := HBoxContainer.new()
 	orders.position = Vector2(0, 324)
 	orders.size = Vector2(W - 52, 100)
@@ -469,3 +472,94 @@ func _enemy(grid: GridContainer, sheet: String, frames: Array, fps: float, tint:
 	var at := _wrap(attack, 13, Color("ffb36b"))
 	at.position = Vector2(0, 0)
 	card.add_child(at)
+
+
+## Controle no estilo Xbox desenhado por código, com cada botão ligado à sua ação (página CONTROLES).
+class PadDiagram extends Control:
+	const BODY := Color("2d3138")
+	const EDGE := Color("5b616c")
+	const PART := Color("1c1f24")
+	const LINE := Color(1.0, 0.79, 0.29, 0.75)
+
+	func _draw() -> void:
+		var c := Vector2(size.x * 0.5, 150.0)
+		# gatilhos e botões de ombro
+		_rect(c + Vector2(-112, -86), Vector2(48, 20), PART)
+		_rect(c + Vector2(64, -86), Vector2(48, 20), PART)
+		_rect(c + Vector2(-122, -63), Vector2(70, 13), Color("3a3f47"))
+		_rect(c + Vector2(52, -63), Vector2(70, 13), Color("3a3f47"))
+		_tag(c + Vector2(-88, -76), "LT")
+		_tag(c + Vector2(88, -76), "RT")
+		_tag(c + Vector2(-87, -57), "LB")
+		_tag(c + Vector2(87, -57), "RB")
+		# corpo: duas empunhaduras + centro
+		for sx in [-1.0, 1.0]:
+			draw_circle(c + Vector2(sx * 86.0, 22.0), 60.0, EDGE)
+			draw_circle(c + Vector2(sx * 86.0, 22.0), 57.0, BODY)
+		draw_rect(Rect2(c + Vector2(-110, -50), Vector2(220, 88)), BODY)
+		draw_rect(Rect2(c + Vector2(-110, -52), Vector2(220, 3)), EDGE)
+		# analógicos, direcional, botões
+		_stick(c + Vector2(-66, -14))
+		_stick(c + Vector2(32, 30))
+		var dp := c + Vector2(-30, 30)
+		draw_rect(Rect2(dp - Vector2(17, 6), Vector2(34, 12)), PART)
+		draw_rect(Rect2(dp - Vector2(6, 17), Vector2(12, 34)), PART)
+		var bc := c + Vector2(68, -14)
+		_btn(bc + Vector2(0, -20), Color("e5c03a"), "Y")
+		_btn(bc + Vector2(-20, 0), Color("3f86d8"), "X")
+		_btn(bc + Vector2(20, 0), Color("d84a3f"), "B")
+		_btn(bc + Vector2(0, 20), Color("4caf50"), "A")
+		draw_circle(c + Vector2(-16, -26), 5.0, PART)
+		draw_circle(c + Vector2(16, -26), 5.0, PART)
+		draw_circle(c + Vector2(0, -38), 8.0, Color("6a7280"))
+		# legendas: botão em âmbar + ação
+		var l := 4.0
+		var r := size.x - 4.0
+		_label(Vector2(l, c.y - 112), "LT", L.t("MANUAL_TRAVAR_A_MIRA"), c + Vector2(-100, -80), false)
+		_label(Vector2(l, c.y - 64), "LB / X", L.t("MANUAL_TROCAR_A_ORDEM"), c + Vector2(-110, -57), false)
+		_label(Vector2(l, c.y + 14), L.t("MANUAL_ANALOGICO"), L.t("MANUAL_MOVER"), c + Vector2(-80, -8), false)
+		_label(Vector2(r, c.y - 112), "RT / A", L.t("MANUAL_ATIRAR"), c + Vector2(100, -80), true)
+		_label(Vector2(r, c.y - 64), "RB / B", L.t("MANUAL_GRANADA"), c + Vector2(110, -57), true)
+		_label_top(Vector2(c.x, c.y - 128), "START", L.t("MANUAL_PAUSA"), c + Vector2(16, -30))
+
+	## Legenda centralizada acima do controle, com linha descendo até o botão.
+	func _label_top(center: Vector2, head: String, what: String, target: Vector2) -> void:
+		_text_center(center + Vector2(0, 0), head + "  ·  " + what, 14, UiKit.AMBER)
+		draw_line(center + Vector2(0, 6), target, LINE, 1.5)
+		draw_circle(target, 2.5, LINE)
+
+	func _rect(p: Vector2, s: Vector2, col: Color) -> void:
+		draw_rect(Rect2(p, s), col)
+		draw_rect(Rect2(p, s), EDGE, false, 1.0)
+
+	func _stick(p: Vector2) -> void:
+		draw_circle(p, 16.0, PART)
+		draw_circle(p, 11.0, Color("454b55"))
+		draw_arc(p, 11.0, 0.0, TAU, 20, Color("6a7280"), 1.5)
+
+	func _btn(p: Vector2, col: Color, t: String) -> void:
+		draw_circle(p, 10.0, PART)
+		draw_circle(p, 8.5, col.darkened(0.15))
+		_text_center(p + Vector2(0, 5), t, 12, Color.WHITE)
+
+	func _tag(p: Vector2, t: String) -> void:
+		_text_center(p + Vector2(0, 5), t, 11, Color("c8ccd3"))
+
+	func _text_center(p: Vector2, t: String, fs: int, col: Color) -> void:
+		var f := get_theme_default_font()
+		var w := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		draw_string(f, p - Vector2(w * 0.5, 0), t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
+
+	## Legenda em duas linhas (botão / ação) presa à beirada; linha até a peça do controle.
+	func _label(anchor: Vector2, head: String, what: String, target: Vector2, right: bool) -> void:
+		var f := get_theme_default_font()
+		var w1 := f.get_string_size(head, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		var w2 := f.get_string_size(what, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+		var w := maxf(w1, w2)
+		var x := anchor.x - w if right else anchor.x
+		draw_string(f, Vector2(x if not right else anchor.x - w1, anchor.y + 14), head, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, UiKit.AMBER)
+		draw_string_outline(f, Vector2(x if not right else anchor.x - w2, anchor.y + 32), what, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 3, Color(0, 0, 0, 0.8))
+		draw_string(f, Vector2(x if not right else anchor.x - w2, anchor.y + 32), what, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, UiKit.TEXT)
+		var from := Vector2((anchor.x - w - 6.0) if right else (anchor.x + w + 6.0), anchor.y + 20)
+		draw_line(from, target, LINE, 1.5)
+		draw_circle(target, 2.5, LINE)

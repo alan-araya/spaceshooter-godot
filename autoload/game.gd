@@ -10,11 +10,12 @@ var merit_total := 0
 var unlocked := 1
 var completed := {}
 var tutorial_seen := false # manual de campo já mostrado antes da primeira missão
-var language := "" # código de LANGUAGES; vazio = ainda não escolhido (usa o do sistema)
+var language := "" # código de LANGUAGES; vazio = ainda não escolhido (usa DEFAULT_LANGUAGE)
+const DEFAULT_LANGUAGE := "en_US"
 
 ## Idiomas do jogo, na ordem do botão IDIOMA, com o nome no próprio idioma (não se traduz).
 ## Colunas de i18n/strings.csv. Frase sem tradução num idioma cai no pt-BR (locale/fallback).
-const LANGUAGES := ["pt_BR", "en_US", "es", "pt_PT", "de", "ja", "zh_CN"]
+const LANGUAGES := ["en_US", "pt_BR", "pt_PT", "es", "de", "ja", "zh_CN"]
 const LANGUAGE_NAMES := {
 	pt_BR = "Português (Brasil)", en_US = "English", es = "Español", pt_PT = "Português (Portugal)",
 	de = "Deutsch", ja = "日本語", zh_CN = "简体中文",
@@ -28,7 +29,7 @@ const GFX_KEYS := { baixo = 0, medio = 1, alto = 2 }
 
 func _ready() -> void:
 	load_save()
-	set_language(language if language != "" else system_language())
+	set_language(language if language != "" else DEFAULT_LANGUAGE)
 
 
 func load_save() -> void:
@@ -78,7 +79,8 @@ func spend_merit(amount: int) -> bool:
 	return true
 
 
-## Idioma do sistema mapeado para um dos idiomas do jogo (primeira execução).
+## Idioma do sistema mapeado para um dos idiomas do jogo. Hoje a primeira execução abre em DEFAULT_LANGUAGE
+## (inglês); fica aqui para um futuro "usar o idioma do sistema".
 static func system_language() -> String:
 	var loc := OS.get_locale() # ex.: "pt_BR", "pt_PT", "es_MX", "de_AT", "ja_JP", "zh_CN", "zh_TW"
 	var lang := OS.get_locale_language()
@@ -102,7 +104,7 @@ static func system_language() -> String:
 
 func set_language(code: String) -> void:
 	if not LANGUAGES.has(code):
-		code = "pt_BR"
+		code = DEFAULT_LANGUAGE
 	language = code
 	TranslationServer.set_locale(code)
 

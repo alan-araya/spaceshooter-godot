@@ -38,6 +38,7 @@ func run(m: Node) -> void:
 	_test_i18n_keys()
 	_test_input_assignments()
 	_test_stuck_bug()
+	_test_order_radius()
 	if main.args.has("probe"):
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
@@ -466,6 +467,33 @@ func _sim_hash(w: World) -> String:
 	for s in w.soldiers:
 		acc += s.position.x * 0.9 + s.position.y * 1.1 + s.hp
 	return "%d|%d|%d|%d|%.2f|%.2f" % [w.frame, w.troops, w.stats.kills, w.bugs.size(), acc, w.commanders[0].position.x]
+
+
+## SEGUIR (e as outras ordens) só alcança soldados perto do comandante; quem está longe (ex.: numa
+## metralhadora) continua no posto.
+func _test_order_radius() -> void:
+	var w := _new_world(_idx("m5"), 1, "normal", 3)
+	var c: Commander = w.commanders[0]
+	var near := 0
+	var far := 0
+	for s in w.soldiers:
+		if s.position.distance_to(c.position) <= Bal.SOLDIER.order_radius:
+			near += 1
+		else:
+			far += 1
+	w.set_order(c, "seguir")
+	var near_ok := true
+	var far_ok := true
+	for s in w.soldiers:
+		var d: float = s.position.distance_to(c.position)
+		if d <= Bal.SOLDIER.order_radius and s.order != "seguir":
+			near_ok = false
+		if d > Bal.SOLDIER.order_radius and s.order != "normal":
+			far_ok = false
+	check(near > 0 and far > 0, "ordem: cenário sem soldados perto e longe (%d/%d)" % [near, far])
+	check(near_ok, "ordem: soldado perto não recebeu SEGUIR")
+	check(far_ok, "ordem: soldado longe recebeu SEGUIR")
+	w.queue_free()
 
 
 ## Inseto que nasce dentro de uma rocha (ou é empurrado para dentro) sai ou se desfaz; não trava a missão.

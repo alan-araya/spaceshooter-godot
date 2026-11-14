@@ -29,6 +29,7 @@ const SOLDIER := {
 	hp = 4.0, speed = 124.0, radius = 10.0, reach = 280.0, fire_interval = 0.42, spread = 0.10,
 	retarget = 0.25, patrol_radius = 72.0, chase_radius = 180.0,
 	kite_dist = 44.0, # recua quando um inseto chega mais perto que isso
+	order_radius = 160.0, # ordem do comandante só alcança soldados a até esta distância (~5 casas)
 	attack_hold = 150.0, # em Atacar, para de avançar a esta distância do alvo
 	follow_back = 34.0, follow_row = 22.0, follow_spread = 24.0, # formação atrás do comandante
 }

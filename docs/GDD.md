@@ -118,6 +118,10 @@ a troca de arte 2D → 3D não toque na lógica (ver §8).
 - Só o comandante coleta pickups. Qualquer humano pisa e arranca flores.
 
 ### 4.3 Ordens dos soldados (IA)
+
+A ordem só alcança os soldados do jogador num raio de ~5 casas em volta do comandante (`Bal.SOLDIER.order_radius`;
+um anel colorido mostra o alcance). Cada soldado guarda a última ordem que ouviu: quem está numa metralhadora longe
+continua lá quando o comandante manda SEGUIR.
 | Ordem | Comportamento |
 |---|---|
 | Normal | patrulha perto de onde estava, atira no inimigo mais próximo, recua se encostarem |

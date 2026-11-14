@@ -18,6 +18,10 @@ var lane := 0.0 # desvio lateral pessoal (-1..1) para avançar em leque
 var post: Prop = null # metralhadora de ponto que este soldado opera
 
 
+## Ordem deste soldado (normal/atacar/defender/seguir). Muda só quando o comandante dá a ordem por perto.
+var order := "normal"
+
+
 func setup(w: World, x: Vector2, owner_pid: int) -> void:
 	world = w
 	kind = "soldier"
@@ -54,7 +58,7 @@ func tick(dt: float) -> void:
 	var dist_t := position.distance_to(t.position) if t != null else INF
 
 	var cmd: Commander = world.commanders[pid]
-	var order: String = cmd.order
+	# cada soldado guarda a última ordem que OUVIU (World.set_order: só quem está perto do comandante)
 	var speed: float = S.speed
 
 	# metralhadoras de ponto: em Normal/Defender, soldados livres vão operá-las

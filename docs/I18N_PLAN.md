@@ -3,6 +3,9 @@
 Idiomas: **português do Brasil (padrão)**, inglês (EUA), espanhol, português de Portugal, alemão, japonês e
 chinês.
 
+**Idioma padrão**: inglês na primeira execução; ordem no botão: English, Português (Brasil), Português (Portugal),
+Español, Deutsch, 日本語, 简体中文. Frase faltando num idioma cai no inglês.
+
 **Andamento**
 - Etapa 1 feita: 264 frases em `i18n/strings.csv`; avisos, objetivo e motivo do fim de missão viajam na rede
   como chave + valores.

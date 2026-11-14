@@ -178,6 +178,13 @@ func sparkle(p: Vector2, col: Color) -> void:
 	world.lights.flash(p, col, 120.0, 1.0, 0.4, "", 1)
 
 
+## Anel que mostra até onde a ordem do comandante chegou.
+func order_ring(p: Vector2, radius: float, col: Color) -> void:
+	if _rec("order_ring", [p, radius, col]):
+		return
+	rings.append({ p = p, r0 = radius, r1 = radius * 0.55, life = 0.45, max = 0.45, col = Color(col.r, col.g, col.b, 0.8) })
+
+
 func plasma_pop(p: Vector2) -> void:
 	if _rec("plasma_pop", [p]):
 		return
