@@ -21,7 +21,10 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
   caminho na variável BLENDER). Depois de gerar PNG novo: `godot --headless --path . --import`.
   FPS: `godot --path . --disable-vsync --print-fps -- --mission=5 --autostart --seed=11 --quit-after=40 > fps.txt 2>&1`
   (sempre para arquivo: pelo pipe o número sai errado).
-- Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title|tutorial]`.
+- Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title|tutorial|icon]`
+  (`icon` gera `icon.png` e `icon.ico` na raiz).
+- Build de Windows (tela cheia, ícone no .exe): `bash tools/build_windows.sh <pasta> [commit]`.
+- PDF de um documento: `python -I -X utf8 tools/build_pdf.py docs/DEVELOPMENT_JOURNEY.md` (usa o Chrome/Edge).
 - Manual de campo (tutorial): `-- --manual=N` abre na página N (screenshot).
 
 ## Regras do projeto

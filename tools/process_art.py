@@ -354,9 +354,25 @@ def do_tutorial():
         print("  -> assets/ui/%s.png 800x450" % name)
 
 
+def do_icon():
+    """Ícone do jogo (janela, projeto e .exe): icon.png 256x256 e icon.ico 16..256 na raiz do projeto."""
+    a = chroma_key(load_rgba(SRC / "icon" / "icon.png"))
+    x0, y0, x1, y1 = bbox(a[..., 3])
+    side = max(x1 - x0, y1 - y0)
+    sq = np.zeros((side, side, 4), np.float32)
+    ox, oy = (side - (x1 - x0)) // 2, (side - (y1 - y0)) // 2
+    sq[oy:oy + y1 - y0, ox:ox + x1 - x0] = a[y0:y1, x0:x1]
+    img = Image.fromarray((sq * 255).astype(np.uint8), "RGBA").resize((256, 256), Image.Resampling.LANCZOS)
+    root = OUT.parent.parent
+    img.save(root / "icon.png")
+    img.save(root / "icon.ico", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
+    print("  -> icon.png 256x256, icon.ico 16..256")
+
+
 TASKS = {
     "soldier": do_soldier, "bug": do_bug, "mother": do_mother, "nest": do_nest,
     "terrain": do_terrain, "support": do_support, "title": do_title, "tutorial": do_tutorial,
+    "icon": do_icon,
 }
 
 if __name__ == "__main__":
