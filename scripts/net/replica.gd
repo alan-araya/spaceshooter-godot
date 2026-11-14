@@ -7,7 +7,16 @@ extends RefCounted
 ## e NÃO roda update(): só recebe estado.
 
 ## Atraso de interpolação em quadros do host (60 Hz). Com snapshots a 30 Hz, 6 quadros = 2 snapshots.
-const DELAY_TICKS := 6.0
+## Ele se ajusta à variação de chegada medida (mais variação = mais folga), entre os limites abaixo.
+const DELAY_MIN := 5.0
+const DELAY_MAX := 16.0
+
+var delay_ticks := 6.0
+var jitter_ms := 0.0 # média da variação de chegada dos snapshots
+var snap_loss := 0.0 # fração de snapshots que não chegaram (pelos buracos na numeração)
+var predictor: Predictor # previsão do próprio comandante (cliente em rede)
+var _last_arrival := -1.0
+var _last_tick := -1
 
 var world: World
 var buf: Array = [] # snapshots decodificados, em ordem de tick
@@ -31,8 +40,27 @@ func push_snapshot(bytes: PackedByteArray) -> void:
 	snapshots_received += 1
 	if not buf.is_empty() and s.tick <= buf[-1].tick:
 		return # fora de ordem / repetido
+	_measure(s.tick)
 	buf.append(s)
 	last_snapshot = s
+	if predictor != null:
+		predictor.on_snapshot(s)
+
+
+## Variação de chegada e perda, para ajustar a folga de interpolação e para a tabela de rede.
+func _measure(tick: int) -> void:
+	var now := float(Time.get_ticks_usec()) / 1000.0
+	if _last_tick >= 0 and tick > _last_tick:
+		var expected := (tick - _last_tick) * 1000.0 / 60.0
+		var dev := absf((now - _last_arrival) - expected)
+		jitter_ms = lerpf(jitter_ms, dev, 0.05)
+		var missing := maxf(0.0, float(tick - _last_tick) / float(Net.SNAPSHOT_EVERY) - 1.0)
+		snap_loss = lerpf(snap_loss, missing / (missing + 1.0), 0.05)
+		# folga = um intervalo de snapshot + 2× a variação + margem
+		var want := clampf(Net.SNAPSHOT_EVERY * 2.0 + jitter_ms * 2.0 / (1000.0 / 60.0) + 1.0, DELAY_MIN, DELAY_MAX)
+		delay_ticks = lerpf(delay_ticks, want, 0.05)
+	_last_arrival = now
+	_last_tick = tick
 
 
 func push_events(evs: Array) -> void:
@@ -43,7 +71,7 @@ func render(dt: float) -> void:
 	if buf.is_empty():
 		return
 	var latest: float = buf[-1].tick
-	var target := latest - DELAY_TICKS
+	var target := latest - delay_ticks
 	if render_tick < 0.0:
 		render_tick = target
 	render_tick += dt * 60.0
@@ -61,6 +89,8 @@ func render(dt: float) -> void:
 	if s1.tick > s0.tick:
 		alpha = clampf((render_tick - s0.tick) / float(s1.tick - s0.tick), 0.0, 1.0)
 	_fire_events()
+	if predictor != null:
+		predictor.render(dt)
 	_apply(s0, s1, alpha, maxf(0.0, render_tick - s0.tick) / 60.0, dt)
 
 
@@ -80,6 +110,8 @@ func _fire_events() -> void:
 	while not events.is_empty() and float(events[0][0]) <= render_tick:
 		var ev: Array = events.pop_front()
 		var args: Array = ev[2]
+		if ev.size() > 3 and predictor != null and int(ev[3]) == predictor.pid and predictor.ready:
+			continue # tiro deste jogador: já desenhado e tocado na hora pela previsão
 		match ev[1]:
 			"sfx":
 				Sfx.play(args[0], args[1])
@@ -93,6 +125,8 @@ func _fire_events() -> void:
 				w.decal_layer.add_decal(args[0], args[1], args[2])
 			"corpse":
 				w.decal_layer.add_corpse(args[0], args[1], args[2], args[3])
+			"wall":
+				_wall(int(args[0]), int(args[1]))
 
 
 func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -> void:
@@ -114,14 +148,20 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 		if i < s1.cmds.size() and not r0.dead and not s1.cmds[i].dead:
 			p = p.lerp(s1.cmds[i].p, a)
 			f = lerp_angle(f, s1.cmds[i].face, a)
+		if predictor != null and i == predictor.pid and predictor.ready and not r0.dead:
+			p = predictor.visual_pos(Engine.get_physics_interpolation_fraction())
+			f = predictor.face
 		c.position = p
 		c.face = f
 		c.dead = r0.dead
 		c.disconnected = r0.disconnected
 		c.moving = r0.moving
+		c.walk_t = r0.walk
+		if predictor != null and i == predictor.pid and predictor.ready:
+			c.moving = predictor.moving
+			c.walk_t = predictor.walk_t
 		c.carrying = r0.carrying
 		c.flash = 0.1 if r0.flash else 0.0
-		c.walk_t = r0.walk
 		c.hp = r0.hp
 		c.invuln = r0.invuln
 		c.respawn_timer = r0.respawn
@@ -176,25 +216,20 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 		tu.aim = aim
 		tu.operator = tu if s0.turrets[i].manned else null
 		tu.t += dt
-	for cell in w.walls.keys():
-		if not s0.walls.has(cell):
-			# muro/portão destruído no host
-			w.grid.kind[cell] = Grid.GROUND
-			w.grid.deco[cell] = 120
-			w.walls[cell].queue_free()
-			w.walls.erase(cell)
-			w.walls_version += 1
-		else:
-			w.grid.hp[cell] = s0.walls[cell] * w.grid.max_hp[cell]
 	w.hazards = s0.hazards
 	w.ambushes = s0.ambushes
 
 	# projéteis: posição do snapshot + avanço pelo tempo decorrido
 	var pl: Array = []
+	var mine := predictor.pid if predictor != null and predictor.ready else -1
 	for pr in s0.proj:
+		if mine >= 0 and int(pr.pid) == mine:
+			continue # as balas deste jogador são as da previsão (saem na hora, do lugar certo)
 		var q: Dictionary = pr.duplicate()
 		q.p = pr.p + pr.v * since
 		pl.append(q)
+	if predictor != null:
+		pl.append_array(predictor.bullets)
 	w.projectiles.list = pl
 	var gl: Array = []
 	for gr in s0.gren:
@@ -208,6 +243,21 @@ func _apply(s0: Dictionary, s1: Dictionary, a: float, since: float, dt: float) -
 	w.fx.tick(dt)
 	w.lights.update(dt)
 	w.atmo.update(dt)
+
+
+## Evento "wall": nível de vida de um muro mudou no host (-1 = caiu).
+func _wall(cell: int, level: int) -> void:
+	var w := world
+	if not w.walls.has(cell):
+		return
+	if level < 0:
+		w.grid.kind[cell] = Grid.GROUND
+		w.grid.deco[cell] = 120
+		w.walls[cell].queue_free()
+		w.walls.erase(cell)
+		w.walls_version += 1
+	else:
+		w.grid.hp[cell] = float(level) / World.WALL_LEVELS * w.grid.max_hp[cell]
 
 
 func _create(e: Dictionary):

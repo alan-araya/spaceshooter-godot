@@ -96,7 +96,7 @@ Defender, Seguir) a quem está perto e cuida do resto com o seu fuzil, granadas 
 - Com **1 jogador**, qualquer teclado ou controle comanda o P1.
 - Com **vários jogadores**, P1 usa WASD e P2 as setas; os controles vão primeiro para quem não tem teclado
   (P3, P4) e os que sobram vão para o P1 e depois para o P2. O briefing mostra quem está com qual aparelho.
-- Teclas **1–4**: ordem direta. **Esc / Start**: pausa.
+- Teclas **1–4**: ordem direta. **Esc / Start**: pausa. **Tab / View** (segurar): jogadores, ping e perda.
 
 ## Jogar
 
@@ -127,7 +127,10 @@ godot --path .
 3. O host troca missão e dificuldade no lobby e aperta **COMEÇAR**.
 
 Pela internet sem servidor: todos instalam uma rede virtual (ex.: Tailscale) e usam o IP dela.
-Em rede a partida não pausa (Esc abre um menu por cima).
+Em rede a partida não pausa (Esc abre um menu por cima). Segure **Tab** para ver o ping de cada jogador.
+
+Quem entra numa partida vê o próprio comandante andar e atirar na hora (previsão no cliente); o resto do mundo
+vem do host com uma pequena folga que se ajusta à conexão.
 
 ## Documentação
 
@@ -177,6 +180,9 @@ godot --headless --path . -- --net-host --mission=3 --net-start-when=2 --net-log
 ```bash
 godot --path . -- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24
 ```
+
+Para simular uma conexão ruim sem VPN, acrescente ao cliente `--net-lag=120 --net-jitter=20 --net-loss=0.03`
+(e `--nettable` para deixar a tabela de ping aberta).
 
 Para medir FPS, grave a saída num arquivo (pelo pipe do terminal o número sai distorcido):
 

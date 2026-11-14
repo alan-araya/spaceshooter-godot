@@ -49,16 +49,10 @@ func tick(dt: float) -> void:
 	grenade_cd -= dt
 
 	# movimento em 8 direções
-	var mv := in_move
-	moving = mv.length() > 0.2
+	moving = in_move.length() > 0.2
+	face = step_move(world, self, face, in_move, in_strafe, carrying, r, dt)
 	if moving:
-		mv = mv.limit_length(1.0)
-		var speed: float = Bal.COMMANDER.speed * (Bal.COMMANDER.carry_slow if carrying else 1.0)
-		world.grid.move_circle(self, mv * speed * dt, r, Grid.MODE_HUMAN)
-		if not in_strafe:
-			face = roundf(mv.angle() / SNAP8) * SNAP8
 		walk_t += dt * 7.0
-	push_out_of_structures()
 	trample_flowers()
 
 	# ordens (só para os soldados deste comandante)
@@ -72,19 +66,16 @@ func tick(dt: float) -> void:
 	if in_fire and fire_cd <= 0.0 and not carrying:
 		var wp: Dictionary = Bal.WEAPONS[weapon]
 		fire_cd = wp.interval
+		world.event_owner = pid
 		fire_weapon(face, weapon, wp.spread)
-		var snd := "shot"
-		if weapon == "flame":
-			snd = "flame"
-		elif weapon == "plasma":
-			snd = "plasma"
-		world.sfx(snd, position.x)
+		world.sfx(shot_sound(weapon), position.x)
+		world.event_owner = -1
 		if ammo > 0:
 			ammo -= 1
 			if ammo <= 0:
 				weapon = "mg"
 				ammo = -1
-				world.toast("MUNIÇÃO ESGOTADA — METRALHADORA", Color("cccccc"))
+				world.toast("TOAST_AMMO_OUT", Color("cccccc"))
 
 	# granada em arco
 	if in_grenade and grenade_cd <= 0.0 and grenades > 0:
@@ -99,6 +90,28 @@ func tick(dt: float) -> void:
 	in_order_next = false
 	in_order_set = ""
 	in_grenade = false
+
+
+static func shot_sound(weapon_key: String) -> String:
+	if weapon_key == "flame":
+		return "flame"
+	if weapon_key == "plasma":
+		return "plasma"
+	return "shot"
+
+
+## Movimento de um quadro (o mesmo no host e na previsão do cliente): anda pelo grid, desvia de ninhos e do
+## gerador. Move `u` (só a posição dele é usada) e devolve a nova direção.
+static func step_move(w: World, u: Node2D, face_in: float, mv: Vector2, strafe: bool, carrying_now: bool, radius: float, dt: float) -> float:
+	var f := face_in
+	if mv.length() > 0.2:
+		mv = mv.limit_length(1.0)
+		var speed: float = Bal.COMMANDER.speed * (Bal.COMMANDER.carry_slow if carrying_now else 1.0)
+		w.grid.move_circle(u, mv * speed * dt, radius, Grid.MODE_HUMAN)
+		if not strafe:
+			f = roundf(mv.angle() / SNAP8) * SNAP8
+	u.position = Human.push_out_of(w, u.position, radius)
+	return f
 
 
 func sync_visual() -> void:

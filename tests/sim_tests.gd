@@ -33,6 +33,8 @@ func run(m: Node) -> void:
 	_test_cmd_input_roundtrip()
 	_test_snapshot_roundtrip()
 	_test_loopback_replica()
+	_test_wall_events()
+	_test_prediction()
 	_test_visuals()
 	_test_effects_keep_sim()
 	_test_i18n_keys()
@@ -410,8 +412,12 @@ func _test_cmd_input_roundtrip() -> void:
 	c.order_n = 7
 	c.order_set = 2
 	c.order_set_n = 9
+	c.seq = 65534
 	var d := CmdInput.decode(c.encode())
-	check(c.encode().size() == 6, "CmdInput não tem 6 bytes")
+	check(c.encode().size() == CmdInput.SIZE and CmdInput.SIZE == 8, "CmdInput não tem 8 bytes")
+	check(d.seq == 65534, "CmdInput: número de sequência não sobreviveu")
+	check(CmdInput.seq_newer(1, 65534) and not CmdInput.seq_newer(65534, 1) and not CmdInput.seq_newer(5, 5),
+		"CmdInput: comparação cíclica de sequência errada")
 	check(d.move.distance_to(c.move) < 0.08 and d.fire and d.strafe, "CmdInput: movimento/botões não sobreviveram")
 	check(d.grenade_n == 200 and d.order_n == 7 and d.order_set == 2 and d.order_set_n == 9, "CmdInput: contadores não sobreviveram")
 	# contador mudou => aperto aplicado uma vez
@@ -422,6 +428,108 @@ func _test_cmd_input_roundtrip() -> void:
 	d.apply_to(cm, prev)
 	check(cm.in_grenade, "CmdInput: aperto de granada não disparou")
 	w.queue_free()
+
+
+## Muros: dano e queda vão como evento "wall" (só quando o nível muda) e a réplica aplica.
+func _test_wall_events() -> void:
+	var sim := _new_world(_idx("m5"), 1, "normal", 5)
+	sim.present = false
+	sim.recording = true
+	var rep_world := _new_world(_idx("m5"), 1, "normal", 5)
+	var rep := Replica.new(rep_world)
+	var cells: Array = sim.walls.keys()
+	check(cells.size() >= 2, "muros: missão sem muros")
+	var a: int = cells[0]
+	var b: int = cells[1]
+	var mx: float = sim.grid.max_hp[a]
+	sim.grid.damage_tile(a % sim.grid.cols, a / sim.grid.cols, mx * 0.5)
+	sim._record_wall(a, false)
+	sim._record_wall(a, false) # mesmo nível: não grava de novo
+	var broke := sim.grid.damage_tile(b % sim.grid.cols, b / sim.grid.cols, 9999.0)
+	sim._record_wall(b, broke)
+	var n := 0
+	for ev in sim.net_events:
+		if ev[1] == "wall":
+			n += 1
+	check(n == 2, "muros: %d eventos (esperado 2)" % n)
+	rep.push_snapshot(Snapshot.encode(sim))
+	rep.push_events(sim.net_events.duplicate())
+	rep.catch_up()
+	check(absf(rep_world.grid.hp[a] - sim.grid.hp[a]) <= mx / World.WALL_LEVELS + 0.01, "muros: vida não replicada")
+	check(not rep_world.walls.has(b) and rep_world.grid.kind[b] == Grid.GROUND, "muros: queda não replicada")
+	sim.queue_free()
+	rep_world.queue_free()
+
+
+## Previsão: o cliente anda na hora; com atraso de 6 quadros em cada sentido e 15% de perda dos pacotes de
+## comandos, o host aplica todos os comandos (redundância) e no fim a previsão coincide com o host.
+func _test_prediction() -> void:
+	var host := _new_world(_idx("m3"), 2, "normal", 9)
+	host.present = false
+	host.recording = true
+	var rep_world := _new_world(_idx("m3"), 2, "normal", 9)
+	var rep := Replica.new(rep_world)
+	var pr := Predictor.new(rep_world, 1)
+	rep.predictor = pr
+	var old_roster: Dictionary = Net.roster
+	Net.roster = { 7: 1 }
+	Net._reset_inputs()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	var LAG := 6
+	var to_host: Array = [] # [quadro de chegada, bytes]
+	var to_client: Array = []
+	var c: Commander = host.commanders[1]
+	var moved_now := true
+	var max_err := 0.0
+	var frames := 60 * 8
+	for f in frames + 40:
+		# cliente: comando do quadro (anda em direções que mudam, encosta em muros)
+		var cmd := CmdInput.new()
+		if f < frames:
+			var a := floorf(f / 45.0) * 1.3
+			cmd.move = Vector2(cos(a), sin(a))
+			cmd.fire = f % 50 < 20
+		var before := pr.pos
+		pr.next_cmd(cmd)
+		if f > 30 and f < frames and pr.ready and pr.pos.distance_to(before) < 0.01 and cmd.move != Vector2.ZERO:
+			# parado só se encostou num muro; confere com a regra de movimento
+			var probe := Node2D.new()
+			probe.position = before
+			Commander.step_move(rep_world, probe, pr.face, cmd.move, false, false, Bal.COMMANDER.radius, 1.0 / 60.0)
+			if probe.position.distance_to(before) > 0.01:
+				moved_now = false
+			probe.free()
+		var b := PackedByteArray()
+		for i in mini(Net.INPUT_REDUNDANCY, pr.history.size()):
+			b.append_array((pr.history[pr.history.size() - 1 - i] as CmdInput).encode())
+		if rng.randf() >= 0.15:
+			to_host.append([f + LAG, b])
+		# host: recebe, aplica um comando por quadro, simula
+		while not to_host.is_empty() and int(to_host[0][0]) <= f:
+			Net.on_input_bytes(7, to_host.pop_front()[1])
+		Net.apply_remote(c)
+		host.update(1.0 / 60.0)
+		if f % 2 == 0:
+			to_client.append([f + LAG, Snapshot.encode(host, Net.acked)])
+			rep.push_events(host.net_events.duplicate())
+			host.net_events.clear()
+		while not to_client.is_empty() and int(to_client[0][0]) <= f:
+			rep.push_snapshot(to_client.pop_front()[1])
+		rep.render(1.0 / 60.0)
+		if f > 60 and f < frames and pr.ready:
+			max_err = maxf(max_err, pr.err_avg)
+	var end_d := pr.pos.distance_to(c.position)
+	print("previsão: erro médio máx %.2f px, distância final %.2f px, %d comandos pendentes" % [max_err, end_d, pr.history.size()])
+	check(moved_now, "previsão: o comandante local não andou no mesmo quadro do comando")
+	check(end_d < 1.0, "previsão: no fim a posição prevista difere do host em %.1f px" % end_d)
+	check(max_err < 6.0, "previsão: erro médio de %.1f px com rede ruim" % max_err)
+	check(not c.dead and c.position.distance_to(host.lz) > 40.0, "previsão: o comandante do host não andou")
+	Net.roster = old_roster
+	Net._reset_inputs()
+	pr.free_nodes()
+	host.queue_free()
+	rep_world.queue_free()
 
 
 func _count_ents(w: World) -> int:
@@ -437,12 +545,18 @@ func _test_snapshot_roundtrip() -> void:
 	var w := _new_world(_idx("m4"), 2)
 	w.apply_pickup("airstrike", w.commanders[0])
 	_run(w, 6.0)
-	var bytes := Snapshot.encode(w)
+	var bytes := Snapshot.encode(w, { 0: 4321, 1: 65535 })
 	var s := Snapshot.decode(bytes)
 	print("snapshot: %d bytes, %d entidades, %d projéteis" % [bytes.size(), s.ents.size(), s.proj.size()])
 	check(s.tick == w.frame and is_equal_approx(s.time, w.time), "snapshot: tick/tempo")
 	check(s.ents.size() == _count_ents(w), "snapshot: %d entidades (mundo tem %d)" % [s.ents.size(), _count_ents(w)])
-	check(s.walls.size() == w.walls.size() and s.turrets.size() == w.turrets.size(), "snapshot: muros/torretas")
+	check(s.turrets.size() == w.turrets.size(), "snapshot: torretas")
+	check(s.cmds[0].ack == 4321 and s.cmds[1].ack == 65535, "snapshot: ack dos comandos")
+	var own_ok := true
+	for i in mini(s.proj.size(), w.projectiles.list.size()):
+		if int(s.proj[i].pid) != int(w.projectiles.list[i].get("pid", -1)):
+			own_ok = false
+	check(own_ok, "snapshot: dono dos projéteis")
 	check(s.cmds.size() == 2 and s.cmds[0].p.distance_to(w.commanders[0].position) <= 0.5, "snapshot: comandantes")
 	check(L.tp(s.objective) == w.objective_text(), "snapshot: texto do objetivo")
 	var ok_pos := true

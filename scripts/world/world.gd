@@ -83,6 +83,11 @@ var tmp_b: Array = []
 ## Rede (fase 0): a simulação não fala direto com som/partículas/decalques/HUD; tudo passa por
 ## sfx()/record()/toast()/shake(). No host, `recording` guarda os eventos para enviar aos clientes.
 var recording := false
+## Rede: comandante dono dos eventos gravados agora (tiro dele: som e clarão). O cliente desse jogador já
+## desenhou esses efeitos na hora (previsão) e pula os eventos dele. -1 = ninguém.
+var event_owner := -1
+var _wall_sent := {} # rede: célula -> último nível de vida de muro gravado (0..WALL_LEVELS, -1 = caiu)
+const WALL_LEVELS := 31
 var net_events: Array = [] # [quadro, tipo, args]
 ## false = mundo "fantasma" (só simula e grava eventos; não toca som nem cria partículas).
 var present := true
@@ -474,9 +479,23 @@ func sfx(sound: String, x: float = 0.0) -> void:
 		Sfx.play(sound, x)
 
 
+## Rede: muro mudou de nível de vida (ou caiu) → evento "wall" [célula, nível] para os clientes.
+## Só quando o nível muda, para não mandar uma mensagem a cada mordida.
+func _record_wall(idx: int, broke: bool) -> void:
+	if not recording:
+		return
+	var q := -1 if broke else clampi(int(grid.hp[idx] / maxf(grid.max_hp[idx], 0.001) * WALL_LEVELS), 0, WALL_LEVELS)
+	if int(_wall_sent.get(idx, WALL_LEVELS)) != q:
+		_wall_sent[idx] = q
+		record("wall", [idx, q])
+
+
 func record(type: String, args: Array) -> void:
 	if recording:
-		net_events.append([frame, type, args])
+		if event_owner >= 0:
+			net_events.append([frame, type, args, event_owner])
+		else:
+			net_events.append([frame, type, args])
 
 
 func humans_alive() -> Array:
@@ -837,7 +856,9 @@ func bite_tile(b: Bug, tile_idx: int) -> void:
 	fx.dust(c + (b.position - c) * 0.4, 2)
 	if walls.has(tile_idx):
 		walls[tile_idx].flash = 0.08
-	if grid.damage_tile(cx, cy, Bal.BUG.wall_damage * (3.0 if b.kind == "mother" else 1.0)):
+	var broke := grid.damage_tile(cx, cy, Bal.BUG.wall_damage * (3.0 if b.kind == "mother" else 1.0))
+	_record_wall(tile_idx, broke)
+	if broke:
 		fx.dust(c, 16)
 		decal_layer.add_decal("rubble", c, 12.0)
 		sfx("wallbreak", c.x)

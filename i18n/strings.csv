@@ -276,3 +276,18 @@ INPUT_ANY_PAD,qualquer controle,any controller,cualquier control,qualquer comand
 INPUT_NONE,SEM APARELHO — conecte mais um controle,NO DEVICE — connect another controller,SIN DISPOSITIVO — conecta otro control,SEM DISPOSITIVO — liga mais um comando,KEIN GERÄT — schließ noch einen Controller an,デバイスなし — コントローラーをもう1台接続してください,无设备 — 请再连接一个手柄
 BRIEF_DEVICES,P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}: {devices},P{p}：{devices},P{p}：{devices}
 MANUAL_ORDER_RADIUS,Só os soldados perto de você recebem a ordem (anel colorido).,Only soldiers near you hear the order (colored ring).,Solo los soldados cerca de ti reciben la orden (anillo de color).,Só os soldados perto de ti recebem a ordem (anel colorido).,Nur Soldaten in deiner Nähe hören den Befehl (farbiger Ring).,命令が届くのは近くの兵士だけ（色付きの輪）。,只有你附近的士兵会收到命令（彩色圆环）。
+NETTAB_TITLE,JOGADORES,PLAYERS,JUGADORES,JOGADORES,SPIELER,プレイヤー,玩家
+NETTAB_PLAYER,JOGADOR,PLAYER,JUGADOR,JOGADOR,SPIELER,プレイヤー,玩家
+NETTAB_ROLE,PAPEL,ROLE,ROL,PAPEL,ROLLE,役割,角色
+NETTAB_PING,PING,PING,PING,PING,PING,Ping,延迟
+NETTAB_LOSS,PERDA,LOSS,PÉRDIDA,PERDA,VERLUST,ロス,丢包
+NETTAB_HOST,HOST,HOST,ANFITRIÓN,ANFITRIÃO,HOST,ホスト,主机
+NETTAB_CLIENT,CONVIDADO,GUEST,INVITADO,CONVIDADO,GAST,ゲスト,客户端
+NETTAB_LOCAL,LOCAL,LOCAL,LOCAL,LOCAL,LOKAL,ローカル,本地
+NETTAB_YOU,(VOCÊ),(YOU),(TÚ),(TU),(DU),（あなた）,（你）
+NETTAB_HINT_HOST,Você hospeda: seus comandos não têm atraso.,You are the host: your inputs have no delay.,Eres el anfitrión: tus controles no tienen retraso.,Estás a alojar: os teus comandos não têm atraso.,Du hostest: deine Eingaben haben keine Verzögerung.,あなたがホスト：入力の遅延はありません。,你是主机：你的操作没有延迟。
+NETTAB_HINT_LOCAL,"Partida local, sem rede.","Local match, no network.","Partida local, sin red.","Partida local, sem rede.","Lokales Spiel, kein Netzwerk.",ローカル対戦（ネットワークなし）。,本地对局，无网络。
+NETTAB_CLIENT_LINE,Atraso de desenho {delay} ms · variação {jitter} ms · estados perdidos {lost}% · correção {err} px,Render delay {delay} ms · jitter {jitter} ms · lost states {lost}% · correction {err} px,Retraso de dibujo {delay} ms · variación {jitter} ms · estados perdidos {lost}% · corrección {err} px,Atraso de desenho {delay} ms · variação {jitter} ms · estados perdidos {lost}% · correção {err} px,Darstellungsverzögerung {delay} ms · Jitter {jitter} ms · verlorene Zustände {lost}% · Korrektur {err} px,描画遅延 {delay} ms・揺らぎ {jitter} ms・欠落した状態 {lost}%・補正 {err} px,渲染延迟 {delay} ms · 抖动 {jitter} ms · 丢失状态 {lost}% · 校正 {err} px
+NETTAB_SIM,"Simulador de rede ativo: +{lag} ms, perda {loss}%","Network simulator on: +{lag} ms, {loss}% loss","Simulador de red activo: +{lag} ms, pérdida {loss}%","Simulador de rede ativo: +{lag} ms, perda {loss}%","Netzwerksimulator aktiv: +{lag} ms, {loss}% Verlust",ネットワークシミュレーター作動中：+{lag} ms、ロス {loss}%,网络模拟器开启：+{lag} ms，丢包 {loss}%
+TOAST_AMMO_OUT,MUNIÇÃO ESGOTADA — METRALHADORA,OUT OF AMMO — MACHINE GUN,SIN MUNICIÓN — AMETRALLADORA,SEM MUNIÇÕES — METRALHADORA,MUNITION LEER — MASCHINENGEWEHR,弾切れ——機関銃に戻る,弹药耗尽——切换为机枪
+MANUAL_TAB_PLAYERS,jogadores e ping,players & ping,jugadores y ping,jogadores e ping,Spieler & Ping,プレイヤーとPing,玩家与延迟

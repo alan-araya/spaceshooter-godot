@@ -13,6 +13,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 - Mapas das defesas em camadas: `python -I tools/build_maps.py` (imprime os mapas para colar em missions.gd).
 - Rede com 2 instâncias: host `-- --net-host --mission=3 --net-start-when=2 --net-log --quit-after=30` (pode ser
   `--headless`) e cliente `-- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24`. `-- --loopback` = réplica sem rede.
+  Rede ruim simulada: `--net-lag=120 --net-jitter=20 --net-loss=0.03` (no cliente); `--nettable` deixa a tabela de
+  ping (Tab) aberta. O `--net-log` do cliente imprime rtt, folga, perda de estados e erro da previsão.
 - Visual: `-- --gfx=alto|medio|baixo`, `-- --seed=N` (screenshot repetível), `-- --shot-all=PASTA --shot-after=8`
   (as seis missões numa janela só). `-- --fx-demo=SEG` dispara uma explosão ao lado do P1 e
   `-- --hurt-demo=SEG` o aviso de dano, para screenshot (só visual). Relevo dos sprites:

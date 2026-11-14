@@ -33,6 +33,8 @@ func _ready() -> void:
 	for i in 4:
 		_add("order_%d" % (i + 1), [_key(KEY_1 + i)])
 	_add("pause", [_key(KEY_ESCAPE), _key(KEY_P), _joy_btn(JOY_BUTTON_START, -1)])
+	# segurar: tabela de jogadores com ping (Tab ou Back/View do controle)
+	_add("scoreboard", [_key(KEY_TAB), _joy_btn(JOY_BUTTON_BACK, -1)])
 	_add("debug_win", [_key(KEY_F9)])
 	# menus pelo controle: analógico esquerdo também navega (o direcional e o A já vêm do Godot)
 	for pair in [["ui_up", JOY_AXIS_LEFT_Y, -1.0], ["ui_down", JOY_AXIS_LEFT_Y, 1.0], ["ui_left", JOY_AXIS_LEFT_X, -1.0], ["ui_right", JOY_AXIS_LEFT_X, 1.0]]:

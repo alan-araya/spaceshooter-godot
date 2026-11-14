@@ -308,11 +308,20 @@ recebem estado. Transporte ENet/UDP pela API de multiplayer do Godot (`autoload/
 
 | Peça | Arquivo | O que faz |
 |---|---|---|
-| Comandos | `scripts/net/cmd_input.gd` | 6 bytes por quadro: direção (8 + parado), força, tiro, travar mira e **contadores** de granada/ordem (um pacote perdido não perde o aperto) |
-| Estado | `scripts/net/snapshot.gd` | 30×/s, não confiável: comandantes, entidades com `uid` (posição em meio pixel, ângulo em 1/256 de volta, vida 0–255), muros, torretas, relés, gerador, cristal, poças, avisos, projéteis e granadas. ~0,7–3 KB por snapshot; ~25 KB/s por cliente medidos |
-| Eventos | `World.record()` | som, partículas, decalques, mensagens e tremor; lista confiável junto com cada snapshot |
-| Réplica | `scripts/net/replica.gd` | o cliente monta a mesma missão com a mesma semente (mesmos `uid` iniciais), desenha ~100 ms no passado interpolando entre 2 snapshots e dispara os eventos no quadro certo |
+| Comandos | `scripts/net/cmd_input.gd` | 8 bytes por quadro: número de sequência, direção (8 + parado), força, tiro, travar mira e **contadores** de granada/ordem (um pacote perdido não perde o aperto). Cada pacote leva os 4 últimos comandos |
+| Fila no host | `Net.apply_remote` | o host aplica **um comando por quadro, na ordem**; fila vazia repete o último; fila longa descarta os velhos |
+| Estado | `scripts/net/snapshot.gd` | 30×/s, não confiável: comandantes (com `ack` = último comando aplicado), entidades com `uid` (posição em meio pixel, ângulo em 1/256 de volta, vida 0–255), torretas, relés, gerador, cristal, poças, avisos, projéteis (com dono) e granadas. ~0,4 KB na Fortaleza com poucos insetos |
+| Eventos | `World.record()` | som, partículas, decalques, mensagens, tremor e **muros** (`"wall"`: só quando o nível de vida muda ou o muro cai); lista confiável junto com cada snapshot |
+| Réplica | `scripts/net/replica.gd` | o cliente monta a mesma missão com a mesma semente (mesmos `uid` iniciais), desenha no passado interpolando entre snapshots e dispara os eventos no quadro certo. A folga (83–267 ms) se ajusta à variação medida de chegada |
+| Previsão | `scripts/net/predictor.gd` | o **próprio** comandante anda e atira na hora no cliente (mesma regra de movimento do host, `Commander.step_move`); a cada snapshot volta à posição do host e refaz os comandos ainda não aplicados; a diferença some em ~0,1 s. Os tiros dele (som, clarão, balas) são locais; as balas do host com dono = ele não são desenhadas |
+| Tabela de rede | `scripts/ui/net_table.gd` | segurar **Tab** (ou View/Back): jogadores, host, ping (ping próprio a cada 0,5 s) e perda (ENet); no cliente, folga de desenho, variação, estados perdidos e correção da previsão |
 | Lobby | `scripts/ui/main.gd` | hospedar/entrar por IP, slots P1–P4, host escolhe missão e dificuldade; resultado e "próxima missão" decididos pelo host |
+
+**ENet**: o descarte automático de pacotes não confiáveis quando o ping oscila vem desligado
+(`throttle_configure(5000, 32, 0)`), senão os snapshots somem numa VPN.
+
+**Simulador**: `-- --net-lag=MS --net-jitter=MS --net-loss=0.03` numa instância simula rede ruim (metade do atraso
+na saída, metade na chegada; perda só em pacotes não confiáveis). `-- --nettable` deixa a tabela aberta.
 
 **Versão**: ao conectar, o cliente manda `Net.version` (protocolo + impressão digital de `Missions.LIST`); o host
 recusa versões diferentes com uma mensagem, porque o cliente monta o mapa com o próprio `missions.gd` (com mapas
@@ -323,8 +332,9 @@ Regras: a simulação nunca chama `Sfx`, `Fx`, decalques ou o HUD direto — usa
 custar tropa; o pelotão dele passa para o P1. Em rede a partida não pausa.
 
 **Fases**: 0 (eventos, comandos, estado, réplica — feito, validado por `--loopback` e testes) ·
-1 (LAN — feito, validado com 2 instâncias) · 2 (previsão do próprio comandante para esconder o atraso,
-reconexão, medidor de ping, compressão por diferença) · 3 (internet: lobbies da Steam/EOS ou relay noray).
+1 (LAN — feito, validado com 2 instâncias) · 2 (previsão do próprio comandante, fila de comandos, muros por
+evento, folga adaptativa, tabela de ping — feito; falta reconexão e compressão por diferença) ·
+3 (internet sem VPN: relay noray com código de sala — em andamento).
 
 ---
 

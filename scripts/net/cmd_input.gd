@@ -1,9 +1,14 @@
 class_name CmdInput
 extends RefCounted
-## Comandos de UM comandante num quadro (o que o cliente manda ao host, ~6 bytes).
+## Comandos de UM comandante num quadro (o que o cliente manda ao host, 8 bytes).
+## `seq` numera os quadros do cliente (0..65535, cíclico): o host aplica um por quadro, na ordem, e devolve
+## no snapshot o último aplicado — é o que a previsão do cliente usa para refazer o que ainda falta.
 ## Mover, atirar e travar mira são ESTADO. Granada e ordem são CONTADORES de apertos:
 ## se um pacote se perder, o próximo ainda carrega o aperto (nada de "apertei e não foi").
 
+const SIZE := 8
+
+var seq := 0
 var move := Vector2.ZERO
 var fire := false
 var strafe := false
@@ -15,6 +20,7 @@ var order_set_n := 0
 
 func copy() -> CmdInput:
 	var c := CmdInput.new()
+	c.seq = seq
 	c.move = move
 	c.fire = fire
 	c.strafe = strafe
@@ -27,7 +33,7 @@ func copy() -> CmdInput:
 
 func encode() -> PackedByteArray:
 	var b := PackedByteArray()
-	b.resize(6)
+	b.resize(SIZE)
 	var dir := 8 # 8 = parado
 	if move.length() > 0.2:
 		dir = posmod(roundi(move.angle() / (PI / 4.0)), 8)
@@ -38,12 +44,13 @@ func encode() -> PackedByteArray:
 	b[3] = order_n & 255
 	b[4] = (order_set + 1) & 255
 	b[5] = order_set_n & 255
+	b.encode_u16(6, seq & 0xffff)
 	return b
 
 
 static func decode(b: PackedByteArray) -> CmdInput:
 	var c := CmdInput.new()
-	if b.size() < 6:
+	if b.size() < SIZE:
 		return c
 	var dir := b[0] & 15
 	var mag := (b[0] >> 4) / 15.0
@@ -56,7 +63,14 @@ static func decode(b: PackedByteArray) -> CmdInput:
 	c.order_n = b[3]
 	c.order_set = b[4] - 1
 	c.order_set_n = b[5]
+	c.seq = b.decode_u16(6)
 	return c
+
+
+## true se o número `a` é mais novo que `b` (contagem cíclica de 16 bits).
+static func seq_newer(a: int, b: int) -> bool:
+	var d := (a - b) & 0xffff
+	return d != 0 and d < 0x8000
 
 
 ## Aplica ao comandante. Apertos disparam quando o contador mudou desde `prev` (o último aplicado).

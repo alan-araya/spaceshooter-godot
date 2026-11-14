@@ -19,6 +19,9 @@ extends Node
 ##   --net-join=IP [--net-bot]   entra; --net-bot manda comandos sintéticos (andar em círculo e atirar)
 ##   --net-port=N   porta UDP (testes com outro jogo aberto na máquina) · --net-version=X finge outra versão
 ##   --net-log   imprime estatísticas de rede a cada 2 s · --quit-after=SEG
+##   --net-lag=MS --net-jitter=MS --net-loss=0.02   simula rede ruim nesta máquina (atraso de ida e volta,
+##               variação e perda de pacotes não confiáveis) — para testar sem VPN
+##   --nettable  deixa a tabela de jogadores (Tab) aberta, para screenshot
 
 enum Screen { MENU, SELECT, BRIEFING, PLAYING, PAUSED, RESULT, NET_MENU, LOBBY }
 
@@ -30,6 +33,7 @@ var replica: Replica
 var stage: Stage # palco: mundo num SubViewport + pós-processamento
 var game_root: Node2D # raiz do mundo, dentro do palco
 var hud: Hud
+var net_table: NetTable
 var hud_layer: CanvasLayer
 var ui_layer: CanvasLayer
 var ui: Control
@@ -92,6 +96,9 @@ func _ready() -> void:
 	if args.has("shot-all"):
 		_shot_all(args["shot-all"])
 		return
+	Net.sim_lag = float(args.get("net-lag", 0.0))
+	Net.sim_jitter = float(args.get("net-jitter", 0.0))
+	Net.sim_loss = float(args.get("net-loss", 0.0))
 	if args.has("net-join"):
 		_join(args["net-join"])
 		return
@@ -498,6 +505,7 @@ func start_mission(seed_v: int = -1, players: int = -1) -> void:
 	stage.set_active(true)
 	if Net.is_client():
 		replica = Replica.new(world)
+		replica.predictor = Predictor.new(world, Net.my_pid)
 	elif Net.is_host():
 		world.recording = true
 	elif args.has("loopback"):
@@ -514,6 +522,11 @@ func start_mission(seed_v: int = -1, players: int = -1) -> void:
 	hud.theme = UiKit.theme()
 	hud_layer.add_child(hud)
 	hud.bind(world, players)
+	net_table = NetTable.new()
+	net_table.players = players
+	net_table.replica = replica
+	net_table.force = args.has("nettable")
+	hud_layer.add_child(net_table)
 	world.toast(world.mission.name, UiKit.AMBER)
 	screen = Screen.PLAYING
 	_net_frame = 0
@@ -551,10 +564,15 @@ func _end_world() -> void:
 	if _loop_sim != null:
 		_loop_sim.queue_free()
 		_loop_sim = null
+	if replica != null and replica.predictor != null:
+		replica.predictor.free_nodes()
 	replica = null
 	if hud != null:
 		hud.queue_free()
 		hud = null
+	if net_table != null:
+		net_table.queue_free()
+		net_table = null
 
 
 func show_pause() -> void:
@@ -680,8 +698,8 @@ func _physics_process(_delta: float) -> void:
 			_tick_client()
 		elif _loop_sim != null:
 			_tick_loopback()
-		else:
-			_tick_sim()
+		elif not world.replica:
+			_tick_sim() # (um mundo-réplica nunca simula: acontece por 1 quadro quando o cliente sai da rede)
 		if Input.is_action_just_pressed("pause") and not _overlay:
 			show_pause()
 		if Input.is_action_just_pressed("debug_win") and OS.is_debug_build() and not world.replica:
@@ -703,7 +721,7 @@ func _tick_sim() -> void:
 	if Net.is_host():
 		_net_frame += 1
 		if _net_frame % Net.SNAPSHOT_EVERY == 0:
-			Net.broadcast_state(Snapshot.encode(world), world.net_events)
+			Net.broadcast_state(Snapshot.encode(world, Net.acked), world.net_events)
 			world.net_events = []
 	if world.outcome != "" and world.outcome_timer > 2.5:
 		show_result()
@@ -716,7 +734,9 @@ func _tick_client() -> void:
 		cmd = _bot_cmd()
 	else:
 		cmd = InputSetup.sample(0, 1)
-	Net.send_input(cmd)
+	if replica != null and replica.predictor != null:
+		replica.predictor.next_cmd(cmd)
+		Net.send_input(replica.predictor.history)
 	if world.outcome != "":
 		_client_outcome_t += STEP
 		if _client_outcome_t > 2.5:
@@ -831,6 +851,11 @@ func _net_log() -> void:
 		info += " snaps_out=%d kb_out=%.0f inputs_in=%d" % [st.snapshots_out, kb, st.inputs_in]
 	elif Net.is_client() and replica != null:
 		info += " snaps_in=%d render_tick=%.0f decals=%d" % [st.snapshots_in, replica.render_tick, world.decal_layer.decal_count()]
+		var me: Dictionary = Net.netinfo.get(Net.my_pid, {})
+		info += " rtt=%.0f delay_ms=%.0f jitter=%.1f snap_loss=%.1f%% pred_err=%.1f pending=%d" % [
+			float(me.get("rtt", -1.0)), replica.delay_ticks * 1000.0 / 60.0, replica.jitter_ms, replica.snap_loss * 100.0,
+			replica.predictor.err_avg if replica.predictor != null else 0.0,
+			replica.predictor.history.size() if replica.predictor != null else 0]
 	print("NET ", info)
 
 

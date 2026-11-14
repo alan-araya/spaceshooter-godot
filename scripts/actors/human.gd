@@ -25,21 +25,28 @@ func trample_flowers() -> void:
 
 ## Empurra para fora de estruturas sólidas (ninhos, gerador).
 func push_out_of_structures() -> void:
-	for n in world.nests:
+	position = push_out_of(world, position, r)
+
+
+## Empurra um círculo para fora dos ninhos e do gerador (também usado pela previsão do cliente).
+static func push_out_of(w: World, pos: Vector2, radius: float) -> Vector2:
+	var p := pos
+	for n in w.nests:
 		if n.dead:
 			continue
-		var d: Vector2 = position - n.position
+		var d: Vector2 = p - n.position
 		var l := d.length()
-		var mn: float = n.r + r - 4.0
+		var mn: float = n.r + radius - 4.0
 		if l < mn and l > 0.01:
-			position = n.position + d / l * mn
-	var g = world.generator
+			p = n.position + d / l * mn
+	var g = w.generator
 	if g != null and not g.dead:
-		var d2: Vector2 = position - g.position
+		var d2: Vector2 = p - g.position
 		var l2 := d2.length()
-		var mn2: float = g.r + r - 4.0
+		var mn2: float = g.r + radius - 4.0
 		if l2 < mn2 and l2 > 0.01:
-			position = g.position + d2 / l2 * mn2
+			p = g.position + d2 / l2 * mn2
+	return p
 
 
 func separate(dt: float) -> void:
@@ -92,7 +99,7 @@ func fire_weapon(angle: float, weapon_key: String, spread: float, target: Unit =
 	var wp: Dictionary = Bal.WEAPONS[weapon_key]
 	var a := angle + (world.rng.randf_range(-spread, spread) if spread > 0.0 else 0.0)
 	var muzzle := position + Vector2(cos(angle), sin(angle)) * 14.0 + Vector2(0, -12)
-	world.projectiles.fire(weapon_key, muzzle, a, target)
+	world.projectiles.fire(weapon_key, muzzle, a, target, pid if kind == "commander" else -1)
 	if weapon_key != "flame":
 		world.fx.muzzle(muzzle, angle)
 

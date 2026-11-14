@@ -166,7 +166,7 @@ func _page_controls() -> void:
 	_key_row(kb, ["E"], L.t("MANUAL_GRANADA_COMECA_COM_3"))
 	_key_row(kb, ["Q"], L.t("MANUAL_TROCAR_A_ORDEM_DO"))
 	_key_row(kb, ["1", "2", "3", "4"], L.t("MANUAL_ORDEM_DIRETA"))
-	_key_row(kb, ["ESC"], L.t("MANUAL_PAUSA"))
+	_key_row(kb, ["ESC"], L.t("MANUAL_PAUSA"), ["TAB"], L.t("MANUAL_TAB_PLAYERS"))
 	var ph := UiKit.label(L.t("MANUAL_CONTROLE"), 18, UiKit.AMBER)
 	ph.position = Vector2(560, 0)
 	_body.add_child(ph)
@@ -388,7 +388,8 @@ func _key(text: String) -> PanelContainer:
 	return p
 
 
-func _key_row(parent: Control, keys: Array, what: String) -> void:
+## Linha de teclas + ação; opcionalmente uma segunda dupla na mesma linha (ex.: ESC pausa · TAB jogadores).
+func _key_row(parent: Control, keys: Array, what: String, keys2: Array = [], what2: String = "") -> void:
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", 5)
 	parent.add_child(h)
@@ -401,6 +402,16 @@ func _key_row(parent: Control, keys: Array, what: String) -> void:
 	var l := UiKit.label(what, 16)
 	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	h.add_child(l)
+	if keys2.is_empty():
+		return
+	var gap := Control.new()
+	gap.custom_minimum_size = Vector2(28, 0)
+	h.add_child(gap)
+	for k in keys2:
+		h.add_child(_key(k))
+	var l2 := UiKit.label(what2, 16)
+	l2.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	h.add_child(l2)
 
 
 func _illustration(key: String, r: Rect2) -> void:
@@ -520,7 +531,8 @@ class PadDiagram extends Control:
 		_label(Vector2(l, c.y + 14), L.t("MANUAL_ANALOGICO"), L.t("MANUAL_MOVER"), c + Vector2(-80, -8), false)
 		_label(Vector2(r, c.y - 112), "RT / A", L.t("MANUAL_ATIRAR"), c + Vector2(100, -80), true)
 		_label(Vector2(r, c.y - 64), "RB / B", L.t("MANUAL_GRANADA"), c + Vector2(110, -57), true)
-		_label_top(Vector2(c.x, c.y - 128), "START", L.t("MANUAL_PAUSA"), c + Vector2(16, -30))
+		_label_top(Vector2(c.x + 78, c.y - 128), "START", L.t("MANUAL_PAUSA"), c + Vector2(16, -30))
+		_label_top(Vector2(c.x - 86, c.y - 128), "VIEW", L.t("MANUAL_TAB_PLAYERS"), c + Vector2(-16, -30))
 
 	## Legenda centralizada acima do controle, com linha descendo até o botão.
 	func _label_top(center: Vector2, head: String, what: String, target: Vector2) -> void:

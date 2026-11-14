@@ -33,7 +33,8 @@ func _draw_bullets() -> void:
 			bullets.draw_line(p - v.normalized() * 10.0, p, Color(1.0, 0.6, 0.25, 0.85), 2.5)
 
 
-func fire(weapon_key: String, from: Vector2, angle: float, target: Unit = null) -> void:
+## `owner` = comandante que atirou (0..3) ou -1; vai no snapshot para o cliente reconhecer os próprios tiros.
+func fire(weapon_key: String, from: Vector2, angle: float, target: Unit = null, owner: int = -1) -> void:
 	var wp: Dictionary = Bal.WEAPONS[weapon_key]
 	var spd: float = wp.speed
 	if weapon_key == "flame":
@@ -50,7 +51,7 @@ func fire(weapon_key: String, from: Vector2, angle: float, target: Unit = null) 
 	var pr := {
 		kind = kind, p = from, v = Vector2(cos(angle), sin(angle)) * spd,
 		life = wp.reach / spd, max = wp.reach / spd, dmg = dmg, pierce = wp.pierce,
-		splash = wp.splash, hit = hit, target = target, bug = false,
+		splash = wp.splash, hit = hit, target = target, bug = false, pid = owner,
 	}
 	if target != null:
 		target.pending += dmg

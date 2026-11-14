@@ -3,7 +3,11 @@ extends RefCounted
 ## Estado do mundo para a rede (host → clientes), em binário compacto (StreamPeerBuffer).
 ## Posições em meio pixel (int16), ângulos em 1/256 de volta, vida como razão 0..255.
 ## O cenário (terreno, muros iniciais, relés, torretas) é recriado pelo cliente a partir da
-## missão + semente; o snapshot só leva o que muda.
+## missão + semente; o snapshot só leva o que muda. Muros danificados ou destruídos NÃO vão aqui: vão como
+## evento "walls" (confiável) só quando mudam (World.record_wall_changes) — eram a maior parte do pacote.
+## Cada comandante leva `ack` = último comando dele aplicado pelo host (previsão do cliente).
+## Cada projétil leva o dono (comandante 0..3 ou nenhum), para o cliente trocar os próprios tiros pelos
+## que ele mesmo desenha na hora.
 
 enum T { SOLDIER = 1, ROBOT, BUG, LARVA, MOTHER, NEST, HEART, FLOWER, PICKUP, BUGGY, DROPSHIP }
 
@@ -47,7 +51,7 @@ static func _get_pos(b: StreamPeerBuffer) -> Vector2:
 # codificação (host)
 # =============================================================================
 
-static func encode(w: World) -> PackedByteArray:
+static func encode(w: World, acks: Dictionary = {}) -> PackedByteArray:
 	var b := StreamPeerBuffer.new()
 	b.put_u32(w.frame)
 	b.put_float(w.time)
@@ -85,6 +89,7 @@ static func encode(w: World) -> PackedByteArray:
 		b.put_16(clampi(c.ammo, -1, 32767))
 		b.put_u8(c.grenades)
 		b.put_u8(maxi(0, Bal.ORDERS.find(c.order)))
+		b.put_u16(int(acks.get(c.pid, 0)) & 0xffff)
 
 	# entidades com uid
 	var n := 0
@@ -177,10 +182,6 @@ static func encode(w: World) -> PackedByteArray:
 	for tu in w.turrets:
 		b.put_u8(_a8(tu.aim))
 		b.put_u8(1 if tu.operator != null else 0)
-	b.put_u16(w.walls.size())
-	for cell in w.walls:
-		b.put_u16(cell)
-		b.put_u8(_ratio(w.grid.hp[cell], w.grid.max_hp[cell]))
 	b.put_u8(mini(255, w.hazards.size()))
 	for i in mini(255, w.hazards.size()):
 		var hz: Dictionary = w.hazards[i]
@@ -204,7 +205,8 @@ static func encode(w: World) -> PackedByteArray:
 	b.put_u16(np)
 	for i in np:
 		var pr: Dictionary = pl[i]
-		b.put_u8(maxi(0, PROJ.find(pr.kind)))
+		var owner: int = pr.get("pid", -1)
+		b.put_u8(maxi(0, PROJ.find(pr.kind)) | ((owner + 1) << 4))
 		_put_pos(b, pr.p)
 		var v: Vector2 = pr.v
 		b.put_16(clampi(roundi(v.x), -32768, 32767))
@@ -270,6 +272,7 @@ static func decode(bytes: PackedByteArray) -> Dictionary:
 		c.ammo = b.get_16()
 		c.grenades = b.get_u8()
 		c.order = Bal.ORDERS[mini(b.get_u8(), Bal.ORDERS.size() - 1)]
+		c.ack = b.get_u16()
 		cmds.append(c)
 	s.cmds = cmds
 
@@ -347,11 +350,6 @@ static func decode(bytes: PackedByteArray) -> Dictionary:
 		var aim := _ang(b.get_u8())
 		tus.append({ aim = aim, manned = b.get_u8() != 0 })
 	s.turrets = tus
-	var walls := {}
-	for i in b.get_u16():
-		var cell := b.get_u16()
-		walls[cell] = b.get_u8() / 255.0
-	s.walls = walls
 	var hzs: Array = []
 	for i in b.get_u8():
 		var hp2 := _get_pos(b)
@@ -367,12 +365,13 @@ static func decode(bytes: PackedByteArray) -> Dictionary:
 
 	var proj: Array = []
 	for i in b.get_u16():
-		var k: String = PROJ[mini(b.get_u8(), PROJ.size() - 1)]
+		var kb := b.get_u8()
+		var k: String = PROJ[mini(kb & 15, PROJ.size() - 1)]
 		var pp := _get_pos(b)
 		var vx := b.get_16()
 		var vy := b.get_16()
 		var lf2 := b.get_u8() / 255.0
-		proj.append({ kind = k, p = pp, v = Vector2(vx, vy), life = lf2, max = 1.0 })
+		proj.append({ kind = k, p = pp, v = Vector2(vx, vy), life = lf2, max = 1.0, pid = (kb >> 4) - 1 })
 	s.proj = proj
 	var gren: Array = []
 	for i in b.get_u8():
