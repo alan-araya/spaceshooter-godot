@@ -4,6 +4,9 @@ extends Node
 ## - O host devolve o estado (Snapshot, 30×/s, não confiável) e os eventos de som/efeito
 ##   (lista, confiável), que o cliente desenha com o Replica.
 ## Um jogador por máquina nesta fase. P1 = host; P2..P4 = clientes, na ordem de entrada.
+## Duas formas de conectar: por IP (rede local / VPN, porta fixa) ou ONLINE por código de sala, via servidor
+## noray (NorayClient): ele troca os endereços e os dois lados furam o NAT; se não der, o noray repassa o
+## tráfego (relay). O resto (lobby, comandos, snapshots) é igual nos dois casos.
 ## As chamadas @rpc ficam neste autoload porque o caminho (/root/Net) é igual em todas as máquinas.
 
 signal lobby_changed
@@ -61,9 +64,25 @@ var _sim_q: Array = [] # [quando (ms), Callable]
 var _sim_last_reliable := 0.0
 var _sim_rng := RandomNumberGenerator.new()
 
+## Online (noray)
+const NORAY_DEFAULT := "127.0.0.1:8890" # trocar pelo endereço do servidor público quando existir
+const NAT_TIMEOUT := 6.0 # s esperando o ENet conectar direto antes de tentar o relay
+var noray: NorayClient
+var room_code := "" # código da sala (host online), "" = partida por IP
+var online_link := "" # "direct" ou "relay" (cliente online), para a tabela de rede
+var force_relay := false # -- --noray-relay: pula a tentativa direta (teste)
+var _joining_room := ""
+var _join_busy := false
+
 
 func _ready() -> void:
 	version = "%d-%x" % [PROTOCOL, hash(var_to_str(Missions.LIST))]
+	noray = NorayClient.new()
+	noray.name = "Noray"
+	add_child(noray)
+	noray.connect_nat.connect(_on_noray_nat)
+	noray.connect_relay.connect(_on_noray_relay)
+	noray.failed.connect(_on_noray_failed)
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected)
@@ -118,6 +137,131 @@ func host_game(port: int = DEFAULT_PORT) -> Error:
 	return OK
 
 
+# =============================================================================
+# online por código de sala (noray)
+# =============================================================================
+
+## Host online: registra no noray, abre o servidor ENet na porta registrada e devolve o código da sala.
+func host_online(server: String) -> Error:
+	leave()
+	status_changed.emit(L.t("NET_STATUS_NORAY", {server = server}))
+	var err: Error = await noray.connect_to_server(server)
+	if err == OK:
+		err = await noray.register()
+	if err != OK:
+		noray.close()
+		return err
+	var peer := ENetMultiplayerPeer.new()
+	err = peer.create_server(noray.local_port, MAX_PLAYERS - 1)
+	if err != OK:
+		noray.close()
+		return err
+	peer.host.compress(ENetConnection.COMPRESS_RANGE_CODER)
+	multiplayer.multiplayer_peer = peer
+	mode = Mode.HOST
+	roster = { 1: 0 }
+	my_pid = 0
+	in_game = false
+	room_code = noray.oid
+	_reset_inputs()
+	status_changed.emit(L.t("NET_STATUS_ROOM", {code = room_code}))
+	lobby_changed.emit()
+	return OK
+
+
+## Cliente online: registra no noray e pede para entrar na sala. O resto acontece quando o noray responde
+## (connect → tenta direto; se falhar, connect-relay → pelo noray).
+func join_online(server: String, code: String) -> Error:
+	leave()
+	code = code.strip_edges().to_upper()
+	if code == "":
+		return ERR_INVALID_PARAMETER
+	status_changed.emit(L.t("NET_STATUS_NORAY", {server = server}))
+	var err: Error = await noray.connect_to_server(server)
+	if err == OK:
+		err = await noray.register()
+	if err != OK:
+		noray.close()
+		return err
+	_joining_room = code
+	status_changed.emit(L.t("NET_STATUS_JOINING_ROOM", {code = code}))
+	if force_relay:
+		noray.request_relay(code)
+	else:
+		noray.request_nat(code)
+	return OK
+
+
+func _on_noray_nat(address: String, port: int) -> void:
+	if is_host():
+		NorayClient.handshake_enet(get_tree(), multiplayer.multiplayer_peer as ENetMultiplayerPeer, address, port)
+		return
+	if _joining_room == "" or _join_busy:
+		return
+	var ok: bool = await _client_connect(address, port, "direct")
+	if not ok and _joining_room != "":
+		status_changed.emit(L.t("NET_STATUS_RELAY"))
+		noray.request_relay(_joining_room)
+
+
+func _on_noray_relay(address: String, port: int) -> void:
+	if is_host():
+		NorayClient.handshake_enet(get_tree(), multiplayer.multiplayer_peer as ENetMultiplayerPeer, address, port)
+		return
+	if _joining_room == "" or _join_busy:
+		return
+	var ok: bool = await _client_connect(address, port, "relay")
+	if not ok and _joining_room != "":
+		var room := _joining_room
+		leave()
+		host_left.emit(L.t("NET_ROOM_UNREACHABLE", {code = room}))
+
+
+func _on_noray_failed(message: String) -> void:
+	if _joining_room == "":
+		return
+	var room := _joining_room
+	leave()
+	if message != "":
+		print("noray: ", message)
+	host_left.emit(L.t("NET_ROOM_NOT_FOUND", {code = room}))
+
+
+## Aperto de mão UDP saindo da porta registrada e, depois, ENet saindo da MESMA porta (o buraco no NAT é dela).
+func _client_connect(address: String, port: int, link: String) -> bool:
+	_join_busy = true
+	var udp := PacketPeerUDP.new()
+	udp.bind(noray.local_port)
+	udp.set_dest_address(address, port)
+	var hs: Error = await NorayClient.handshake_udp(get_tree(), udp)
+	udp.close()
+	if hs != OK and hs != ERR_BUSY:
+		_join_busy = false
+		return false
+	var peer := ENetMultiplayerPeer.new()
+	if peer.create_client(address, port, 0, 0, 0, noray.local_port) != OK:
+		_join_busy = false
+		return false
+	peer.host.compress(ENetConnection.COMPRESS_RANGE_CODER)
+	multiplayer.multiplayer_peer = peer
+	mode = Mode.CLIENT
+	roster = {}
+	in_game = false
+	var t := 0.0
+	while peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING and t < NAT_TIMEOUT:
+		await get_tree().process_frame
+		t += get_process_delta_time()
+	_join_busy = false
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		peer.close()
+		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+		mode = Mode.OFFLINE
+		return false
+	online_link = link
+	_joining_room = ""
+	return true
+
+
 func join_game(address: String, port: int = DEFAULT_PORT) -> Error:
 	leave()
 	var peer := ENetMultiplayerPeer.new()
@@ -146,6 +290,12 @@ func leave() -> void:
 	netinfo = {}
 	_rtt = {}
 	_sim_q = []
+	room_code = ""
+	online_link = ""
+	_joining_room = ""
+	_join_busy = false
+	if noray != null:
+		noray.close()
 	_reset_inputs()
 
 
@@ -257,6 +407,8 @@ func _on_connected() -> void:
 
 
 func _on_connection_failed() -> void:
+	if _joining_room != "":
+		return # online: a tentativa direta falhou; _client_connect cuida (tenta o relay)
 	leave()
 	host_left.emit(L.t("NET_CANT_CONNECT"))
 

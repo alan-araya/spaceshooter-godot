@@ -22,6 +22,8 @@ const LANGUAGE_NAMES := {
 }
 ## Qualidade gráfica: 2 = alto (tudo), 1 = médio (menos luzes), 0 = baixo (sem luzes dinâmicas nem brilho).
 var gfx := 2
+var noray_server := "" # servidor do modo online (host:porta); vazio = Net.NORAY_DEFAULT
+var last_room := "" # último código de sala digitado
 
 const GFX_LABELS := ["GFX_LOW", "GFX_MEDIUM", "GFX_HIGH"] # chaves de i18n
 const GFX_KEYS := { baixo = 0, medio = 1, alto = 2 }
@@ -44,6 +46,8 @@ func load_save() -> void:
 	gfx = clampi(cfg.get_value("options", "gfx", 2), 0, 2)
 	tutorial_seen = cfg.get_value("progress", "tutorial_seen", false)
 	language = cfg.get_value("options", "language", "")
+	noray_server = cfg.get_value("options", "noray_server", "")
+	last_room = cfg.get_value("options", "last_room", "")
 
 
 func save() -> void:
@@ -56,6 +60,8 @@ func save() -> void:
 	cfg.set_value("options", "gfx", gfx)
 	cfg.set_value("progress", "tutorial_seen", tutorial_seen)
 	cfg.set_value("options", "language", language)
+	cfg.set_value("options", "noray_server", noray_server)
+	cfg.set_value("options", "last_room", last_room)
 	cfg.save(SAVE_PATH)
 
 

@@ -101,6 +101,13 @@ func _footer() -> Array:
 		out.append(L.t("NETTAB_CLIENT_LINE", {
 			delay = roundi(replica.delay_ticks * 1000.0 / 60.0), jitter = roundi(replica.jitter_ms),
 			lost = "%.1f" % (replica.snap_loss * 100.0), err = "%.1f" % err }))
+	if Net.is_client():
+		var link := "@NETTAB_LINK_IP"
+		if Net.online_link == "direct":
+			link = "@NETTAB_LINK_DIRECT"
+		elif Net.online_link == "relay":
+			link = "@NETTAB_LINK_RELAY"
+		out.append(L.t("NETTAB_LINK", {link = link}))
 	if Net.sim_active():
 		out.append(L.t("NETTAB_SIM", {lag = roundi(Net.sim_lag), loss = "%.1f" % (Net.sim_loss * 100.0)}))
 	return out

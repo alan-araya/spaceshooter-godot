@@ -22,6 +22,8 @@ extends Node
 ##   --net-lag=MS --net-jitter=MS --net-loss=0.02   simula rede ruim nesta máquina (atraso de ida e volta,
 ##               variação e perda de pacotes não confiáveis) — para testar sem VPN
 ##   --nettable  deixa a tabela de jogadores (Tab) aberta, para screenshot
+##   --noray=HOST:PORTA   servidor do modo online · --net-host-online (hospeda e imprime o código)
+##   --net-join-code=CÓDIGO   entra numa sala online · --noray-relay força o relay (teste) · --net-menu abre a tela de rede
 
 enum Screen { MENU, SELECT, BRIEFING, PLAYING, PAUSED, RESULT, NET_MENU, LOBBY }
 
@@ -90,17 +92,29 @@ func _ready() -> void:
 		return
 	if args.has("net-version"): # depuração: finge outra versão para testar a recusa
 		Net.version = args["net-version"]
+	Net.sim_lag = float(args.get("net-lag", 0.0))
+	Net.sim_jitter = float(args.get("net-jitter", 0.0))
+	Net.sim_loss = float(args.get("net-loss", 0.0))
+	Net.force_relay = args.has("noray-relay")
+	if args.has("noray"):
+		Game.noray_server = args["noray"]
 	if args.has("net-host"):
 		_host()
 		return
 	if args.has("shot-all"):
 		_shot_all(args["shot-all"])
 		return
-	Net.sim_lag = float(args.get("net-lag", 0.0))
-	Net.sim_jitter = float(args.get("net-jitter", 0.0))
-	Net.sim_loss = float(args.get("net-loss", 0.0))
 	if args.has("net-join"):
 		_join(args["net-join"])
+		return
+	if args.has("net-menu"):
+		show_net_menu()
+		return
+	if args.has("net-host-online"):
+		_host_online()
+		return
+	if args.has("net-join-code"):
+		_join_online(args["net-join-code"])
 		return
 	if args.has("manual"):
 		var m := show_manual(show_menu, L.t("MANUAL_BACK_TO_MENU"))
@@ -117,6 +131,8 @@ func _ready() -> void:
 
 
 func _on_host_left(reason: String) -> void:
+	if args.has("net-log"):
+		print("NET left: ", reason)
 	_end_world()
 	show_net_menu(reason)
 
@@ -354,24 +370,55 @@ func show_net_menu(message: String = "") -> void:
 	var root := _screen_root()
 	_background(root)
 	var box := _center_box(root)
-	var v := _panel(box, 640)
-	v.add_child(UiKit.label(L.t("NET_TITLE"), 32, UiKit.AMBER))
-	v.add_child(UiKit.label(L.t("NET_HELP_1"), 15, UiKit.DIM))
-	v.add_child(UiKit.label(L.t("NET_HELP_2", {port = Net.DEFAULT_PORT}), 15, UiKit.DIM))
+	box.add_child(UiKit.label(L.t("NET_TITLE"), 30, UiKit.AMBER, HORIZONTAL_ALIGNMENT_CENTER))
 	if message != "":
-		v.add_child(UiKit.label(message, 17, Color("ff9f43")))
-	var host_btn := UiKit.button(L.t("NET_HOST"), _host, 640)
-	box.add_child(host_btn)
+		var mv := _panel(box, 640)
+		mv.add_child(UiKit.label(message, 17, Color("ff9f43")))
+	# online por código de sala (noray)
+	var on := _panel(box, 640)
+	on.add_child(UiKit.label(L.t("NET_ONLINE_TITLE"), 18, UiKit.AMBER))
+	on.add_child(UiKit.label(L.t("NET_ONLINE_HELP"), 14, UiKit.DIM))
+	var host_btn := UiKit.button(L.t("NET_HOST_ONLINE"), _host_online, 610)
+	on.add_child(host_btn)
+	var crow := HBoxContainer.new()
+	crow.add_theme_constant_override("separation", 10)
+	on.add_child(crow)
+	var code := LineEdit.new()
+	code.text = Game.last_room
+	code.placeholder_text = L.t("NET_CODE_HINT")
+	code.custom_minimum_size = Vector2(360, 46)
+	code.max_length = 12
+	code.add_theme_font_size_override("font_size", 20)
+	crow.add_child(code)
+	crow.add_child(UiKit.button(L.t("NET_JOIN"), func(): _join_online(code.text), 240))
+	code.text_submitted.connect(func(t: String): _join_online(t))
+	var srow := HBoxContainer.new()
+	srow.add_theme_constant_override("separation", 10)
+	on.add_child(srow)
+	srow.add_child(UiKit.label(L.t("NET_SERVER"), 14, UiKit.DIM))
+	var server := LineEdit.new()
+	server.text = _noray_server()
+	server.custom_minimum_size = Vector2(300, 30)
+	server.add_theme_font_size_override("font_size", 14)
+	server.text_changed.connect(func(t: String):
+		Game.noray_server = t.strip_edges()
+		Game.save())
+	srow.add_child(server)
+	# rede local / VPN por IP
+	var lan := _panel(box, 640)
+	lan.add_child(UiKit.label(L.t("NET_LAN_TITLE"), 18, UiKit.AMBER))
+	lan.add_child(UiKit.label(L.t("NET_HELP_2", {port = Net.DEFAULT_PORT}), 14, UiKit.DIM))
+	lan.add_child(UiKit.button(L.t("NET_HOST"), _host, 610))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
-	box.add_child(row)
+	lan.add_child(row)
 	var ip := LineEdit.new()
 	ip.text = _last_ip
 	ip.placeholder_text = L.t("NET_IP_HINT")
-	ip.custom_minimum_size = Vector2(380, 46)
+	ip.custom_minimum_size = Vector2(360, 46)
 	ip.add_theme_font_size_override("font_size", 20)
 	row.add_child(ip)
-	var join_btn := UiKit.button(L.t("NET_JOIN"), func(): _join(ip.text.strip_edges()), 250)
+	var join_btn := UiKit.button(L.t("NET_JOIN"), func(): _join(ip.text.strip_edges()), 240)
 	row.add_child(join_btn)
 	ip.text_submitted.connect(func(t: String): _join(t.strip_edges()))
 	box.add_child(UiKit.button(L.t("BACK"), show_menu, 640))
@@ -385,6 +432,49 @@ func _host() -> void:
 		return
 	Net.set_lobby(Game.mission_index, Game.difficulty)
 	show_lobby()
+
+
+func _noray_server() -> String:
+	return Game.noray_server if Game.noray_server != "" else Net.NORAY_DEFAULT
+
+
+func _host_online() -> void:
+	var server := _noray_server()
+	_show_wait(L.t("NET_STATUS_NORAY", {server = server}))
+	var err: Error = await Net.host_online(server)
+	if err != OK:
+		show_net_menu(L.t("NET_NORAY_FAILED", {server = server, err = err}))
+		return
+	if args.has("net-log"):
+		print("NET room=", Net.room_code)
+	Net.set_lobby(Game.mission_index, Game.difficulty)
+	show_lobby()
+
+
+func _join_online(code: String) -> void:
+	code = code.strip_edges().to_upper()
+	if code == "":
+		return
+	Game.last_room = code
+	Game.save()
+	var server := _noray_server()
+	_show_wait(L.t("NET_STATUS_JOINING_ROOM", {code = code}))
+	var err: Error = await Net.join_online(server, code)
+	if err != OK:
+		show_net_menu(L.t("NET_NORAY_FAILED", {server = server, err = err}))
+		return
+	show_lobby()
+
+
+## Tela simples de "aguarde" enquanto fala com o servidor online.
+func _show_wait(text: String) -> void:
+	screen = Screen.NET_MENU
+	_end_world()
+	var root := _screen_root()
+	_background(root)
+	var box := _center_box(root)
+	var v := _panel(box, 640)
+	v.add_child(UiKit.label(text, 20, UiKit.TEXT))
 
 
 func _join(address: String) -> void:
@@ -407,7 +497,10 @@ func show_lobby() -> void:
 	var v := _panel(box, 860)
 	var title := L.t("LOBBY_TITLE_HOST") if Net.is_host() else L.t("LOBBY_TITLE")
 	v.add_child(UiKit.label(title, 30, UiKit.AMBER))
-	if Net.is_host():
+	if Net.is_host() and Net.room_code != "":
+		v.add_child(UiKit.label(L.t("LOBBY_ROOM_CODE", {code = Net.room_code}), 30, Color("9fe8ff")))
+		v.add_child(UiKit.label(L.t("LOBBY_ROOM_HELP"), 15, UiKit.DIM))
+	elif Net.is_host():
 		var ips := Net.local_addresses()
 		var ip_txt := ", ".join(ips) if not ips.is_empty() else L.t("LOBBY_NO_LAN")
 		v.add_child(UiKit.label(L.t("LOBBY_MY_IP", {ip = ip_txt, port = Net.DEFAULT_PORT}), 16, Color("9fe8ff")))
@@ -852,6 +945,7 @@ func _net_log() -> void:
 	elif Net.is_client() and replica != null:
 		info += " snaps_in=%d render_tick=%.0f decals=%d" % [st.snapshots_in, replica.render_tick, world.decal_layer.decal_count()]
 		var me: Dictionary = Net.netinfo.get(Net.my_pid, {})
+		info += " link=%s" % (Net.online_link if Net.online_link != "" else "ip")
 		info += " rtt=%.0f delay_ms=%.0f jitter=%.1f snap_loss=%.1f%% pred_err=%.1f pending=%d" % [
 			float(me.get("rtt", -1.0)), replica.delay_ticks * 1000.0 / 60.0, replica.jitter_ms, replica.snap_loss * 100.0,
 			replica.predictor.err_avg if replica.predictor != null else 0.0,

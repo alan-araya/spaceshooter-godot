@@ -15,6 +15,9 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
   `--headless`) e cliente `-- --net-join=127.0.0.1 --net-bot --net-log --quit-after=24`. `-- --loopback` = réplica sem rede.
   Rede ruim simulada: `--net-lag=120 --net-jitter=20 --net-loss=0.03` (no cliente); `--nettable` deixa a tabela de
   ping (Tab) aberta. O `--net-log` do cliente imprime rtt, folga, perda de estados e erro da previsão.
+- Online (código de sala): precisa de um noray rodando (`server/README.md`). Host `-- --net-host-online --net-log`
+  (imprime `NET room=CÓDIGO`), cliente `-- --net-join-code=CÓDIGO`; `--noray=host:porta` troca o servidor,
+  `--noray-relay` força o relay, `--net-menu` abre a tela de rede.
 - Visual: `-- --gfx=alto|medio|baixo`, `-- --seed=N` (screenshot repetível), `-- --shot-all=PASTA --shot-after=8`
   (as seis missões numa janela só). `-- --fx-demo=SEG` dispara uma explosão ao lado do P1 e
   `-- --hurt-demo=SEG` o aviso de dano, para screenshot (só visual). Relevo dos sprites:

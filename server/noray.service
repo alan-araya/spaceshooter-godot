@@ -1,0 +1,22 @@
+[Unit]
+Description=noray (Enxame 2199 online: room codes, NAT punchthrough and relay)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=noray
+WorkingDirectory=/opt/noray
+EnvironmentFile=/opt/noray/.env
+ExecStart=/opt/noray/.bun/bin/bun bin/noray.ts
+Restart=always
+RestartSec=3
+# endurecimento básico
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/noray
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -35,6 +35,7 @@ func run(m: Node) -> void:
 	_test_loopback_replica()
 	_test_wall_events()
 	_test_prediction()
+	_test_noray_protocol()
 	_test_visuals()
 	_test_effects_keep_sim()
 	_test_i18n_keys()
@@ -530,6 +531,27 @@ func _test_prediction() -> void:
 	pr.free_nodes()
 	host.queue_free()
 	rep_world.queue_free()
+
+
+## Leitura das linhas do noray: código, segredo, endereço para furar o NAT, porta de relay e erro.
+func _test_noray_protocol() -> void:
+	var n := NorayClient.new()
+	add_child(n)
+	n.address = "10.0.0.5"
+	var got := {}
+	n.connect_nat.connect(func(a, p): got.nat = "%s:%d" % [a, p])
+	n.connect_relay.connect(func(a, p): got.relay = "%s:%d" % [a, p])
+	n.failed.connect(func(m): got.err = m)
+	n._handle("set-oid", "K7QX2M")
+	n._handle("set-pid", "segredo")
+	n._handle("connect", "87.53.78.15:55759")
+	n._handle("connect-relay", "49178")
+	n._handle("connect", "Error: Unknown host oid: ZZZZZZ")
+	check(n.oid == "K7QX2M" and n.pid == "segredo", "noray: código/segredo")
+	check(got.get("nat", "") == "87.53.78.15:55759", "noray: endereço do connect")
+	check(got.get("relay", "") == "10.0.0.5:49178", "noray: porta do relay")
+	check(String(got.get("err", "")).contains("Unknown"), "noray: erro de sala inexistente")
+	n.queue_free()
 
 
 func _count_ents(w: World) -> int:

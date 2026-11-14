@@ -315,7 +315,8 @@ recebem estado. Transporte ENet/UDP pela API de multiplayer do Godot (`autoload/
 | Réplica | `scripts/net/replica.gd` | o cliente monta a mesma missão com a mesma semente (mesmos `uid` iniciais), desenha no passado interpolando entre snapshots e dispara os eventos no quadro certo. A folga (83–267 ms) se ajusta à variação medida de chegada |
 | Previsão | `scripts/net/predictor.gd` | o **próprio** comandante anda e atira na hora no cliente (mesma regra de movimento do host, `Commander.step_move`); a cada snapshot volta à posição do host e refaz os comandos ainda não aplicados; a diferença some em ~0,1 s. Os tiros dele (som, clarão, balas) são locais; as balas do host com dono = ele não são desenhadas |
 | Tabela de rede | `scripts/ui/net_table.gd` | segurar **Tab** (ou View/Back): jogadores, host, ping (ping próprio a cada 0,5 s) e perda (ENet); no cliente, folga de desenho, variação, estados perdidos e correção da previsão |
-| Lobby | `scripts/ui/main.gd` | hospedar/entrar por IP, slots P1–P4, host escolhe missão e dificuldade; resultado e "próxima missão" decididos pelo host |
+| Lobby | `scripts/ui/main.gd` | hospedar/entrar por IP **ou online por código de sala**, slots P1–P4, host escolhe missão e dificuldade; resultado e "próxima missão" decididos pelo host |
+| Online | `scripts/net/noray_client.gd` | cliente do noray: registra (código + segredo + porta UDP externa), pede conexão pela sala, aperto de mão UDP saindo da mesma porta que o ENet usa; direto falhou em 6 s → relay |
 
 **ENet**: o descarte automático de pacotes não confiáveis quando o ping oscila vem desligado
 (`throttle_configure(5000, 32, 0)`), senão os snapshots somem numa VPN.
@@ -334,7 +335,9 @@ custar tropa; o pelotão dele passa para o P1. Em rede a partida não pausa.
 **Fases**: 0 (eventos, comandos, estado, réplica — feito, validado por `--loopback` e testes) ·
 1 (LAN — feito, validado com 2 instâncias) · 2 (previsão do próprio comandante, fila de comandos, muros por
 evento, folga adaptativa, tabela de ping — feito; falta reconexão e compressão por diferença) ·
-3 (internet sem VPN: relay noray com código de sala — em andamento).
+3 (internet sem VPN por **código de sala**, via servidor [noray](https://github.com/foxssake/noray): conexão direta
+furando o NAT e, se falhar, relay pelo servidor — feito no cliente e testado com noray local; falta o servidor
+público, ver `server/README.md`).
 
 ---
 

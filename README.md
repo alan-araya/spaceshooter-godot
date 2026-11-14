@@ -119,7 +119,16 @@ Abra a pasta no Godot 4.8 ou rode:
 godot --path .
 ```
 
-### Em rede (LAN)
+### Online (código de sala)
+
+1. Um jogador escolhe **JOGAR EM REDE → HOSPEDAR ONLINE** e recebe um código de 6 letras (ex.: `K7QX2M`).
+2. Os outros digitam o código em **JOGAR EM REDE → ONLINE** e escolhem **ENTRAR**.
+
+Não precisa de VPN nem de abrir portas: o jogo tenta a conexão direta e, se o roteador não deixar, passa pelo
+servidor. Isso depende de um servidor [noray](https://github.com/foxssake/noray) no ar; como montar um VPS está em
+[server/README.md](server/README.md).
+
+### Em rede (LAN ou VPN, por IP)
 
 1. Um jogador escolhe **JOGAR EM REDE → HOSPEDAR PARTIDA**. O lobby mostra o IP dele (porta UDP 24565).
    Na primeira vez o Windows pede permissão no firewall: libere em **redes privadas**.
@@ -236,6 +245,9 @@ python -I -X utf8 tools/build_pdf.py docs/DEVELOPMENT_JOURNEY.md
 ```
 
 ## Créditos e inspiração
+
+Modo online com o servidor [noray](https://github.com/foxssake/noray) (MIT); o cliente do jogo segue o protocolo do
+addon netfox.noray (MIT).
 
 Jogabilidade inspirada em *Triumph! WAR 2099* (Darksun Games, 2001, freeware). Nenhum sprite, som, mapa, texto ou
 nome do original foi usado: só as ideias de mecânica. Porte do MVP web
