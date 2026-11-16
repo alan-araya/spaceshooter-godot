@@ -102,13 +102,15 @@ Defender, Seguir) a quem está perto e cuida do resto com o seu fuzil, granadas 
 
 ### Executável para Windows
 
-Gere a pasta do jogo (tela cheia, com o ícone do projeto no `.exe`):
+Gere o executável (tela cheia, com o ícone do projeto). Precisa dos modelos de exportação do Godot
+(**Editor → Gerenciar Modelos de Exportação → Baixar e Instalar**); o mesmo build sai pelo editor em
+**Projeto → Exportar…** (preset *Windows Desktop*).
 
 ```bash
 bash tools/build_windows.sh "D:/Jogos/Enxame2199"
 ```
 
-O resultado é `Enxame2199.exe` + `Enxame2199.pck`; copie os dois juntos. Para jogar em rede, todos os PCs
+O resultado é um único `Enxame2199.exe`, com o jogo embutido. Para jogar em rede, todos os PCs
 precisam da mesma versão: o jogo recusa a conexão entre versões diferentes.
 
 ### Pelo Godot

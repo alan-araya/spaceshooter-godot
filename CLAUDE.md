@@ -28,7 +28,9 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
   (sempre para arquivo: pelo pipe o número sai errado).
 - Arte: `python -I tools/process_art.py [soldier|bug|mother|nest|terrain|support|title|tutorial|icon]`
   (`icon` gera `icon.png` e `icon.ico` na raiz).
-- Build de Windows (tela cheia, ícone no .exe): `bash tools/build_windows.sh <pasta> [commit]`.
+- Build de Windows (um .exe só, tela cheia, ícone): `bash tools/build_windows.sh <pasta> [commit]`. Usa o preset
+  `Windows Desktop` de `export_presets.cfg` (versionado; é o mesmo do Projeto → Exportar) e os modelos de exportação
+  instalados. Tela cheia só no build via `window/size/mode.release=3`. Nunca copie o editor como executável.
 - PDF de um documento: `python -I -X utf8 tools/build_pdf.py docs/DEVELOPMENT_JOURNEY.md` (usa o Chrome/Edge).
 - Manual de campo (tutorial): `-- --manual=N` abre na página N (screenshot).
 
