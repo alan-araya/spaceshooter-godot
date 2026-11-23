@@ -8,7 +8,8 @@ Leia `docs/GDD.md` antes de mudar regras, telas ou assets.
 - Testes: `godot --headless --path . -- --test` (precisa terminar com `0 falhas`).
 - Screenshot de uma missão: `godot --path . -- --mission=3 --autostart --shot=<png> --shot-after=6 --quit-after-shot`.
 - Desempenho: os testes imprimem o perfil por seção do `World.update`; `-- --mission=1 --autostart --stress` mede um frame renderizado.
-- Balanceamento das defesas: `-- --test --probe` (bot parado no gerador, 1 jogador, Soldado) e
+- Balanceamento das defesas: `-- --test --probe` (bot parado no gerador, 1 jogador, Soldado; `--probe-diff=dificil`,
+  `--probe-players=3`, `--probe-seeds=3`) e
   `-- --test --timeline=m3` (estado da missão segundo a segundo).
 - Mapas das defesas em camadas: `python -I tools/build_maps.py` (imprime os mapas para colar em missions.gd).
 - Rede com 2 instâncias: host `-- --net-host --mission=3 --net-start-when=2 --net-log --quit-after=30` (pode ser

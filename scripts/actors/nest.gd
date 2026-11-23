@@ -31,7 +31,7 @@ func tick(dt: float) -> void:
 		return
 	var base: float = Bal.HEART.spawn_interval if kind == "heart" else Bal.NEST.spawn_interval
 	var minutes := world.time / 60.0
-	var rate: float = world.diff.spawn * (1.0 + world.diff.escalation * minutes) * float(world.settings.get("nest_rate", 1.0))
+	var rate: float = world.diff.spawn * world.crowd * (1.0 + world.diff.escalation * minutes) * float(world.settings.get("nest_rate", 1.0))
 	spawn_cd = maxf(Bal.NEST.min_interval, base / rate) * world.rng.randf_range(0.8, 1.2)
 	if world.bugs.size() >= Bal.LIMITS.max_bugs:
 		return

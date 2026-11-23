@@ -134,6 +134,11 @@ const DIFFICULTY := {
 }
 const DIFFICULTY_ORDER := ["facil", "normal", "dificil"]
 
+## Escala por jogador humano (cada comandante a mais soma estes valores; 2 jogadores = 1 + x).
+## spawn: ninhos e hordas (frequência) e a cota de abates; mothers: limite de matriarcas vivas e chance de
+## matriarca nas hordas. As tropas são do esquadrão, não de cada jogador, por isso não multiplicam.
+const PLAYER_SCALE := { spawn = 1.0, mothers = 1.0 }
+
 const ORDERS := ["normal", "atacar", "defender", "seguir"]
 ## Rótulos = chaves de i18n/strings.csv (traduzir com L.t).
 const ORDER_LABELS := { normal = "ORDER_NORMAL", atacar = "ORDER_ATACAR", defender = "ORDER_DEFENDER", seguir = "ORDER_SEGUIR" }

@@ -310,3 +310,4 @@ NETTAB_LINK,Conexão com o host: {link},Link to host: {link},Conexión con el an
 NETTAB_LINK_DIRECT,direta,direct,directa,direta,direkt,直接,直连
 NETTAB_LINK_RELAY,pelo servidor (relay),through the server (relay),por el servidor (relay),pelo servidor (relay),über den Server (Relay),サーバー経由（リレー）,经服务器（中继）
 NETTAB_LINK_IP,por IP,by IP,por IP,por IP,per IP,IP指定,通过IP
+BRIEF_SCALE,{p} jogadores: enxame ×{s} e até {m} matriarcas,{p} players: swarm ×{s} and up to {m} matriarchs,{p} jugadores: enjambre ×{s} y hasta {m} matriarcas,{p} jogadores: enxame ×{s} e até {m} matriarcas,{p} Spieler: Schwarm ×{s} und bis zu {m} Matriarchinnen,{p}人プレイ：群れ×{s}、マザー最大{m}体,{p}名玩家：虫群×{s}，主母最多{m}只

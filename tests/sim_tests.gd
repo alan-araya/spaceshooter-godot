@@ -27,6 +27,7 @@ func run(m: Node) -> void:
 	_test_survive_ends()
 	_test_hold_quota()
 	_test_hordes_spawn()
+	_test_player_scale()
 	_test_area_secure()
 	_test_turret_manned()
 	_test_mother_mortar_and_brood()
@@ -46,10 +47,11 @@ func run(m: Node) -> void:
 		# --probe (m3, m4, m5) ou --probe=m5; --probe-diff=facil|normal|dificil; --probe-seeds=3
 		var ids: Array = ["m3", "m4", "m5"] if main.args.probe == "1" else String(main.args.probe).split(",")
 		var dk: String = main.args.get("probe-diff", "normal")
+		var np := int(main.args.get("probe-players", "1"))
 		var seeds := int(main.args.get("probe-seeds", "1"))
 		for id in ids:
 			for k in seeds:
-				_probe_defense(id, dk, 21 + k)
+				_probe_defense(id, dk, 21 + k, np)
 	_test_stress()
 	print("=== %d ok, %d falhas ===" % [passes, failures.size()])
 	for f in failures:
@@ -290,6 +292,28 @@ func _test_hordes_spawn() -> void:
 	w.queue_free()
 
 
+## Mais jogadores = enxame e matriarcas multiplicados; pressure da missão vale por dificuldade.
+func _test_player_scale() -> void:
+	var m5 := _idx("m5")
+	var horde_n := {}
+	for np in [1, 3]:
+		var w := _new_world(m5, np, "normal", 5)
+		check(is_equal_approx(w.crowd, 1.0 + Bal.PLAYER_SCALE.spawn * (np - 1)), "escala do enxame errada com %d jogadores" % np)
+		check(w.mother_cap == roundi(Bal.MOTHER.max_alive * (1.0 + Bal.PLAYER_SCALE.mothers * (np - 1))), "limite de matriarcas errado")
+		check(is_equal_approx(w.pressure, 1.3), "pressure de Soldado na M5 não aplicado")
+		_god(w)
+		_run(w, 80.0, false)
+		horde_n[np] = w.horde_count
+		w.queue_free()
+	check(horde_n[3] > horde_n[1] * 2, "3 jogadores não trouxeram hordas bem maiores (%d × %d)" % [horde_n[3], horde_n[1]])
+	var easy := _new_world(m5, 1, "facil", 5)
+	check(is_equal_approx(easy.pressure, 1.0), "Recruta não deveria ter pressure na M5")
+	easy.queue_free()
+	var hard := _new_world(m5, 1, "dificil", 5)
+	check(hard.pressure > 1.3, "Veterano deveria começar acima do Soldado na M5")
+	hard.queue_free()
+
+
 func _test_area_secure() -> void:
 	var w := _new_world(_idx("m3"))
 	_god(w)
@@ -345,14 +369,15 @@ func _test_mother_mortar_and_brood() -> void:
 	w.queue_free()
 
 
-## Sonda de balanceamento (só com --probe): bot que defende o gerador, 1 jogador, Soldado.
-func _probe_defense(id: String, dk: String = "normal", seed_v: int = 21) -> void:
-	var w := _new_world(_idx(id), 1, dk, seed_v)
-	var c: Commander = w.commanders[0]
+## Sonda de balanceamento (só com --probe): bots que defendem o gerador (--probe-players=N, padrão 1).
+func _probe_defense(id: String, dk: String = "normal", seed_v: int = 21, players: int = 1) -> void:
+	var w := _new_world(_idx(id), players, dk, seed_v)
 	var limit: float = float(w.mission.objective.get("time", 400.0)) + 5.0
 	var frames := int(limit * 60.0)
 	for f in frames:
-		if not c.dead:
+		for c: Commander in w.commanders:
+			if c.dead:
+				continue
 			var home := w.lz
 			var to_home := home - c.position
 			c.in_move = to_home.normalized() if to_home.length() > 60.0 else Vector2.ZERO
@@ -369,8 +394,8 @@ func _probe_defense(id: String, dk: String = "normal", seed_v: int = 21) -> void
 	var gp := 0
 	if w.generator != null:
 		gp = roundi(w.generator.hp / w.generator.max_hp * 100.0)
-	print("SONDA %s %s semente %d (%s): %s em %ds · %s · gerador %d%% · abates %d · tropas %d · matriarcas %d" % [
-		id, dk, seed_v, w.mission.name, w.outcome if w.outcome != "" else "sem fim", int(w.time), w.outcome_reason, gp,
+	print("SONDA %s %s %dj semente %d (%s): %s em %ds · %s · gerador %d%% · abates %d · tropas %d · matriarcas %d" % [
+		id, dk, players, seed_v, w.mission.name, w.outcome if w.outcome != "" else "sem fim", int(w.time), w.outcome_reason, gp,
 		w.stats.kills, w.troops, w.stats.mothers])
 	w.queue_free()
 

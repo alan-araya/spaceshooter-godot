@@ -339,6 +339,11 @@ func _briefing_lines(v: VBoxContainer, mission_index: int, difficulty: String, p
 	v.add_child(UiKit.label(L.t("BRIEF_OBJECTIVE", {text = "@" + m.objective.text}), 17, Color("9fe8ff")))
 	var d: Dictionary = Bal.DIFFICULTY[difficulty]
 	v.add_child(UiKit.label(L.t("BRIEF_FOOTER", {t = d.troops, d = "@" + d.label, p = players}), 15, UiKit.DIM))
+	if players > 1:
+		var extra := players - 1
+		var swarm: float = 1.0 + float(Bal.PLAYER_SCALE.spawn) * extra
+		var cap := roundi(Bal.MOTHER.max_alive * (1.0 + float(Bal.PLAYER_SCALE.mothers) * extra))
+		v.add_child(UiKit.label(L.t("BRIEF_SCALE", {p = players, s = "%.1f" % swarm, m = cap}), 15, Color("ff9f43")))
 	if not Net.is_online():
 		var dev := InputSetup.describe(players)
 		for pid in dev.size():

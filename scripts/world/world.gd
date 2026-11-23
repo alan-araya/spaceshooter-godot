@@ -25,6 +25,9 @@ const PICKUP_INFO := {
 var mission: Dictionary
 var diff: Dictionary
 var diff_key := "normal"
+var crowd := 1.0 # escala do enxame pelo número de jogadores (Bal.PLAYER_SCALE.spawn)
+var mother_cap := 3 # matriarcas vivas no máximo (Bal.MOTHER.max_alive × jogadores)
+var pressure := 1.0 # multiplicador das hordas desta missão nesta dificuldade (settings.pressure)
 var rng := RandomNumberGenerator.new()
 var grid: Grid
 var time := 0.0
@@ -134,6 +137,11 @@ func setup(mission_index: int, difficulty: String, players: int, seed_v: int = 1
 	settings = { max_flowers = Bal.FLOWER.max_on_map, ambush = true, pickup_interval = 1.0 }
 	settings.merge(mission.get("settings", {}), true)
 	troops += int(settings.get("troops_bonus", 0)) # missões longas começam com reserva maior
+	var extra := maxi(0, players - 1)
+	crowd = 1.0 + float(Bal.PLAYER_SCALE.spawn) * extra
+	mother_cap = roundi(Bal.MOTHER.max_alive * (1.0 + float(Bal.PLAYER_SCALE.mothers) * extra))
+	var pr: Dictionary = settings.get("pressure", {})
+	pressure = float(pr.get(difficulty, 1.0))
 	flower_timer = Bal.FLOWER.respawn_interval
 	horde_timer = 0.0 # primeira horda exatamente em settings.hordes.start
 	pickup_timer = rng.randf_range(Bal.PICKUPS.spawn_min, Bal.PICKUPS.spawn_max) * settings.pickup_interval * 0.6
@@ -904,7 +912,7 @@ func danger_dir(p: Vector2, r: float) -> Vector2:
 
 
 func flower_to_mother(f: Prop, b: Bug) -> void:
-	if mothers.size() >= Bal.MOTHER.max_alive:
+	if mothers.size() >= mother_cap:
 		# colmeia já tem matriarcas demais: a flor só é comida
 		f.dead = true
 		fx.petals(f.position)
@@ -1470,14 +1478,16 @@ func _update_hordes(dt: float) -> void:
 	horde_timer -= dt
 	if horde_timer > 0.0:
 		return
-	var growth: float = 1.0 + (time / 60.0) * float(hz.get("growth", Bal.HORDES.growth_per_min))
-	var min_iv: float = hz.get("min_interval", Bal.HORDES.min_interval)
-	horde_timer = maxf(min_iv, hz.interval / (diff.spawn * growth)) * rng.randf_range(0.85, 1.15)
+	var growth: float = 1.0 + (time / 60.0) * float(hz.get("growth", Bal.HORDES.growth_per_min)) * pressure
+	var boost: float = pressure * crowd
+	var min_iv: float = float(hz.get("min_interval", Bal.HORDES.min_interval)) / boost
+	horde_timer = maxf(min_iv, hz.interval / (diff.spawn * boost * growth)) * rng.randf_range(0.85, 1.15)
 	var n := roundi(rng.randi_range(hz.size_min, hz.size_max) * sqrt(growth))
 	var p := _edge_spawn_point(hz.edges)
 	if p == Vector2.INF:
 		return
-	var with_mother: bool = time > 60.0 and rng.randf() < float(hz.get("mother_chance", 0.0))
+	var mchance: float = float(hz.get("mother_chance", 0.0)) * (1.0 + float(Bal.PLAYER_SCALE.mothers) * (commanders.size() - 1))
+	var with_mother: bool = time > 60.0 and mothers.size() < mother_cap and rng.randf() < mchance
 	ambushes.append({ p = p, t = Bal.HORDES.warn_time, n = n, done = false, edge = true, mother = with_mother })
 	horde_count += 1
 	if time - horde_toast_at > 30.0: # com hordas contínuas, avisar a cada 30 s e não a cada horda
@@ -1673,7 +1683,7 @@ func _objective_update() -> String:
 			if generator != null and generator.dead:
 				outcome_reason = "END_GENERATOR_LOST"
 				return "failed"
-			return "done" if stats.kills >= int(def.kills * diff.spawn) else ""
+			return "done" if stats.kills >= int(def.kills * diff.spawn * crowd) else ""
 		"retrieve":
 			if crystal != null and crystal.carried and crystal.carrier != null and not crystal.carrier.dead:
 				if crystal.carrier.position.distance_to(extraction) < 32.0:
@@ -1717,7 +1727,7 @@ func objective_parts() -> Array:
 			var gp2 := 100
 			if generator != null:
 				gp2 = roundi(generator.hp / generator.max_hp * 100.0)
-			return ["OBJ_HOLD", {kills = stats.kills, goal = int(def.kills * diff.spawn), gen = gp2}]
+			return ["OBJ_HOLD", {kills = stats.kills, goal = int(def.kills * diff.spawn * crowd), gen = gp2}]
 		"retrieve":
 			if crystal == null:
 				for n in nests:

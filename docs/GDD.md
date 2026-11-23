@@ -203,6 +203,15 @@ Os mapas das defesas 3–5 são gerados por `tools/build_maps.py`.
 
 Recruta = o antigo Soldado ~7% mais fácil. Soldado ficou mais pressionado. Veterano mantido (playtest de 2026-11-11).
 
+**Pressão por missão** (`settings.pressure` em `missions.gd`): multiplica a frequência das hordas desde o início, o
+crescimento por minuto e o menor intervalo, por dificuldade. Fortaleza Bastião (M5): Soldado ×1,3, Veterano ×1,5,
+Recruta sem mudança (playtest de 2026-11-20: a missão estava fácil nas duas dificuldades).
+
+**Escala por jogador** (`Bal.PLAYER_SCALE`): cada comandante a mais soma 1× ao enxame (ninhos, hordas e cota de
+abates) e ao limite de matriarcas vivas (3 por jogador) e à chance de matriarca nas hordas. Com 2 jogadores o enxame
+é ×2; com 3, ×3. As tropas são do esquadrão e não multiplicam. O briefing mostra a escala quando há mais de 1
+jogador.
+
 ---
 
 ## 5. Controles

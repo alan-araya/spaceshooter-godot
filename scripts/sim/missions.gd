@@ -27,6 +27,8 @@ extends RefCounted
 ## settings.troops_bonus: tropas extras na contagem inicial. settings.hordes.growth: crescimento por minuto
 ##   (padrão Bal.HORDES.growth_per_min). settings.hordes.min_interval: menor intervalo entre hordas
 ##   (padrão Bal.HORDES.min_interval).
+## settings.pressure = { normal = x, dificil = y }: multiplicador das hordas da missão por dificuldade
+##   (frequência desde o início, crescimento por minuto e menor intervalo). Ausente = 1.
 
 const LIST := [
 	{
@@ -177,6 +179,7 @@ const LIST := [
 		],
 		objective = { type = "survive", time = 240.0, text = "M5_OBJ" },
 		settings = { max_flowers = 3, ambush = false, pickup_interval = 0.7, troops_bonus = 4,
+			pressure = { normal = 1.3, dificil = 1.5 }, # Soldado +30% desde o início; Veterano bem acima
 			# enxame quase contínuo: grupos pequenos a cada ~2 s, que crescem e ficam mais frequentes com o tempo
 			hordes = { start = 20.0, interval = 2.0, min_interval = 0.7, size_min = 2, size_max = 3, edges = "nsew",
 				mother_chance = 0.04, growth = 0.42 } },
